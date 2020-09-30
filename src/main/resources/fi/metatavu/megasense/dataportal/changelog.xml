@@ -2,5 +2,58 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet id="routes" author="Simeon Platonov">
+        <createTable tableName="route">
+            <column name="id" type="binary(16)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="routepoints" type="longtext">
+                <constraints nullable="false"/>
+            </column>
+            <column name="createdat" type="datetime(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modifiedat" type="datetime(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creatorid" type="binary(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lastmodifierid" type="binary(16)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="exposure" author="Simeon Platonov">
+        <createTable tableName="exposureinstance">
+            <column name="id" type="binary(16)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="routeid" type="binary(16)">
+                <constraints foreignKeyName="FK_EXPOSUREINSTANCE_ROUTE_ID" referencedTableName="route" referencedColumnNames="id"/>
+            </column>
+            <column name="carbonmonoxide" type="float"/>
+            <column name="nitrogenmonoxide" type="float"/>
+            <column name="nitrogendioxide" type="float"/>
+            <column name="ozone" type="float"/>
+            <column name="sulfurDioxide" type="float"/>
+            <column name="harmfulMicroparticles" type="float"/>
+            <column name="startedat" type="datetime(6)"/>
+            <column name="endedat" type="datetime(6)"/>
+            <column name="createdat" type="datetime(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modifiedat" type="datetime(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creatorid" type="binary(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lastmodifierid" type="binary(16)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
 
 </databaseChangeLog>
