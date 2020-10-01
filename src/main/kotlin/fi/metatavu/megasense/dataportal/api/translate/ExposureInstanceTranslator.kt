@@ -21,12 +21,12 @@ class ExposureInstanceTranslator: AbstractTranslator<fi.metatavu.megasense.datap
         exposureInstance.routeId = entity.route?.id
         exposureInstance.startedAt = entity.startedAt
         exposureInstance.endedAt = entity.endedAt
-        exposureInstance.carbonMonoxide = entity.carbonMonoxide?.toBigDecimal()
-        exposureInstance.nitrogenMonoxide = entity.nitrogenMonoxide?.toBigDecimal()
-        exposureInstance.nitrogenDioxide = entity.nitrogenDioxide?.toBigDecimal()
-        exposureInstance.ozone = entity.ozone?.toBigDecimal()
-        exposureInstance.sulfurDioxide = entity.sulfurDioxide?.toBigDecimal()
-        exposureInstance.harmfulMicroparticles = entity.harmfulMicroparticles?.toBigDecimal()
+        exposureInstance.carbonMonoxide = entity.carbonMonoxide
+        exposureInstance.nitrogenMonoxide = entity.nitrogenMonoxide
+        exposureInstance.nitrogenDioxide = entity.nitrogenDioxide
+        exposureInstance.ozone = entity.ozone
+        exposureInstance.sulfurDioxide = entity.sulfurDioxide
+        exposureInstance.harmfulMicroparticles = entity.harmfulMicroparticles
 
         return exposureInstance
     }

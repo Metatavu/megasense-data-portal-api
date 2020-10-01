@@ -1,8 +1,11 @@
 package fi.metatavu.megasense.dataportal.persistence.dao
 
+
 import fi.metatavu.megasense.dataportal.persistence.model.Route
+import fi.metatavu.megasense.dataportal.persistence.model.Route_
 import java.util.*
 import javax.enterprise.context.ApplicationScoped
+import javax.persistence.criteria.Predicate
 
 /**
  * DAO class for routes
@@ -26,5 +29,29 @@ class RouteDAO: AbstractDAO<Route>() {
         route.creatorId = creatorId
         route.lastModifierId = creatorId
         return persist(route)
+    }
+
+    /**
+     * Lists routes
+     *
+     * @param userId id of the user to whom the routes belong
+     *
+     * @return routes
+     */
+    fun list(userId: UUID): List<Route> {
+        val entityManager = getEntityManager()
+        val criteriaBuilder = entityManager.criteriaBuilder
+        val criteria = criteriaBuilder.createQuery(Route::class.java)
+        val root = criteria.from(Route::class.java)
+
+        criteria.select(root)
+        val restrictions = ArrayList<Predicate>()
+
+        restrictions.add(criteriaBuilder.equal(root.get(Route_.creatorId), userId))
+
+        criteria.where(criteriaBuilder.and(*restrictions.toTypedArray()));
+
+        val query = entityManager.createQuery(criteria)
+        return query.resultList
     }
 }

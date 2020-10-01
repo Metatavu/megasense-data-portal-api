@@ -49,13 +49,14 @@ class ExposureInstanceController {
     /**
      * Lists exposure instances
      *
-     * @param createdAfter list only instances created after this date
+     * @param userId id of the user to whom the instances belong
      * @param createdBefore list only instances created before this date
+     * @param createdAfter list only instances created after this date
      *
      * @return exposure instances
      */
-    fun listRoutes (createdAfter: OffsetDateTime?, createdBefore: OffsetDateTime?): List<ExposureInstance> {
-        return exposureInstanceDAO.list(createdAfter, createdBefore)
+    fun listRoutes (userId: UUID, createdBefore: OffsetDateTime?, createdAfter: OffsetDateTime?): List<ExposureInstance> {
+        return exposureInstanceDAO.list(userId, createdBefore, createdAfter)
     }
 
     /**
@@ -71,9 +72,15 @@ class ExposureInstanceController {
 
     /**
      * Returns the total exposure
+     *
+     * @param userId id of the user to whom the instances belong
+     * @param exposedBefore include only instances created before this date
+     * @param exposedAfter include only instances created after this date
+     *
+     * @return total exposure
      */
-    fun getTotalExposure (): ExposureInstance {
-        val exposureInstances = exposureInstanceDAO.listAll()
+    fun getTotalExposure (userId: UUID, exposedBefore: OffsetDateTime?, exposedAfter: OffsetDateTime?): ExposureInstance {
+        val exposureInstances = exposureInstanceDAO.list(userId, exposedBefore, exposedAfter)
         var totalHarmfulMicroparticles = 0f
         var totalSulfurDioxide = 0f
         var totalOzone = 0f

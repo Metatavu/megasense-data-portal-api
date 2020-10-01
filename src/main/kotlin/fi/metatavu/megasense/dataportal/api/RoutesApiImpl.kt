@@ -28,16 +28,22 @@ class RoutesApiImpl: RoutesApi, AbstractApi() {
 
     override fun deleteRoute(routeId: UUID): Response {
         val route = routeController.findRoute(routeId) ?: return createBadRequest("Route not found!")
+        if (!route.creatorId!!.equals(loggerUserId!!)) {
+            return createNotFound("Exposure instance not found")
+        }
         routeController.deleteRoute(route)
         return createNoContent()
     }
 
     override fun findRoute(routeId: UUID): Response {
         val route = routeController.findRoute(routeId) ?: return createNotFound("Route not found!")
+        if (!route.creatorId!!.equals(loggerUserId!!)) {
+            return createNotFound("Exposure instance not found")
+        }
         return createOk(routeTranslator.translate(route))
     }
 
     override fun listRoutes(): Response {
-        return createOk(routeTranslator.translate(routeController.listRoutes()))
+        return createOk(routeTranslator.translate(routeController.listRoutes(loggerUserId!!)))
     }
 }

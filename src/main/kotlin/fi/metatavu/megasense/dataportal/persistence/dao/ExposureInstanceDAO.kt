@@ -1,10 +1,13 @@
 package fi.metatavu.megasense.dataportal.persistence.dao
 
 import fi.metatavu.megasense.dataportal.persistence.model.ExposureInstance
+import fi.metatavu.megasense.dataportal.persistence.model.ExposureInstance_
 import fi.metatavu.megasense.dataportal.persistence.model.Route
 import java.time.OffsetDateTime
 import java.util.*
 import javax.enterprise.context.ApplicationScoped
+import javax.persistence.criteria.Predicate
+
 
 /**
  * DAO class for exposure instance
@@ -28,18 +31,18 @@ class ExposureInstanceDAO: AbstractDAO<ExposureInstance>() {
      *
      * @return created exposure instance
      */
-    fun create (
-    id: UUID,
-    route: Route?,
-    startedAt: OffsetDateTime?,
-    endedAt: OffsetDateTime?,
-    carbonMonoxide: Float?,
-    nitrogenMonoxide: Float?,
-    nitrogenDioxide: Float?,
-    ozone: Float?,
-    sulfurDioxide: Float?,
-    harmfulMicroparticles: Float?,
-    creatorId: UUID): ExposureInstance {
+    fun create(
+            id: UUID,
+            route: Route?,
+            startedAt: OffsetDateTime?,
+            endedAt: OffsetDateTime?,
+            carbonMonoxide: Float?,
+            nitrogenMonoxide: Float?,
+            nitrogenDioxide: Float?,
+            ozone: Float?,
+            sulfurDioxide: Float?,
+            harmfulMicroparticles: Float?,
+            creatorId: UUID): ExposureInstance {
         val exposureInstance = ExposureInstance()
         exposureInstance.id = id
         exposureInstance.route = route
@@ -60,26 +63,31 @@ class ExposureInstanceDAO: AbstractDAO<ExposureInstance>() {
     /**
      * Lists exposure instances
      *
-     * @param createdAfter list only instances created after this date
+     * @param userId id of the user to whom the instances belong
      * @param createdBefore list only instances created before this date
+     * @param createdAfter list only instances created after this date
      *
      * @return exposure instances
      */
-    fun list (createdAfter: OffsetDateTime?, createdBefore: OffsetDateTime?): List<ExposureInstance> {
+    fun list(userId: UUID, createdBefore: OffsetDateTime?, createdAfter: OffsetDateTime?): List<ExposureInstance> {
         val entityManager = getEntityManager()
         val criteriaBuilder = entityManager.criteriaBuilder
         val criteria = criteriaBuilder.createQuery(ExposureInstance::class.java)
         val root = criteria.from(ExposureInstance::class.java)
 
         criteria.select(root)
-
+        val restrictions = ArrayList<Predicate>()
         if (createdAfter != null) {
-            criteria.where(criteriaBuilder.greaterThanOrEqualTo(root.get(ExposureInstance_.createdAt), createdAfter))
+            restrictions.add(criteriaBuilder.greaterThanOrEqualTo(root.get(ExposureInstance_.createdAt), createdAfter))
         }
 
         if (createdBefore != null) {
-            criteria.where(criteriaBuilder.lessThanOrEqualTo(root.get(ExposureInstance_.createdAt), createdBefore))
+            restrictions.add(criteriaBuilder.lessThanOrEqualTo(root.get(ExposureInstance_.createdAt), createdBefore))
         }
+
+        restrictions.add(criteriaBuilder.equal(root.get(ExposureInstance_.creatorId), userId))
+
+        criteria.where(criteriaBuilder.and(*restrictions.toTypedArray()));
 
         val query = entityManager.createQuery(criteria)
         return query.resultList

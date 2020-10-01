@@ -38,23 +38,36 @@ class ExposureInstancesApiImpl: ExposureInstancesApi, AbstractApi() {
                 route,
                 exposureInstance.startedAt,
                 exposureInstance.endedAt,
-                exposureInstance.carbonMonoxide.toFloat(),
-                exposureInstance.nitrogenMonoxide.toFloat(),
-                exposureInstance.nitrogenDioxide.toFloat(),
-                exposureInstance.ozone.toFloat(),
-                exposureInstance.sulfurDioxide.toFloat(),
-                exposureInstance.harmfulMicroparticles.toFloat(),
+                exposureInstance.carbonMonoxide,
+                exposureInstance.nitrogenMonoxide,
+                exposureInstance.nitrogenDioxide,
+                exposureInstance.ozone,
+                exposureInstance.sulfurDioxide,
+                exposureInstance.harmfulMicroparticles,
                 loggerUserId!!
         )))
     }
 
     override fun findExposureInstance(exposureInstanceId: UUID): Response {
         val exposureInstance = exposureInstanceController.findExposureInstance(exposureInstanceId) ?: return createNotFound("Exposure instance not found")
+        if (!exposureInstance.creatorId!!.equals(loggerUserId!!)) {
+            return createNotFound("Exposure instance not found")
+        }
         return createOk(exposureInstanceTranslator.translate(exposureInstance))
     }
 
     override fun listExposureInstances(createdBefore: String?, createdAfter: String?): Response {
-        return createOk(exposureInstanceTranslator.translate(exposureInstanceController.listRoutes(OffsetDateTime.parse(createdAfter), OffsetDateTime.parse(createdBefore))))
+        var createdBeforeDate: OffsetDateTime? = null
+        var createdAfterDate: OffsetDateTime? = null
+
+        if (createdBefore != null) {
+            createdBeforeDate = OffsetDateTime.parse(createdBefore)
+        }
+
+        if (createdAfter != null) {
+            createdAfterDate = OffsetDateTime.parse(createdAfter)
+        }
+        return createOk(exposureInstanceTranslator.translate(exposureInstanceController.listRoutes(loggerUserId!!, createdBeforeDate, createdAfterDate)))
     }
 
 }

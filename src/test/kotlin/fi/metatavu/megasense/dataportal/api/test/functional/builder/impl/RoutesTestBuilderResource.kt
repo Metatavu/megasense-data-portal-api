@@ -5,9 +5,10 @@ import fi.metatavu.jaxrs.test.functional.builder.auth.AccessTokenProvider
 import fi.metatavu.megasense.dataportal.api.client.apis.RoutesApi
 import fi.metatavu.megasense.dataportal.api.client.infrastructure.ApiClient
 import fi.metatavu.megasense.dataportal.api.client.models.Route
+import fi.metatavu.megasense.dataportal.api.test.functional.settings.TestSettings
 import java.util.*
 
-class RoutesTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, private val accessTokenProvider: AccessTokenProvider?, apiClient: ApiClient): AbstractApiTestBuilderResource<Route, ApiClient> (testBuilder, apiClient) {
+class RoutesTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, private val accessTokenProvider: AccessTokenProvider?, apiClient: ApiClient): ApiTestBuilderResource<Route, ApiClient> (testBuilder, apiClient) {
     /**
      * Sends a request to create a route
      *
@@ -34,18 +35,18 @@ class RoutesTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, p
      *
      * @param routeId id of the route to find
      *
-     * @return found route or null if not found
+     * @return found route
      */
     fun find (routeId: UUID): Route {
         return api.findRoute(routeId)
     }
 
-    override fun clean(route: Route) {
-        api.deleteRoute(route.id!!)
+    override fun clean (route: Route?) {
+        TODO("Not yet implemented")
     }
 
-    override fun getApi(): RoutesApi {
+    override fun getApi (): RoutesApi {
         ApiClient.accessToken = accessTokenProvider?.accessToken
-        return RoutesApi()
+        return RoutesApi(TestSettings.apiBasePath)
     }
 }

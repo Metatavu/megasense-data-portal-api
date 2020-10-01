@@ -29,10 +29,12 @@ class RouteController {
     /**
      * Lists all routes
      *
+     * @param userId id of the user to whom the routes belong
+     *
      * @return routes
      */
-    fun listRoutes (): List<Route> {
-        return routeDAO.listAll()
+    fun listRoutes (userId: UUID): List<Route> {
+        return routeDAO.list(userId)
     }
 
     /**

@@ -28,7 +28,7 @@ object TestSettings {
      * Returns Keycloak realm
      */
     val keycloakRealm: String
-        get() = "naviwork"
+        get() = "megasense-data-portal"
 
     /**
      * Returns Keycloak client id
