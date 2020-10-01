@@ -1,0 +1,3 @@
+[submodule "megasense-data-portal-api-spec"]
+	path = megasense-data-portal-api-spec
+	url = https://github.com/Metatavu/megasense-data-portal-api-spec.git

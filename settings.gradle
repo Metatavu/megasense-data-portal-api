@@ -1,0 +1,3 @@
+rootProject.name = 'megasense-data-portal-api'
+include 'api-spec'
+include 'api-client'
