@@ -1,5 +1,6 @@
 package fi.metatavu.megasense.dataportal.route
 
+import fi.metatavu.megasense.dataportal.persistence.dao.ExposureInstanceDAO
 import fi.metatavu.megasense.dataportal.persistence.dao.RouteDAO
 import fi.metatavu.megasense.dataportal.persistence.model.Route
 import java.util.*
@@ -13,6 +14,9 @@ import javax.inject.Inject
 class RouteController {
     @Inject
     private lateinit var routeDAO: RouteDAO
+
+    @Inject
+    private lateinit var exposureInstanceDAO: ExposureInstanceDAO
 
     /**
      * Creates a route
@@ -52,8 +56,14 @@ class RouteController {
      * Deletes a route
      *
      * @param route a route to delete
+     * @param userId id of the user who is deleting this route
      */
-    fun deleteRoute (route: Route) {
-        routeDAO.delete(route);
+    fun deleteRoute (route: Route, userId: UUID) {
+        val exposureInstancesToClear = exposureInstanceDAO.list(userId, null, null, route)
+        for (exposureInstance in exposureInstancesToClear) {
+            exposureInstanceDAO.clearRouteField(exposureInstance)
+        }
+
+        routeDAO.delete(route)
     }
 }

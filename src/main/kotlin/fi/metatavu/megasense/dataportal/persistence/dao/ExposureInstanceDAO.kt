@@ -31,7 +31,7 @@ class ExposureInstanceDAO: AbstractDAO<ExposureInstance>() {
      *
      * @return created exposure instance
      */
-    fun create(
+    fun create (
             id: UUID,
             route: Route?,
             startedAt: OffsetDateTime?,
@@ -66,10 +66,11 @@ class ExposureInstanceDAO: AbstractDAO<ExposureInstance>() {
      * @param userId id of the user to whom the instances belong
      * @param createdBefore list only instances created before this date
      * @param createdAfter list only instances created after this date
+     * @param route list only instances that contain this route
      *
      * @return exposure instances
      */
-    fun list(userId: UUID, createdBefore: OffsetDateTime?, createdAfter: OffsetDateTime?): List<ExposureInstance> {
+    fun list (userId: UUID, createdBefore: OffsetDateTime?, createdAfter: OffsetDateTime?, route: Route?): List<ExposureInstance> {
         val entityManager = getEntityManager()
         val criteriaBuilder = entityManager.criteriaBuilder
         val criteria = criteriaBuilder.createQuery(ExposureInstance::class.java)
@@ -85,11 +86,25 @@ class ExposureInstanceDAO: AbstractDAO<ExposureInstance>() {
             restrictions.add(criteriaBuilder.lessThanOrEqualTo(root.get(ExposureInstance_.createdAt), createdBefore))
         }
 
+        if (route != null) {
+            restrictions.add(criteriaBuilder.equal(root.get(ExposureInstance_.route), route))
+        }
+
         restrictions.add(criteriaBuilder.equal(root.get(ExposureInstance_.creatorId), userId))
 
         criteria.where(criteriaBuilder.and(*restrictions.toTypedArray()));
 
         val query = entityManager.createQuery(criteria)
         return query.resultList
+    }
+
+    /**
+     * Clears the route field of an exposure instance
+     *
+     * @param exposureInstance instance to remove route from
+     */
+    fun clearRouteField (exposureInstance: ExposureInstance) {
+        exposureInstance.route = null
+        persist(exposureInstance)
     }
 }
