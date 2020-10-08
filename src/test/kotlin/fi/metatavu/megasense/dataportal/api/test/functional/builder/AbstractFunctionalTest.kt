@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import org.apache.commons.codec.digest.DigestUtils
+import org.apache.commons.io.IOUtils
 import org.json.JSONException
 import org.junit.Assert
 import org.skyscreamer.jsonassert.JSONCompare
@@ -30,7 +31,7 @@ abstract class AbstractFunctionalTest {
     @Throws(IOException::class)
     protected open fun getResourceMd5(resourceName: String?): String? {
         val classLoader = javaClass.classLoader
-        classLoader.getResourceAsStream(resourceName).use { fileStream -> return DigestUtils.md5Hex(fileStream) }
+        classLoader.getResourceAsStream(resourceName).use { fileStream -> return DigestUtils.md5Hex(IOUtils.toByteArray(fileStream)) }
     }
 
     /**
