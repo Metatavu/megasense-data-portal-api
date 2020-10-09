@@ -37,7 +37,11 @@ sourceCompatibility = 11
 targetCompatibility = 11
 
 repositories {
+    maven { url 'http://download.osgeo.org/webdav/geotools/' }
+    maven { url "https://repo.osgeo.org/repository/release/" }
     jcenter()
+
+
 }
 
 configurations {
@@ -69,6 +73,8 @@ dependencies {
     compileOnly "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
     compileOnly "org.apache.commons:commons-lang3"
 
+    implementation "org.geotools:gt-referencing:24.0"
+    implementation "edu.ucar:netcdf:4.2"
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "org.liquibase:liquibase-cdi:$liquibase_version"

@@ -6,7 +6,6 @@ import fi.metatavu.jaxrs.test.functional.builder.auth.AuthorizedTestBuilderAuthe
 import fi.metatavu.megasense.dataportal.api.client.infrastructure.ApiClient
 import fi.metatavu.megasense.dataportal.api.test.functional.builder.impl.*
 import fi.metatavu.megasense.dataportal.api.test.functional.settings.TestSettings
-import java.io.IOException
 
 /**
  * Test builder authentication
@@ -22,6 +21,7 @@ class TestBuilderAuthentication(testBuilder: AbstractTestBuilder<ApiClient>, acc
     private var routes: RoutesTestBuilderResource? = null
     private var exposureInstances: ExposureInstancesTestBuilderResource? = null
     private var totalExposure: TotalExposureTestBuilderResource? = null
+    private var airQuality: AirQualityTestBuilderResource? = null
 
     /**
      * Creates a API client
@@ -72,6 +72,19 @@ class TestBuilderAuthentication(testBuilder: AbstractTestBuilder<ApiClient>, acc
         }
 
         return totalExposure!!
+    }
+
+    /**
+     * Returns a test builder resource for air quality
+     *
+     * @return a test builder resource for air quality
+     */
+    fun airQuality (): AirQualityTestBuilderResource {
+        if (airQuality == null) {
+            airQuality = AirQualityTestBuilderResource(testBuilder, accessTokenProvider, createClient())
+        }
+
+        return airQuality!!
     }
 
 }
