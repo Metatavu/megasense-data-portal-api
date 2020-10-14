@@ -13,7 +13,7 @@ class ExposureTestsIT: AbstractFunctionalTest() {
     @Test
     fun testCreateExposureInstance () {
         TestBuilder().use { testBuilder ->
-            val route = testBuilder.admin().routes().create("TEST_STRING")
+            val route = testBuilder.admin().routes().create("TEST_STRING", "Mikkeli", "Hirvensalmi")
             val startedAt = OffsetDateTime.now().minusHours(3).toString().replace("+03:00", "Z")
             val endedAt = OffsetDateTime.now().toString().replace("+03:00", "Z")
             val exposureInstance = testBuilder.admin().exposureInstances().create(

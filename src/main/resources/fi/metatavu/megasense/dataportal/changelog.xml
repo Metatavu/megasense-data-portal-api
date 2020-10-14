@@ -56,4 +56,14 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="routelocationnames" author="Simeon Platonov">
+        <addColumn tableName="route">
+            <column name="locationfromname" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="locationtoname" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
