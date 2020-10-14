@@ -18,13 +18,17 @@ class RouteDAO: AbstractDAO<Route>() {
      *
      * @param id An UUID for identification
      * @param routePoints A string representing route points
+     * @param locationFromName The name of the starting location
+     * @param locationToName The name of the starting location
      * @param creatorId id of the user who created this route
      *
      * @return created route
      */
-    fun create (id: UUID, routePoints: String, creatorId: UUID): Route {
+    fun create (id: UUID, routePoints: String, locationFromName: String, locationToName: String, creatorId: UUID): Route {
         val route = Route()
         route.id = id
+        route.locationFromName = locationFromName
+        route.locationToName = locationToName
         route.routePoints = routePoints
         route.creatorId = creatorId
         route.lastModifierId = creatorId

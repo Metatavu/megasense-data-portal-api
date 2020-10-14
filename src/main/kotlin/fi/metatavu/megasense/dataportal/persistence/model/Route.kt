@@ -16,6 +16,12 @@ class Route {
     var routePoints: String? = null
 
     @Column(nullable = false)
+    var locationFromName: String? = null
+
+    @Column(nullable = false)
+    var locationToName: String? = null
+
+    @Column(nullable = false)
     var createdAt: OffsetDateTime? = null
 
     @Column(nullable = false)

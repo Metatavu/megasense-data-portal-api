@@ -19,6 +19,9 @@ class RouteTranslator: AbstractTranslator<fi.metatavu.megasense.dataportal.persi
         val route = fi.metatavu.megasense.dataportal.api.spec.model.Route()
         route.id = entity.id
         route.routePoints = entity.routePoints
+        route.locationFromName = entity.locationFromName
+        route.locationToName = entity.locationToName
+        route.savedAt = entity.createdAt
         return route
     }
 }

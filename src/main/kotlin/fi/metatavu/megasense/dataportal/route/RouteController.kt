@@ -22,12 +22,14 @@ class RouteController {
      * Creates a route
      *
      * @param routePoints A string representing route points
+     * @param locationFromName The name of the starting location
+     * @param locationToName The name of the starting location
      * @param creatorId id of the user who created this route
      *
      * @return created route
      */
-    fun createRoute (routePoints: String, creatorId: UUID): Route {
-        return routeDAO.create(UUID.randomUUID(), routePoints, creatorId)
+    fun createRoute (routePoints: String, locationFromName: String, locationToName: String, creatorId: UUID): Route {
+        return routeDAO.create(UUID.randomUUID(), routePoints, locationFromName, locationToName, creatorId)
     }
 
     /**
