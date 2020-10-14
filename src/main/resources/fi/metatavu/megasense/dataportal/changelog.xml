@@ -66,4 +66,9 @@
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet id="addLengthToLocationNames" author="Simeon Platonov">
+        <modifyDataType tableName="route" columnName="locationfromname" newDataType="longtext"/>
+        <modifyDataType tableName="route" columnName="locationtoname" newDataType="longtext"/>
+    </changeSet>
 </databaseChangeLog>
