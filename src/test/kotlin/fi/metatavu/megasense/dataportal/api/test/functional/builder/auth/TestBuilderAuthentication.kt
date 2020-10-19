@@ -22,6 +22,7 @@ class TestBuilderAuthentication(testBuilder: AbstractTestBuilder<ApiClient>, acc
     private var exposureInstances: ExposureInstancesTestBuilderResource? = null
     private var totalExposure: TotalExposureTestBuilderResource? = null
     private var airQuality: AirQualityTestBuilderResource? = null
+    private var userSettings: UserSettingsTestBuilderResource? = null
 
     /**
      * Creates a API client
@@ -87,4 +88,16 @@ class TestBuilderAuthentication(testBuilder: AbstractTestBuilder<ApiClient>, acc
         return airQuality!!
     }
 
+    /**
+     * Returns a test builder resource for air quality
+     *
+     * @return a test builder resource for air quality
+     */
+    fun userSettings (): UserSettingsTestBuilderResource {
+        if (userSettings == null) {
+            userSettings = UserSettingsTestBuilderResource(testBuilder, accessTokenProvider, createClient())
+        }
+
+        return userSettings!!
+    }
 }
