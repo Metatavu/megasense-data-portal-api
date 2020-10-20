@@ -35,15 +35,15 @@ class AirQualityController {
             val pollutantValuesArray1 = netcdfFile.findVariable("daymax_cnc_PM10").read()
             val pollutantValuesArray2 = netcdfFile.findVariable("daymax_cnc_PM2_5").read()
 
-            val pollutantValue1 = getClosestPollutantValue(latitudeArray, longitudeArray, timeArray, pollutantValuesArray1 as ArrayFloat.D4, longitude, latitude)
-            val pollutantValue2 = getClosestPollutantValue(latitudeArray, longitudeArray, timeArray, pollutantValuesArray2 as ArrayFloat.D4, longitude, latitude)
+            val pollutantValue1 = getClosestPollutantValue(latitudeArray, longitudeArray, timeArray, pollutantValuesArray1 as ArrayFloat.D4, latitude, longitude)
+            val pollutantValue2 = getClosestPollutantValue(latitudeArray, longitudeArray, timeArray, pollutantValuesArray2 as ArrayFloat.D4, latitude, longitude)
 
             val combinedPollutantValue = pollutantValue1 + pollutantValue2
-            constructAirQuality(combinedPollutantValue, pollutant, longitude, latitude)
+            constructAirQuality(combinedPollutantValue, pollutant, latitude, longitude)
         } else {
             val pollutantValuesArray = getPollutionValuesFromNetcdf(netcdfFile, pollutant)
-            val pollutantValue = getClosestPollutantValue(latitudeArray, longitudeArray, timeArray, pollutantValuesArray as ArrayFloat.D4, longitude, latitude)
-            constructAirQuality(pollutantValue, pollutant, longitude, latitude)
+            val pollutantValue = getClosestPollutantValue(latitudeArray, longitudeArray, timeArray, pollutantValuesArray as ArrayFloat.D4, latitude, longitude)
+            constructAirQuality(pollutantValue, pollutant, latitude, longitude)
         }
     }
 
@@ -51,13 +51,12 @@ class AirQualityController {
      * Returns air quality values
      *
      * @param pollutant return only values for this pollutant
-     * @param precision precision in meters for the returned data
      * @param boundingBoxCorner1 lower left of the bounding box
      * @param boundingBoxCorner2 upper right of the bounding box
      *
      * @return air quality values
      */
-    fun getAirQuality(pollutant: String, precision: Int, boundingBoxCorner1: String, boundingBoxCorner2: String): List<AirQuality> {
+    fun getAirQuality(pollutant: String, boundingBoxCorner1: String, boundingBoxCorner2: String): List<AirQuality> {
         val netcdfFile = loadNetcdfFile()
 
         val timeArray = netcdfFile.findVariable("time").read()
@@ -66,10 +65,10 @@ class AirQualityController {
 
         if (pollutant == "MICRO_PARTICLES") {
             val pollutantValuesArray1 = netcdfFile.findVariable("daymax_cnc_PM10").read()
-            val data1 = extractData(timeArray, latitudeArray, longitudeArray, pollutantValuesArray1, pollutant, precision, boundingBoxCorner1, boundingBoxCorner2)
+            val data1 = extractData(timeArray, latitudeArray, longitudeArray, pollutantValuesArray1 as ArrayFloat.D4, pollutant, boundingBoxCorner1, boundingBoxCorner2)
 
             val pollutantValuesArray2 = netcdfFile.findVariable("daymax_cnc_PM2_5").read()
-            val data2 = extractData(timeArray, latitudeArray, longitudeArray, pollutantValuesArray2, pollutant, precision, boundingBoxCorner1, boundingBoxCorner2)
+            val data2 = extractData(timeArray, latitudeArray, longitudeArray, pollutantValuesArray2 as ArrayFloat.D4, pollutant, boundingBoxCorner1, boundingBoxCorner2)
 
             // Combining two different lists of particle observations into a single list
             val combined = data1 + data2
@@ -92,7 +91,7 @@ class AirQualityController {
             return hashMap.values.toList()
         } else {
             val pollutantValuesArray = getPollutionValuesFromNetcdf(netcdfFile, pollutant)
-            return extractData(timeArray, latitudeArray, longitudeArray, pollutantValuesArray, pollutant, precision, boundingBoxCorner1, boundingBoxCorner2)
+            return extractData(timeArray, latitudeArray, longitudeArray, pollutantValuesArray as ArrayFloat.D4, pollutant, boundingBoxCorner1, boundingBoxCorner2)
         }
 
     }
@@ -150,46 +149,38 @@ class AirQualityController {
      *
      * @param timeArray Netcdf array for time
      * @param latitudeArray Netcdf array for latitude
-     * @param latitudeArray Netcdf array for longitude
+     * @param longitudeArray Netcdf array for longitude
      * @param pollutantValuesArray Netcdf array for pollutant values
      * @param pollutant type of the pollutant
-     * @param precision precision in meters for the returned data
      * @param boundingBoxCorner1 lower left of the bounding box
      * @param boundingBoxCorner2 upper right of the bounding box
      *
      * @return air quality values
      */
-    private fun extractData(timeArray: Array, latitudeArray: Array, longitudeArray: Array, pollutantValuesArray: Array, pollutant: String, precision: Int, boundingBoxCorner1: String, boundingBoxCorner2: String): List<AirQuality> {
+    private fun extractData (timeArray: Array, latitudeArray: Array, longitudeArray: Array, pollutantValuesArray: ArrayFloat.D4, pollutant: String, boundingBoxCorner1: String, boundingBoxCorner2: String): List<AirQuality> {
         val airQualityList = ArrayList<AirQuality>()
 
-        val minimalLatitude = boundingBoxCorner1.substringBefore(",")
-        val minimalLongitude = boundingBoxCorner1.substringAfter(",")
+        val minimalLatitude = boundingBoxCorner1.substringBefore(",").toFloat()
+        val minimalLongitude = boundingBoxCorner1.substringAfter(",").toFloat()
 
-        val maximalLatitude = boundingBoxCorner2.substringBefore(",")
-        val maximalLongitude = boundingBoxCorner2.substringAfter(",")
+        val maximalLatitude = boundingBoxCorner2.substringBefore(",").toFloat()
+        val maximalLongitude = boundingBoxCorner2.substringAfter(",").toFloat()
 
-        val azimuth = getAzimuth(minimalLongitude.toDouble(), minimalLatitude.toDouble(), minimalLongitude.toDouble(), maximalLatitude.toDouble())
-        val distance = getDistance(minimalLongitude.toDouble(), minimalLatitude.toDouble(), minimalLongitude.toDouble(), maximalLatitude.toDouble())
-        var i = 0.0
-        while (i < distance / precision) {
-            val startingPoint = moveTo(minimalLongitude.toDouble(), minimalLatitude.toDouble(), azimuth, precision * i)
-            var j = 0.0
-            val azimuthJ = getAzimuth(startingPoint.x, startingPoint.y, maximalLongitude.toDouble(), startingPoint.y)
-            val distanceJ = getDistance(startingPoint.x, startingPoint.y, maximalLongitude.toDouble(), startingPoint.y)
-
-            while (j < distanceJ / precision) {
-                val samplePoint = moveTo(startingPoint.x, startingPoint.y, azimuthJ, precision * j)
-                val pollutionValue = getClosestPollutantValue(latitudeArray, longitudeArray, timeArray, pollutantValuesArray as ArrayFloat.D4, samplePoint.x.toFloat(), samplePoint.y.toFloat())
-
-                val airQuality = constructAirQuality(pollutionValue, pollutant, samplePoint.x.toFloat(), samplePoint.y.toFloat())
-                airQualityList.add(airQuality)
-
-                j++
+        val latitudes = latitudeArray.size.toInt()
+        val longitudes = longitudeArray.size.toInt()
+        val timeSize = timeArray.size.toInt()
+        val height = 0
+        for (i in 0 until latitudes) {
+            val latitude = latitudeArray.getFloat(i)
+            if (latitude > minimalLatitude && latitude < maximalLatitude) {
+                for (j in 0 until longitudes) {
+                    val longitude = longitudeArray.getFloat(j)
+                    if (longitude > minimalLongitude && longitude < maximalLongitude) {
+                        airQualityList.add(constructAirQuality(pollutantValuesArray.get(timeSize - 1 , height, i, j), pollutant, latitude, longitude))
+                    }
+                }
             }
-
-            i++
         }
-
         return airQualityList
     }
 
@@ -198,12 +189,13 @@ class AirQualityController {
      *
      * @param pollutionValue pollution value
      * @param pollutant type of the pollutant
-     * @param longitude longitude of the observation
      * @param latitude latitude of the observation
+     * @param longitude longitude of the observation
+
      *
      * @return air quality
      */
-    private fun constructAirQuality (pollutionValue: Float, pollutant: String, longitude: Float, latitude: Float): AirQuality {
+    private fun constructAirQuality (pollutionValue: Float, pollutant: String, latitude: Float, longitude: Float): AirQuality {
         val location = Location()
         location.latitude = latitude
         location.longitude = longitude
@@ -222,14 +214,15 @@ class AirQualityController {
      * @param latitudeArray Netcdf array for latitude
      * @param latitudeArray Netcdf array for longitude
      * @param pollutantValuesArray Netcdf array for pollutant values
-     * @param longitude the longitude of the location to get values from
      * @param latitude the latitude of the location to get values from
+     * @param longitude the longitude of the location to get values from
+
      *
      * @return pollutant value
      */
-    private fun getClosestPollutantValue(latitudeArray: Array, longitudeArray: Array, timeArray: Array, pollutantValuesArray: ArrayFloat.D4, longitude: Float, latitude: Float): Float {
-        val longitudeIndex = getClosestIndex(longitudeArray, longitude)
+    private fun getClosestPollutantValue(latitudeArray: Array, longitudeArray: Array, timeArray: Array, pollutantValuesArray: ArrayFloat.D4, latitude: Float, longitude: Float): Float {
         val latitudeIndex = getClosestIndex(latitudeArray, latitude)
+        val longitudeIndex = getClosestIndex(longitudeArray, longitude)
         val timeSize = timeArray.size.toInt()
         val height = 0
 
@@ -256,54 +249,5 @@ class AirQualityController {
             }
         }
         return (array.size - 1).toInt()
-    }
-
-    /**
-     * Returns a new location after moving using GeodeticCalculator
-     *
-     * @param longitude longitude for the starting location
-     * @param latitude latitude for the starting location
-     * @param azimuth azimuth value for direction
-     * @param amount amount value for direction
-     *
-     * @return new location
-     */
-    private fun moveTo(longitude: Double, latitude: Double, azimuth: Double, amount: Double): Point2D {
-        val geodeticCalculator = GeodeticCalculator()
-        geodeticCalculator.setStartingGeographicPoint(longitude, latitude)
-        geodeticCalculator.setDirection(azimuth, amount)
-        return geodeticCalculator.destinationGeographicPoint
-    }
-
-    /**
-     * Returns azimuth for given coordinates
-     *
-     * @param fromLongitude from longitude
-     * @param fromLatitude from latitude
-     * @param toLongitude to longitude
-     * @param toLatitude to latitude
-     * @return azimuth
-     */
-    private fun getAzimuth(fromLongitude: Double, fromLatitude: Double, toLongitude: Double, toLatitude: Double): Double {
-        val geodeticCalculator = GeodeticCalculator()
-        geodeticCalculator.setStartingGeographicPoint(fromLongitude, fromLatitude)
-        geodeticCalculator.setDestinationGeographicPoint(toLongitude, toLatitude)
-        return geodeticCalculator.azimuth
-    }
-
-    /**
-     * Returns distance between given coordinates
-     *
-     * @param fromLongitude from longitude
-     * @param fromLatitude from latitude
-     * @param toLongitude to longitude
-     * @param toLatitude to latitude
-     * @return distance between given coordinates
-     */
-    private fun getDistance(fromLongitude: Double, fromLatitude: Double, toLongitude: Double, toLatitude: Double): Double {
-        val geodeticCalculator = GeodeticCalculator()
-        geodeticCalculator.setStartingGeographicPoint(fromLongitude, fromLatitude)
-        geodeticCalculator.setDestinationGeographicPoint(toLongitude, toLatitude)
-        return geodeticCalculator.orthodromicDistance
     }
 }
