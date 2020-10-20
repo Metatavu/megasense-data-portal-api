@@ -24,8 +24,8 @@ class AirQualityTestBuilderResource (testBuilder: AbstractTestBuilder<ApiClient?
      *
      * @return air quality values
      */
-    fun getAirQuality (pollutantType: String, precision: Int, boundingBoxCorner1: String, boundingBoxCorner2: String): List<AirQuality> {
-        return api.getAirQuality(pollutantType, precision, boundingBoxCorner1, boundingBoxCorner2).toList()
+    fun getAirQuality (pollutantType: String, boundingBoxCorner1: String, boundingBoxCorner2: String): List<AirQuality> {
+        return api.getAirQuality(pollutantType, boundingBoxCorner1, boundingBoxCorner2).toList()
     }
 
     /**
@@ -38,16 +38,6 @@ class AirQualityTestBuilderResource (testBuilder: AbstractTestBuilder<ApiClient?
      */
     fun getAirQualityForCoordinates (coordinates: String, pollutantType: String): AirQuality {
         return api.getAirQualityForCoordinates(coordinates, pollutantType)
-    }
-
-    /**
-     * Asserts that air quality data has correct structure
-     *
-     * @param airQuality data to test
-     */
-    fun assertCorrectStructure (airQuality: List<AirQuality>) {
-        assertTrue(airQuality.first().location.latitude < airQuality.last().location.latitude)
-        assertTrue(airQuality.first().location.longitude < airQuality.last().location.longitude)
     }
 
     override fun getApi(): AirQualityApi {

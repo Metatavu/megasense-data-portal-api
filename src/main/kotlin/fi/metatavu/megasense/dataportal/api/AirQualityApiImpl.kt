@@ -16,8 +16,8 @@ class AirQualityApiImpl: AirQualityApi, AbstractApi() {
     @Inject
     private lateinit var airQualityController: AirQualityController
 
-    override fun getAirQuality(pollutant: String, precision: Int, boundingBoxCorner1: String, boundingBoxCorner2: String): Response {
-        return createOk(airQualityController.getAirQuality(pollutant, precision, boundingBoxCorner1, boundingBoxCorner2))
+    override fun getAirQuality(pollutant: String, boundingBoxCorner1: String, boundingBoxCorner2: String): Response {
+        return createOk(airQualityController.getAirQuality(pollutant, boundingBoxCorner1, boundingBoxCorner2))
     }
 
     override fun getAirQualityForCoordinates(coordinates: String, pollutant: String): Response {
