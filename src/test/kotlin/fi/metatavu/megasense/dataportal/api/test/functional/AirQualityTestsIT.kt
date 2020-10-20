@@ -39,4 +39,29 @@ class AirQualityTestsIT: AbstractFunctionalTest(){
 
         }
     }
+
+    @Test
+    fun testGetAirQualityForCoordinates() {
+        TestBuilder().use { testBuilder ->
+            val coordinates = "60.20383377832825,25.03689765930176"
+
+            val carbonMonoxide = testBuilder.admin().airQuality().getAirQualityForCoordinates(coordinates, "CARBON_MONOXIDE")
+            assertNotNull(carbonMonoxide)
+
+            val nitrogenMonoxide = testBuilder.admin().airQuality().getAirQualityForCoordinates(coordinates, "NITROGEN_MONOXIDE")
+            assertNotNull(nitrogenMonoxide)
+
+            val nitrogenDioxide = testBuilder.admin().airQuality().getAirQualityForCoordinates(coordinates, "NITROGEN_DIOXIDE")
+            assertNotNull(nitrogenDioxide)
+
+            val sulfurDioxide = testBuilder.admin().airQuality().getAirQualityForCoordinates(coordinates, "SULFUR_DIOXIDE")
+            assertNotNull(sulfurDioxide)
+
+            val ozone = testBuilder.admin().airQuality().getAirQualityForCoordinates(coordinates, "OZONE")
+            assertNotNull(ozone)
+
+            val microParticles = testBuilder.admin().airQuality().getAirQualityForCoordinates(coordinates, "MICRO_PARTICLES")
+            assertNotNull(microParticles)
+        }
+    }
 }
