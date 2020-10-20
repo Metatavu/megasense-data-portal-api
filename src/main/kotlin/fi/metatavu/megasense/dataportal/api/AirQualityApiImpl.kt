@@ -8,7 +8,7 @@ import javax.inject.Inject
 import javax.ws.rs.core.Response
 
 /**
- * An endpoint for air quality
+ * Endpoints for air quality
  */
 @RequestScoped
 @Stateful
@@ -18,5 +18,9 @@ class AirQualityApiImpl: AirQualityApi, AbstractApi() {
 
     override fun getAirQuality(pollutant: String, precision: Int, boundingBoxCorner1: String, boundingBoxCorner2: String): Response {
         return createOk(airQualityController.getAirQuality(pollutant, precision, boundingBoxCorner1, boundingBoxCorner2))
+    }
+
+    override fun getAirQualityForCoordinates(coordinates: String, pollutant: String): Response {
+        return createOk(airQualityController.getAirQualityForCoordinates(pollutant, coordinates))
     }
 }

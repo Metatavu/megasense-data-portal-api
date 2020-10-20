@@ -29,6 +29,18 @@ class AirQualityTestBuilderResource (testBuilder: AbstractTestBuilder<ApiClient?
     }
 
     /**
+     * Returns air quality for specific coordinates
+     *
+     * @param coordinates coordinates
+     * @param pollutantType type of the pollutant
+     *
+     * @return air quality
+     */
+    fun getAirQualityForCoordinates (coordinates: String, pollutantType: String): AirQuality {
+        return api.getAirQualityForCoordinates(coordinates, pollutantType)
+    }
+
+    /**
      * Asserts that air quality data has correct structure
      *
      * @param airQuality data to test
