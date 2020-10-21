@@ -17,13 +17,16 @@ class UserSettingsController {
     /**
      * Creates user settings
      *
-     * @param homeAddress home address
+     * @param streetAddress street address
+     * @param postalCode postal code
+     * @param city city
+     * @param country country
      * @param creatorId id of the user to whom these setting belong
      *
      * @return created user settings
      */
-    fun createUserSettings (homeAddress: String?, creatorId: UUID): UserSettings {
-        return userSettingsDAO.create(UUID.randomUUID(), homeAddress, creatorId)
+    fun createUserSettings (streetAddress: String?, postalCode: String?, city: String?, country: String?, creatorId: UUID): UserSettings {
+        return userSettingsDAO.create(UUID.randomUUID(), streetAddress, postalCode, city, country, creatorId)
     }
 
     /**
@@ -41,12 +44,20 @@ class UserSettingsController {
      * Updates the settings of an user
      *
      * @param userSettings user settings to update
-     * @param homeAddress new home address
+     * @param streetAddress new street address
+     * @param postalCode new postal code
+     * @param city new city
+     * @param country new country
      * @param modifierId id of the user to whom these settings belong
      *
      * @return updated user settings
      */
-    fun updateUserSettings (userSettings: UserSettings, homeAddress: String?, modifierId: UUID): UserSettings {
-        return userSettingsDAO.updateHomeAddress(userSettings, homeAddress, modifierId)
+    fun updateUserSettings (userSettings: UserSettings, streetAddress: String?, postalCode: String?, city: String?, country: String?, modifierId: UUID): UserSettings {
+        userSettingsDAO.updateStreetAddress(userSettings, streetAddress, modifierId)
+        userSettingsDAO.updatePostalCode(userSettings, postalCode, modifierId)
+        userSettingsDAO.updateCity(userSettings, city, modifierId)
+        userSettingsDAO.updateCountry(userSettings, country, modifierId)
+
+        return userSettings
     }
 }

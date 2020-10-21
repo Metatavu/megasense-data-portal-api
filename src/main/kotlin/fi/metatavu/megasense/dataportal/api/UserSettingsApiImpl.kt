@@ -27,7 +27,8 @@ class UserSettingsApiImpl: UserSettingsApi, AbstractApi() {
             return createBadRequest("User settings already exist. Use a PUT-request to update user settings.")
         }
 
-        val createdUserSettings = userSettingsController.createUserSettings(userSettings.homeAddress, userId)
+        val homeAddress = userSettings.homeAddress
+        val createdUserSettings = userSettingsController.createUserSettings(homeAddress?.streetAddress, homeAddress?.postalCode, homeAddress?.city, homeAddress?.country, userId)
         return createOk(userSettingsTranslator.translate(createdUserSettings))
     }
 
@@ -40,7 +41,8 @@ class UserSettingsApiImpl: UserSettingsApi, AbstractApi() {
     override fun updateUserSettings(userSettings: UserSettings): Response {
         val userId = loggerUserId!!
         val foundUserSettings = userSettingsController.findUserSettings(userId) ?: return createNotFound("User settings not found!")
-        val updatedUserSettings = userSettingsController.updateUserSettings(foundUserSettings, userSettings.homeAddress, userId)
+        val homeAddress = userSettings.homeAddress
+        val updatedUserSettings = userSettingsController.updateUserSettings(foundUserSettings, homeAddress?.streetAddress, homeAddress?.postalCode, homeAddress?.city, homeAddress?.country, userId)
         return createOk(userSettingsTranslator.translate(updatedUserSettings))
     }
 }

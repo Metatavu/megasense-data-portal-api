@@ -92,4 +92,14 @@
             <column name="homeaddress" type="longtext"/>
         </createTable>
     </changeSet>
+
+    <changeSet id="separateaddressdetails" author="Simeon Platonov">
+        <dropColumn tableName="usersettings" columnName="homeaddress"/>
+        <addColumn tableName="usersettings">
+            <column name="streetaddress" type="longtext"/>
+            <column name="postalcode" type="longtext"/>
+            <column name="city" type="longtext"/>
+            <column name="country" type="longtext"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
