@@ -13,7 +13,16 @@ class UserSettings {
     var id: UUID? = null
 
     @Column
-    var homeAddress: String? = null
+    var streetAddress: String? = null
+
+    @Column
+    var postalCode: String? = null
+
+    @Column
+    var city: String? = null
+
+    @Column
+    var country: String? = null
 
     @Column(nullable = false)
     var createdAt: OffsetDateTime? = null

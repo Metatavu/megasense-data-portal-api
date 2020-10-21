@@ -15,15 +15,21 @@ class UserSettingsDAO: AbstractDAO<UserSettings>() {
      * Creates user settings
      *
      * @param id UUID for identification
-     * @param homeAddress home address
+     * @param streetAddress street address
+     * @param postalCode postal code
+     * @param city city
+     * @param country country
      * @param creatorId id of the user to whom these setting belong
      *
      * @return created user settings
      */
-    fun create (id: UUID, homeAddress: String?, creatorId: UUID): UserSettings {
+    fun create (id: UUID, streetAddress: String?, postalCode: String?, city: String?, country: String?, creatorId: UUID): UserSettings {
         val userSettings = UserSettings()
         userSettings.id = id
-        userSettings.homeAddress = homeAddress
+        userSettings.streetAddress = streetAddress
+        userSettings.postalCode = postalCode
+        userSettings.city = city
+        userSettings.country = country
         userSettings.creatorId = creatorId
         userSettings.lastModifierId = creatorId
 
@@ -31,16 +37,61 @@ class UserSettingsDAO: AbstractDAO<UserSettings>() {
     }
 
     /**
-     * Updates the home address of an user
+     * Updates the street address of an user
      *
      * @param userSettings user settings to update
-     * @param homeAddress new home address
+     * @param streetAddress new street address
      * @param modifierId id of the user to whom these settings belong
      *
      * @return updated user settings
      */
-    fun updateHomeAddress (userSettings: UserSettings, homeAddress: String?, modifierId: UUID): UserSettings {
-        userSettings.homeAddress = homeAddress
+    fun updateStreetAddress (userSettings: UserSettings, streetAddress: String?, modifierId: UUID): UserSettings {
+        userSettings.streetAddress = streetAddress
+        userSettings.lastModifierId = modifierId
+        return persist(userSettings)
+    }
+
+    /**
+     * Updates the postal code of an user
+     *
+     * @param userSettings user settings to update
+     * @param postalCode new postal code
+     * @param modifierId id of the user to whom these settings belong
+     *
+     * @return updated user settings
+     */
+    fun updatePostalCode (userSettings: UserSettings, postalCode: String?, modifierId: UUID): UserSettings {
+        userSettings.postalCode = postalCode
+        userSettings.lastModifierId = modifierId
+        return persist(userSettings)
+    }
+
+    /**
+     * Updates the city of an user
+     *
+     * @param userSettings user settings to update
+     * @param city new city
+     * @param modifierId id of the user to whom these settings belong
+     *
+     * @return updated user settings
+     */
+    fun updateCity (userSettings: UserSettings, city: String?, modifierId: UUID): UserSettings {
+        userSettings.city = city
+        userSettings.lastModifierId = modifierId
+        return persist(userSettings)
+    }
+
+    /**
+     * Updates the country of an user
+     *
+     * @param userSettings user settings to update
+     * @param country country
+     * @param modifierId id of the user to whom these settings belong
+     *
+     * @return updated user settings
+     */
+    fun updateCountry (userSettings: UserSettings, country: String?, modifierId: UUID): UserSettings {
+        userSettings.country = country
         userSettings.lastModifierId = modifierId
         return persist(userSettings)
     }
