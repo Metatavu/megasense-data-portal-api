@@ -29,9 +29,9 @@ class UserSettingsTestsIT: AbstractFunctionalTest() {
             assertEquals("Mutala", foundSettings.homeAddress?.city)
             assertEquals("Suomi", foundSettings.homeAddress?.country)
 
-            val updatedSettings = testBuilder.admin().userSettings().update("Kuratie 9", "70898", "Kurala", "Syrjälä")
+            val updatedSettings = testBuilder.admin().userSettings().update("Kuratie 19", "70898", "Kurala", "Syrjälä")
             assertNotNull(updatedSettings)
-            assertEquals("Kuratie 9", updatedSettings.homeAddress?.streetAddress)
+            assertEquals("Kuratie 19", updatedSettings.homeAddress?.streetAddress)
             assertEquals("70898", updatedSettings.homeAddress?.postalCode)
             assertEquals("Kurala", updatedSettings.homeAddress?.city)
             assertEquals("Syrjälä", updatedSettings.homeAddress?.country)
