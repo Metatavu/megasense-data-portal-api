@@ -67,7 +67,7 @@ class ExposureInstancesApiImpl: ExposureInstancesApi, AbstractApi() {
         if (createdAfter != null) {
             createdAfterDate = OffsetDateTime.parse(createdAfter)
         }
-        return createOk(exposureInstanceTranslator.translate(exposureInstanceController.listRoutes(loggerUserId!!, createdBeforeDate, createdAfterDate)))
+        return createOk(exposureInstanceTranslator.translate(exposureInstanceController.listExposureInstances(loggerUserId!!, createdBeforeDate, createdAfterDate)))
     }
 
 }

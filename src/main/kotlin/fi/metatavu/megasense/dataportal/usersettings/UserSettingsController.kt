@@ -60,4 +60,16 @@ class UserSettingsController {
 
         return userSettings
     }
+
+    /**
+     * Deletes user settings if they exist
+     *
+     * @param userId id of the user
+     */
+    fun deleteUserSettings (userId: UUID) {
+        val userSettings = findUserSettings(userId)
+        if (userSettings != null) {
+            userSettingsDAO.delete(userSettings)
+        }
+    }
 }
