@@ -75,14 +75,15 @@ class UsersController {
         getTokenMethod.setParameter("client_id", keycloakAdminClientId)
         client.executeMethod(getTokenMethod)
         val tokenJson = getTokenMethod.responseBodyAsString
+        println("*************** DELETE RESPONSE ***************")
+        println(tokenJson)
         val tokenObject: JSONObject = JSONParser().parse(tokenJson) as JSONObject
         val token = tokenObject["access_token"]
         getTokenMethod.releaseConnection()
 
         val deleteMethod = DeleteMethod("$keycloakUrl/admin/realms/$keycloakRealm/users/$userId")
         deleteMethod.setRequestHeader("Authorization", "Bearer $token")
-        println("*************** DELETE RESPONSE ***************")
-        println(deleteMethod.responseBodyAsString)
+        println(deleteMethod.statusCode)
         client.executeMethod(deleteMethod)
         deleteMethod.releaseConnection()
 
