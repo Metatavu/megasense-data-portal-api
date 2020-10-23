@@ -51,6 +51,9 @@ services:
       KEYCLOAK_REALM: megasense-data-portal
       KEYCLOAK_RESOURCE: api
       KEYCLOAK_URL: http://test-keycloak:8080/auth
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      KEYCLOAK_ADMIN_CLIENT_ID: admin-cli
       KUBERNETES_NAMESPACE: test
       FILE_STORAGE_PROVIDER: LOCAL
       LOCAL_FILE_STORAGE_PATH: /opt/uploads

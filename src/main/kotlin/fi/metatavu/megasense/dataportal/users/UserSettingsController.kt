@@ -1,4 +1,4 @@
-package fi.metatavu.megasense.dataportal.usersettings
+package fi.metatavu.megasense.dataportal.users
 
 import fi.metatavu.megasense.dataportal.persistence.dao.UserSettingsDAO
 import fi.metatavu.megasense.dataportal.persistence.model.UserSettings
@@ -59,5 +59,17 @@ class UserSettingsController {
         userSettingsDAO.updateCountry(userSettings, country, modifierId)
 
         return userSettings
+    }
+
+    /**
+     * Deletes user settings if they exist
+     *
+     * @param userId id of the user
+     */
+    fun deleteUserSettings (userId: UUID) {
+        val userSettings = findUserSettings(userId)
+        if (userSettings != null) {
+            userSettingsDAO.delete(userSettings)
+        }
     }
 }
