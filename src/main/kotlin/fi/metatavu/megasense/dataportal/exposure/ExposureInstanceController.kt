@@ -55,7 +55,7 @@ class ExposureInstanceController {
      *
      * @return exposure instances
      */
-    fun listRoutes (userId: UUID, createdBefore: OffsetDateTime?, createdAfter: OffsetDateTime?): List<ExposureInstance> {
+    fun listExposureInstances (userId: UUID, createdBefore: OffsetDateTime?, createdAfter: OffsetDateTime?): List<ExposureInstance> {
         return exposureInstanceDAO.list(userId, createdBefore, createdAfter, null)
     }
 
@@ -146,5 +146,14 @@ class ExposureInstanceController {
         }
 
         return exposureInstance
+    }
+
+    /**
+     * Deletes an exposure instance
+     *
+     * @param exposureInstance exposure instance to delete
+     */
+    fun deleteExposureInstance (exposureInstance: ExposureInstance) {
+        exposureInstanceDAO.delete(exposureInstance)
     }
 }
