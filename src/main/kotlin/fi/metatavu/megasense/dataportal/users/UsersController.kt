@@ -14,7 +14,6 @@ import org.json.simple.JSONObject
 import org.json.simple.parser.JSONParser
 import java.io.File
 import java.io.FileOutputStream
-import java.io.FileWriter
 
 import java.util.*
 import java.util.zip.ZipEntry
@@ -157,113 +156,121 @@ class UsersController {
      * @return a zip file that contains user data
      */
     fun findUserData (userId: UUID): ByteArray {
+        val time = System.currentTimeMillis()
         try {
             val exposureInstances = exposureInstanceController.listExposureInstances(userId, null, null)
             val routes = routeController.listRoutes(userId)
+            val exposureBytes = writeExposureInstancesToCsv(exposureInstances).toByteArray()
+            val routeBytes = writeRoutesToCsv(routes).toByteArray()
 
-            val exposureFileWriter = FileWriter("exposure.csv")
-            writeExposureInstancesToCsv(exposureFileWriter, exposureInstances)
-
-            exposureFileWriter.flush()
-            exposureFileWriter.close()
-
-            val routesFileWriter = FileWriter("route.csv")
-            writeRoutesToCsv(routesFileWriter, routes)
-
-            routesFileWriter.flush()
-            routesFileWriter.close()
-
-            val zipOutputStream = ZipOutputStream(FileOutputStream("data.zip"))
-
+            val zipOutputStream = ZipOutputStream(FileOutputStream("data-$time.zip"))
             val exposureZipEntry = ZipEntry("exposure.csv")
-            val routeZipEntry = ZipEntry("route.csv")
+            val routeZipEntry = ZipEntry("routes.csv")
+
             zipOutputStream.putNextEntry(exposureZipEntry)
+            zipOutputStream.write(exposureBytes)
             zipOutputStream.closeEntry()
             zipOutputStream.putNextEntry(routeZipEntry)
+            zipOutputStream.write(routeBytes)
             zipOutputStream.closeEntry()
             zipOutputStream.close()
 
-            val bytes = File("data.zip").readBytes()
-
-            File("data.zip").delete()
-            File("route.csv").delete()
-            File("exposure.csv").delete()
+            val bytes = File("data-$time.zip").readBytes()
+            File("data-$time.zip").delete()
 
             return bytes
         } catch (exception: Exception) {
-            File("data.zip").delete()
-            File("route.csv").delete()
-            File("exposure.csv").delete()
-
+            File("data-$time.zip").delete()
             throw exception
         }
 
     }
 
     /**
-     * Writes exposure instances to a csv file
+     * Writes exposure instances to a csv string
      *
-     * @param fileWriter file writer
      * @param exposureInstances instances to write
+     *
+     * @return csv strings
      */
-    private fun writeExposureInstancesToCsv (fileWriter: FileWriter, exposureInstances: List<ExposureInstance>) {
-        fileWriter.append("Route, Started at, Ended at, Carbon monoxide, Nitrogen monoxide, Nitrogen dioxide, Ozone, Sulfur dioxide, Microparticles")
-        fileWriter.append("\n")
+    private fun writeExposureInstancesToCsv (exposureInstances: List<ExposureInstance>): String {
+        var csv = "Route,Started at,Ended at,Carbon monoxide,Nitrogen monoxide,Nitrogen dioxide,Ozone,Sulfur dioxide,Microparticles"
+        csv += "\n"
         for (exposureInstance in exposureInstances) {
-            fileWriter.append(exposureInstance.route?.id.toString())
-            fileWriter.append(",")
+            csv += anyToString(exposureInstance.route?.id)
+            csv += ","
 
-            fileWriter.append(exposureInstance.startedAt.toString())
-            fileWriter.append(",")
+            csv += anyToString(exposureInstance.startedAt)
+            csv += ","
 
-            fileWriter.append(exposureInstance.endedAt.toString())
-            fileWriter.append(",")
+            csv += anyToString(exposureInstance.endedAt)
+            csv += ","
 
-            fileWriter.append(exposureInstance.carbonMonoxide.toString())
-            fileWriter.append(",")
+            csv += anyToString(exposureInstance.carbonMonoxide)
+            csv += ","
 
-            fileWriter.append(exposureInstance.nitrogenMonoxide.toString())
-            fileWriter.append(",")
+            csv += anyToString(exposureInstance.nitrogenMonoxide)
+            csv += ","
 
-            fileWriter.append(exposureInstance.nitrogenDioxide.toString())
-            fileWriter.append(",")
+            csv += anyToString(exposureInstance.nitrogenDioxide)
+            csv += ","
 
-            fileWriter.append(exposureInstance.ozone.toString())
-            fileWriter.append(",")
+            csv += anyToString(exposureInstance.ozone)
+            csv += ","
 
-            fileWriter.append(exposureInstance.sulfurDioxide.toString())
-            fileWriter.append(",")
+            csv += anyToString(exposureInstance.sulfurDioxide)
+            csv += ","
 
-            fileWriter.append(exposureInstance.harmfulMicroparticles.toString())
-            fileWriter.append("\n")
+            csv += anyToString(exposureInstance.harmfulMicroparticles)
+            csv += "\n"
         }
+
+        return csv
     }
 
     /**
-     * Writes routes to a csv file
+     * Writes routes to a csv string
      *
-     * @param fileWriter file writer
      * @param routes routes to write
+     *
+     * @return csv string
      */
-    private fun writeRoutesToCsv (fileWriter: FileWriter, routes: List<Route>) {
-        fileWriter.append("Id", "Route points", "Start location", "End location", "Saved at")
-        fileWriter.append("\n")
+    private fun writeRoutesToCsv (routes: List<Route>): String {
+        var csv = "Id,Route points,Start location,End location,Saved at"
+        csv += "\n"
 
         for (route in routes) {
-            fileWriter.append(route.id.toString())
-            fileWriter.append(",")
+            csv += anyToString(route.id)
+            csv += ","
 
-            fileWriter.append(route.routePoints)
-            fileWriter.append(",")
+            csv += anyToString(route.routePoints)
+            csv += ","
 
-            fileWriter.append(route.locationFromName)
-            fileWriter.append(",")
+            csv += anyToString(route.locationFromName)
+            csv += ","
 
-            fileWriter.append(route.locationToName)
-            fileWriter.append(",")
+            csv += anyToString(route.locationToName)
+            csv += ","
 
-            fileWriter.append(route.createdAt.toString())
-            fileWriter.append("\n")
+            csv += anyToString(route.createdAt)
+            csv += "\n"
         }
+
+        return csv
+    }
+
+    /**
+     * Returns string value of a parameter or empty string if the parameter is null
+     *
+     * @param parameter
+     *
+     * @return string value
+     */
+    private fun anyToString (parameter: Any?): String {
+        if (parameter == null) {
+            return ""
+        }
+
+        return parameter.toString()
     }
 }
