@@ -3,7 +3,6 @@ package fi.metatavu.megasense.dataportal.users
 import fi.metatavu.megasense.dataportal.exposure.ExposureInstanceController
 import fi.metatavu.megasense.dataportal.route.RouteController
 import fi.metatavu.megasense.dataportal.settings.SystemSettingsController
-import fi.metatavu.megasense.dataportal.usersettings.UserSettingsController
 import org.apache.commons.httpclient.HttpClient
 import org.apache.commons.httpclient.methods.DeleteMethod
 import org.apache.commons.httpclient.methods.PostMethod

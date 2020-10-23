@@ -3,7 +3,7 @@ package fi.metatavu.megasense.dataportal.api
 import fi.metatavu.megasense.dataportal.api.spec.UserSettingsApi
 import fi.metatavu.megasense.dataportal.api.spec.model.UserSettings
 import fi.metatavu.megasense.dataportal.api.translate.UserSettingsTranslator
-import fi.metatavu.megasense.dataportal.usersettings.UserSettingsController
+import fi.metatavu.megasense.dataportal.users.UserSettingsController
 import javax.ejb.Stateful
 import javax.enterprise.context.RequestScoped
 import javax.inject.Inject

@@ -1,4 +1,4 @@
-package fi.metatavu.megasense.dataportal.usersettings
+package fi.metatavu.megasense.dataportal.users
 
 import fi.metatavu.megasense.dataportal.persistence.dao.UserSettingsDAO
 import fi.metatavu.megasense.dataportal.persistence.model.UserSettings
