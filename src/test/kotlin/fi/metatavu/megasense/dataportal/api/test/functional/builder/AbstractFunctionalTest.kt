@@ -12,8 +12,11 @@ import org.skyscreamer.jsonassert.JSONCompare
 import org.skyscreamer.jsonassert.JSONCompareMode
 import org.skyscreamer.jsonassert.JSONCompareResult
 import org.skyscreamer.jsonassert.comparator.CustomComparator
+import java.io.File
 
 import java.io.IOException
+import java.io.InputStreamReader
+import java.util.zip.ZipFile
 
 /**
  * Abstract base class for functional tests
@@ -87,5 +90,23 @@ abstract class AbstractFunctionalTest {
         objectMapper.registerModule(JavaTimeModule())
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         return objectMapper
+    }
+
+    /**
+     * Reads lines from a file inside a zip archive
+     *
+     * @param zipFile ZIP-file
+     * @param entryName ZIP-entry (file) name
+     *
+     * @return lines
+     */
+    fun readLinesFromZipEntry (zipFile: File, entryName: String): List<String> {
+        val file = ZipFile(zipFile)
+        val zipEntry = file.getEntry(entryName)
+        val reader = InputStreamReader(file.getInputStream(zipEntry))
+        val lines = reader.readLines()
+        reader.close()
+        file.close()
+        return lines
     }
 }
