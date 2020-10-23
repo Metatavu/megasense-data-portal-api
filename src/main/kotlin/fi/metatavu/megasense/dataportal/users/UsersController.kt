@@ -81,9 +81,11 @@ class UsersController {
         getTokenMethod.setParameter("client_id", keycloakAdminClientId)
         client.executeMethod(getTokenMethod)
         val tokenJson = getTokenMethod.responseBodyAsString
-        
+
         println("*************** DELETE RESPONSE ***************")
-        println(tokenUriBuilder.build().toString())
+        println(keycloakUsername)
+        println(keycloakPassword)
+        println(keycloakAdminClientId)
         println(tokenJson)
         val tokenObject: JSONObject = JSONParser().parse(tokenJson) as JSONObject
         val token = tokenObject["access_token"]
@@ -93,10 +95,8 @@ class UsersController {
         deleteUriBuilder.path("admin/realms/$keycloakRealm/users/$userId")
         val deleteMethod = DeleteMethod(deleteUriBuilder.build().toString())
         deleteMethod.setRequestHeader("Authorization", "Bearer $token")
-
-        println(deleteUriBuilder.build().toString())
-        println(deleteMethod.statusCode)
         client.executeMethod(deleteMethod)
+        println(deleteMethod.responseBodyAsString)
         deleteMethod.releaseConnection()
 
         if (deleteMethod.statusCode < 200 || deleteMethod.statusCode > 299) {
