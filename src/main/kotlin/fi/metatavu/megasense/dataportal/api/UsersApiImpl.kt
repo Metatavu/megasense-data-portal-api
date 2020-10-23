@@ -48,12 +48,7 @@ class UsersApiImpl: UsersApi, AbstractApi() {
     }
 
     override fun deleteUser(): Response {
-        try {
-            usersController.deleteUser(loggerUserId!!)
-        } catch (exception: Exception) {
-            return createInternalServerError(exception.message + " " + exception.stackTrace)
-        }
-
+        usersController.deleteUser(loggerUserId!!)
         return createNoContent()
     }
 

@@ -81,6 +81,8 @@ class UsersController {
 
         val deleteMethod = DeleteMethod("$keycloakUrl/admin/realms/$keycloakRealm/users/$userId")
         deleteMethod.setRequestHeader("Authorization", "Bearer $token")
+        println("*************** DELETE RESPONSE ***************")
+        println(deleteMethod.responseBodyAsString)
         client.executeMethod(deleteMethod)
         deleteMethod.releaseConnection()
 
