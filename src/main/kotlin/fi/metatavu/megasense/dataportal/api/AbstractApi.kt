@@ -9,12 +9,16 @@ import org.keycloak.KeycloakSecurityContext
 import org.keycloak.authorization.client.AuthzClient
 import org.keycloak.authorization.client.ClientAuthorizationContext
 import org.keycloak.representations.AccessToken
+import java.io.ByteArrayInputStream
+import java.io.IOException
+import java.io.InputStream
 import java.time.OffsetDateTime
 import java.util.*
 import java.util.function.Function
 import java.util.stream.Collectors
 import javax.servlet.http.HttpServletRequest
 import javax.ws.rs.core.Response
+
 
 /**
  * Abstract base class for all API services
@@ -80,6 +84,35 @@ abstract class AbstractApi {
         return if (original == null) {
             null
         } else EnumUtils.getEnum(targetClass, original.name)
+    }
+
+    /**
+     * Creates streamed response from byte array
+     *
+     * @param data data
+     * @param type content type
+     * @return Response
+     */
+    open fun streamResponse(data: ByteArray, type: String): Response {
+        try {
+            ByteArrayInputStream(data).use { byteStream -> return streamResponse(type, byteStream, data.size) }
+        } catch (e: IOException) {
+            return createInternalServerError("Failed to stream response")
+        }
+    }
+
+    /**
+     * Creates streamed response from input stream
+     *
+     * @param inputStream data
+     * @param type content type
+     * @param contentLength content length
+     * @return Response
+     */
+    open fun streamResponse(type: String?, inputStream: InputStream, contentLength: Int): Response {
+        return Response.ok(StreamingOutputImpl(inputStream), type)
+                .header("Content-Length", contentLength)
+                .build()
     }
 
     /**
