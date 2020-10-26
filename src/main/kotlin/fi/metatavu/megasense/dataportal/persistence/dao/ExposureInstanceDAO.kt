@@ -93,6 +93,7 @@ class ExposureInstanceDAO: AbstractDAO<ExposureInstance>() {
         restrictions.add(criteriaBuilder.equal(root.get(ExposureInstance_.creatorId), userId))
 
         criteria.where(criteriaBuilder.and(*restrictions.toTypedArray()));
+        criteria.orderBy(criteriaBuilder.desc(root.get(ExposureInstance_.createdAt)))
 
         val query = entityManager.createQuery(criteria)
         return query.resultList

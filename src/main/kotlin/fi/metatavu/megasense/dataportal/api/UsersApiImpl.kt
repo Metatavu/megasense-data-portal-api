@@ -52,6 +52,11 @@ class UsersApiImpl: UsersApi, AbstractApi() {
         return createNoContent()
     }
 
+    override fun deleteUserSettings(): Response {
+        usersController.deleteUserSettings(loggerUserId!!)
+        return createNoContent()
+    }
+
     override fun downloadUserData(): Response {
         return streamResponse(usersController.findUserData(loggerUserId!!), "application/zip")
     }
