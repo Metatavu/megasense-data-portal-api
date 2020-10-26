@@ -39,7 +39,7 @@ class RouteTestsIT: AbstractFunctionalTest() {
 
             val routeList = testBuilder.admin().routes().listAll()
             assertNotNull(routeList)
-            assertTrue(routeList.isNotEmpty())
+            assertEquals(3, routeList.size)
         }
     }
 }

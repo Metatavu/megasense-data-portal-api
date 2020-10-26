@@ -13,8 +13,8 @@ import java.io.File
 import java.io.FileOutputStream
 
 class UsersTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, private val accessTokenProvider: AccessTokenProvider?, apiClient: ApiClient): ApiTestBuilderResource<UserSettings, ApiClient>(testBuilder, apiClient) {
-    override fun clean(t: UserSettings?) {
-        TODO("Not yet implemented")
+    override fun clean(userSettings: UserSettings) {
+        api.deleteUserSettings()
     }
 
     override fun getApi(): UsersApi{
@@ -35,7 +35,7 @@ class UsersTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, pr
     fun createUserSettings(streetAddress: String, postalCode: String, city: String, country: String): UserSettings {
         val homeAddress = HomeAddress(streetAddress, postalCode, city, country)
         val userSettings = UserSettings(homeAddress)
-        return api.createUserSettings(userSettings)
+        return addClosable(api.createUserSettings(userSettings))
     }
 
     /**

@@ -48,6 +48,18 @@ class ExposureInstancesApiImpl: ExposureInstancesApi, AbstractApi() {
         )))
     }
 
+    override fun deleteExposureInstance(exposureInstanceId: UUID): Response {
+        val exposureInstance = exposureInstanceController.findExposureInstance(exposureInstanceId) ?: return createNotFound("Exposure instance not found")
+
+        if (exposureInstance.creatorId != loggerUserId!!) {
+            return createUnauthorized("You are unauthorized to delete this!")
+        }
+
+        exposureInstanceController.deleteExposureInstance(exposureInstance)
+
+        return createNoContent()
+    }
+
     override fun findExposureInstance(exposureInstanceId: UUID): Response {
         val exposureInstance = exposureInstanceController.findExposureInstance(exposureInstanceId) ?: return createNotFound("Exposure instance not found")
         if (!exposureInstance.creatorId!!.equals(loggerUserId!!)) {

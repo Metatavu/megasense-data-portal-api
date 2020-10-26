@@ -20,7 +20,7 @@ class RoutesTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, p
      */
     fun create (routePoints: String, locationFromName: String, locationToName: String): Route {
         val route = Route(routePoints, locationFromName, locationToName)
-        return api.createRoute(route)
+        return addClosable(api.createRoute(route))
     }
 
     /**
@@ -43,8 +43,8 @@ class RoutesTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, p
         return api.findRoute(routeId)
     }
 
-    override fun clean (route: Route?) {
-        TODO("Not yet implemented")
+    override fun clean (route: Route) {
+        api.deleteRoute(route.id!!)
     }
 
     override fun getApi (): RoutesApi {

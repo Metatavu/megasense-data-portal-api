@@ -36,7 +36,7 @@ class ExposureInstancesTestBuilderResource(testBuilder: AbstractTestBuilder<ApiC
     harmfulMicroparticles: Float?
     ): ExposureInstance {
         val exposureInstance = ExposureInstance(null, routeId, startedAt, endedAt, carbonMonoxide, nitrogenMonoxide, nitrogenDioxide, ozone, sulfurDioxide, harmfulMicroparticles)
-        return api.createExposureInstance(exposureInstance)
+        return addClosable(api.createExposureInstance(exposureInstance))
     }
 
     /**
@@ -60,8 +60,8 @@ class ExposureInstancesTestBuilderResource(testBuilder: AbstractTestBuilder<ApiC
         return api.listExposureInstances(createdBefore, createdAfter)
     }
 
-    override fun clean (t: ExposureInstance?) {
-        TODO("Not yet implemented")
+    override fun clean (exposureInstance: ExposureInstance) {
+        api.deleteExposureInstance(exposureInstance.id!!)
     }
 
     override fun getApi (): ExposureInstancesApi {

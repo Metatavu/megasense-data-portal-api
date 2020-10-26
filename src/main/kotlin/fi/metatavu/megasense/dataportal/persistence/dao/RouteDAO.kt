@@ -54,6 +54,7 @@ class RouteDAO: AbstractDAO<Route>() {
         restrictions.add(criteriaBuilder.equal(root.get(Route_.creatorId), userId))
 
         criteria.where(criteriaBuilder.and(*restrictions.toTypedArray()));
+        criteria.orderBy(criteriaBuilder.desc(root.get(Route_.createdAt)))
 
         val query = entityManager.createQuery(criteria)
         return query.resultList

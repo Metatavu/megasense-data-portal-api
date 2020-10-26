@@ -154,6 +154,7 @@ class ExposureInstanceController {
      * @param exposureInstance exposure instance to delete
      */
     fun deleteExposureInstance (exposureInstance: ExposureInstance) {
+        exposureInstanceDAO.clearRouteField(exposureInstance)
         exposureInstanceDAO.delete(exposureInstance)
     }
 }
