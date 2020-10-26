@@ -44,7 +44,7 @@ class UserTestsIT: AbstractFunctionalTest() {
     fun userDataDownloadTest() {
         TestBuilder().use { testBuilder ->
             val route = testBuilder.admin().routes().create("TEST_STRING", "Mikkeli", "Hirvensalmi")
-            val route2 = testBuilder.admin().routes().create("TEST_STRINGGG", "Otava", "Rantakylä")
+            val route2 = testBuilder.admin().routes().create("TEST_STRINGGG", "Otava", "Ristiina")
 
             val startedAt = OffsetDateTime.now().minusHours(3).toString().replace("+03:00", "Z")
             val endedAt = OffsetDateTime.now().toString().replace("+03:00", "Z")
@@ -124,8 +124,6 @@ class UserTestsIT: AbstractFunctionalTest() {
      * @param csvRow a row to test
      */
     private fun assertCorrectCsvRow (route: Route, csvRow: List<String>) {
-        println(csvRow)
-        println(route)
         assertEquals(route.id.toString(), csvRow[0])
         assertEquals(route.routePoints, csvRow[1])
         assertEquals(route.locationFromName, csvRow[2])
