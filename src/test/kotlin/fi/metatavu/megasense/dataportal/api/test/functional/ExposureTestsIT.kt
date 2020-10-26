@@ -138,7 +138,7 @@ class ExposureTestsIT: AbstractFunctionalTest() {
 
             val totalExposure = testBuilder.admin().totalExposure().get(null, null)
             assertNotNull(totalExposure)
-            
+
             assertEquals(300f, totalExposure.carbonMonoxide)
             assertEquals(60f, totalExposure.nitrogenMonoxide)
             assertEquals(90f, totalExposure.nitrogenDioxide)

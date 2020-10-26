@@ -124,6 +124,8 @@ class UserTestsIT: AbstractFunctionalTest() {
      * @param csvRow a row to test
      */
     private fun assertCorrectCsvRow (route: Route, csvRow: List<String>) {
+        println(csvRow)
+        println(route)
         assertEquals(route.id.toString(), csvRow[0])
         assertEquals(route.routePoints, csvRow[1])
         assertEquals(route.locationFromName, csvRow[2])
