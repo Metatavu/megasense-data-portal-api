@@ -31,12 +31,12 @@ class UserTestsIT: AbstractFunctionalTest() {
             assertEquals("Mutala", foundSettings.homeAddress?.city)
             assertEquals("Suomi", foundSettings.homeAddress?.country)
 
-            val updatedSettings = testBuilder.admin().users().updateUserSettings("Kuratie 19", "70898", "Kurala", "Syrjälä")
+            val updatedSettings = testBuilder.admin().users().updateUserSettings("Kuratie 19", "70898", "Kurala", "Suomaa")
             assertNotNull(updatedSettings)
             assertEquals("Kuratie 19", updatedSettings.homeAddress?.streetAddress)
             assertEquals("70898", updatedSettings.homeAddress?.postalCode)
             assertEquals("Kurala", updatedSettings.homeAddress?.city)
-            assertEquals("Syrjälä", updatedSettings.homeAddress?.country)
+            assertEquals("Suomaa", updatedSettings.homeAddress?.country)
         }
     }
 
