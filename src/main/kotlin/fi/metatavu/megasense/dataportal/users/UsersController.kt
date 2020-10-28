@@ -76,7 +76,7 @@ class UsersController {
                 .grantType(null)
                 .username(systemSettingsController.getKeycloakAdminUser())
                 .password(systemSettingsController.getKeycloakAdminPassword())
-                .realm(systemSettingsController.getKeycloakRealm())
+                .realm("master")
                 .clientId(systemSettingsController.getKeycloakAdminClientId())
                 .serverUrl(systemSettingsController.getKeycloakUrl())
                 .build()
