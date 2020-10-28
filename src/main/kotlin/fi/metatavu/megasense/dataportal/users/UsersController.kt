@@ -78,6 +78,7 @@ class UsersController {
                 .password(systemSettingsController.getKeycloakAdminPassword())
                 .realm(systemSettingsController.getKeycloakRealm())
                 .clientId(systemSettingsController.getKeycloakAdminClientId())
+                .serverUrl(systemSettingsController.getKeycloakUrl())
                 .build()
     }
 
