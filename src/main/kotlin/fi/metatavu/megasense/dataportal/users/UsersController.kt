@@ -7,23 +7,16 @@ import fi.metatavu.megasense.dataportal.persistence.model.Route
 import fi.metatavu.megasense.dataportal.persistence.model.UserSettings
 import fi.metatavu.megasense.dataportal.route.RouteController
 import fi.metatavu.megasense.dataportal.settings.SystemSettingsController
-import org.apache.commons.httpclient.HttpClient
-import org.apache.commons.httpclient.URI
-import org.apache.commons.httpclient.methods.DeleteMethod
-import org.apache.commons.httpclient.methods.PostMethod
-import org.apache.http.client.utils.URIBuilder
-import org.json.simple.JSONObject
-import org.json.simple.parser.JSONParser
+import org.keycloak.admin.client.Keycloak
+import org.keycloak.admin.client.KeycloakBuilder
 import java.io.File
 import java.io.FileOutputStream
-import java.net.URL
 
 import java.util.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 import javax.enterprise.context.ApplicationScoped
 import javax.inject.Inject
-import javax.ws.rs.core.UriBuilder
 
 /**
  * A controller for users
@@ -63,38 +56,29 @@ class UsersController {
 
         deleteUserSettings(userId)
 
-        val keycloakUrl = systemSettingsController.getKeycloakUrl()
-        val keycloakRealm = systemSettingsController.getKeycloakRealm()
+        val keycloak = getKeycloakClient()
+        val usersResource = keycloak.realm(systemSettingsController.getKeycloakRealm()).users()
+        val deleteResponse = usersResource.delete(userId.toString())
 
-        val keycloakUsername = systemSettingsController.getKeycloakAdminUser()
-        val keycloakPassword = systemSettingsController.getKeycloakAdminPassword()
-        val keycloakAdminClientId = systemSettingsController.getKeycloakAdminClientId()
-
-        val client = HttpClient()
-        val tokenUriBuilder = UriBuilder.fromPath(keycloakUrl)
-        tokenUriBuilder.path("realms/master/protocol/openid-connect/token")
-
-        val getTokenMethod = PostMethod(tokenUriBuilder.build().toString())
-        getTokenMethod.setParameter("username", keycloakUsername)
-        getTokenMethod.setParameter("password", keycloakPassword)
-        getTokenMethod.setParameter("grant_type", "password")
-        getTokenMethod.setParameter("client_id", keycloakAdminClientId)
-        client.executeMethod(getTokenMethod)
-        val tokenJson = getTokenMethod.responseBodyAsString
-        val tokenObject: JSONObject = JSONParser().parse(tokenJson) as JSONObject
-        val token = tokenObject["access_token"]
-        getTokenMethod.releaseConnection()
-
-        val deleteUriBuilder = UriBuilder.fromPath(keycloakUrl)
-        deleteUriBuilder.path("admin/realms/$keycloakRealm/users/$userId")
-        val deleteMethod = DeleteMethod(deleteUriBuilder.build().toString())
-        deleteMethod.setRequestHeader("Authorization", "Bearer $token")
-        client.executeMethod(deleteMethod)
-        deleteMethod.releaseConnection()
-
-        if (deleteMethod.statusCode < 200 || deleteMethod.statusCode > 299) {
+        if (deleteResponse.status < 200 || deleteResponse.status > 299) {
             throw Error("Keycloak returned an error when deleting an user!")
         }
+    }
+
+    /**
+     * Returns an authenticated Keycloak client
+     *
+     * @return authenticated Keycloak client
+     */
+    private fun getKeycloakClient(): Keycloak {
+        return KeycloakBuilder
+                .builder()
+                .grantType("password")
+                .username(systemSettingsController.getKeycloakAdminUser())
+                .password(systemSettingsController.getKeycloakAdminPassword())
+                .realm(systemSettingsController.getKeycloakRealm())
+                .clientId(systemSettingsController.getKeycloakAdminClientId())
+                .build()
     }
 
     /**
