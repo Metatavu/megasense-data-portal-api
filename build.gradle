@@ -79,6 +79,14 @@ dependencies {
     implementation "commons-codec:commons-codec"
     implementation "com.googlecode.json-simple:json-simple:1.1.1"
 
+    implementation ("org.keycloak:keycloak-admin-client:$keycloak_version") {
+        exclude group: 'org.keycloak', module: 'keycloak-core'
+        exclude group: 'org.jboss.resteasy', module: 'resteasy-multipart-provider'
+        exclude group: 'org.jboss.resteasy', module: 'resteasy-jackson2-provider'
+        exclude group: 'org.jboss.resteasy', module: 'resteasy-jaxb-provider'
+        exclude group: 'org.jboss.resteasy', module: 'resteasy-jaxrs'
+    }
+
     testImplementation project(':api-client')
 
     testImplementation "org.apache.commons:commons-lang3"
