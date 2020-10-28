@@ -73,7 +73,7 @@ class UsersController {
     private fun getKeycloakClient(): Keycloak {
         return KeycloakBuilder
                 .builder()
-                .grantType("password")
+                .grantType(null)
                 .username(systemSettingsController.getKeycloakAdminUser())
                 .password(systemSettingsController.getKeycloakAdminPassword())
                 .realm(systemSettingsController.getKeycloakRealm())
