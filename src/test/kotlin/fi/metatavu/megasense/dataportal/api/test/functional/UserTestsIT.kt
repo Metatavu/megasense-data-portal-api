@@ -46,11 +46,11 @@ class UserTestsIT: AbstractFunctionalTest() {
             val route = testBuilder.admin().routes().create("TEST_STRING", "Mikkeli", "Hirvensalmi")
             val route2 = testBuilder.admin().routes().create("TEST_STRINGGG", "Otava", "Ristiina")
 
-            val startedAt = OffsetDateTime.now().minusHours(3).toString().replace("+03:00", "Z")
-            val endedAt = OffsetDateTime.now().toString().replace("+03:00", "Z")
+            val startedAt = OffsetDateTime.now().minusHours(3).toString().replace("+02:00", "Z").replace("+03:00", "Z")
+            val endedAt = OffsetDateTime.now().toString().replace("+02:00", "Z").replace("+03:00", "Z")
 
-            val startedAt2 = OffsetDateTime.now().minusHours(9).toString().replace("+03:00", "Z")
-            val endedAt2 = OffsetDateTime.now().minusHours(6).toString().replace("+03:00", "Z")
+            val startedAt2 = OffsetDateTime.now().minusHours(9).toString().replace("+02:00", "Z").replace("+03:00", "Z")
+            val endedAt2 = OffsetDateTime.now().minusHours(6).toString().replace("+02:00", "Z").replace("+03:00", "Z")
 
            val exposureInstance = testBuilder.admin().exposureInstances().create(
                     route.id!!,
