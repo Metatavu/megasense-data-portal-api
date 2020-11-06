@@ -1,6 +1,8 @@
 package fi.metatavu.megasense.dataportal.api.translate
 
 import fi.metatavu.megasense.dataportal.api.spec.model.HomeAddress
+import fi.metatavu.megasense.dataportal.api.spec.model.PollutantPenalties
+import fi.metatavu.megasense.dataportal.api.spec.model.PollutantThresholds
 import fi.metatavu.megasense.dataportal.persistence.model.UserSettings
 import javax.enterprise.context.ApplicationScoped
 
@@ -34,6 +36,25 @@ class UserSettingsTranslator: AbstractTranslator<fi.metatavu.megasense.dataporta
         }
 
         userSettings.showMobileWelcomeScreen = entity.showMobileWelcomeScreen
+
+        val pollutantPenalties = PollutantPenalties()
+        pollutantPenalties.carbonMonoxidePenalty = entity.carbonMonoxidePenalty
+        pollutantPenalties.nitrogenMonoxidePenalty = entity.nitrogenMonoxidePenalty
+        pollutantPenalties.nitrogenDioxidePenalty = entity.nitrogenDioxidePenalty
+        pollutantPenalties.ozonePenalty = entity.ozonePenalty
+        pollutantPenalties.sulfurDioxidePenalty = entity.sulfurDioxidePenalty
+        pollutantPenalties.harmfulMicroparticlesPenalty = entity.harmfulMicroparticlesPenalty
+
+        val pollutantThresholds = PollutantThresholds()
+        pollutantThresholds.carbonMonoxideThreshold = entity.carbonMonoxideThreshold
+        pollutantThresholds.nitrogenMonoxideThreshold = entity.nitrogenMonoxideThreshold
+        pollutantThresholds.nitrogenDioxideThreshold = entity.nitrogenDioxideThreshold
+        pollutantThresholds.ozoneThreshold = entity.ozoneThreshold
+        pollutantThresholds.sulfurDioxideThreshold = entity.sulfurDioxideThreshold
+        pollutantThresholds.harmfulMicroparticlesThreshold = entity.harmfulMicroparticlesThreshold
+
+        userSettings.pollutantPenalties = pollutantPenalties
+        userSettings.pollutantThresholds = pollutantThresholds
 
         return userSettings
     }

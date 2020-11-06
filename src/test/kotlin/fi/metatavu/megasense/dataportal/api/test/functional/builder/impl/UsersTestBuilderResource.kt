@@ -5,6 +5,8 @@ import fi.metatavu.jaxrs.test.functional.builder.auth.AccessTokenProvider
 import fi.metatavu.megasense.dataportal.api.client.apis.UsersApi
 import fi.metatavu.megasense.dataportal.api.client.infrastructure.ApiClient
 import fi.metatavu.megasense.dataportal.api.client.models.HomeAddress
+import fi.metatavu.megasense.dataportal.api.client.models.PollutantPenalties
+import fi.metatavu.megasense.dataportal.api.client.models.PollutantThresholds
 import fi.metatavu.megasense.dataportal.api.client.models.UserSettings
 import fi.metatavu.megasense.dataportal.api.test.functional.settings.TestSettings
 import org.apache.commons.httpclient.HttpClient
@@ -29,6 +31,8 @@ class UsersTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, pr
      * @param postalCode postal code
      * @param city city
      * @param country country
+     * @param pollutantPenalties pollutant penalties
+     * @param pollutantThresholds pollutant thresholds
      * @param showMobileWelcomeScreen a boolean setting for showing the mobile welcome screen
      *
      * @return created user settings
@@ -38,9 +42,11 @@ class UsersTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, pr
             postalCode: String,
             city: String,
             country: String,
+            pollutantPenalties: PollutantPenalties,
+            pollutantThresholds: PollutantThresholds,
             showMobileWelcomeScreen: Boolean): UserSettings {
         val homeAddress = HomeAddress(streetAddress, postalCode, city, country)
-        val userSettings = UserSettings(showMobileWelcomeScreen, homeAddress)
+        val userSettings = UserSettings(showMobileWelcomeScreen, pollutantPenalties, pollutantThresholds, homeAddress)
         return addClosable(api.createUserSettings(userSettings))
     }
 
@@ -51,6 +57,8 @@ class UsersTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, pr
      * @param postalCode new postal code
      * @param city new city
      * @param country new country
+     * @param pollutantPenalties pollutant penalties
+     * @param pollutantThresholds pollutant thresholds
      * @param showMobileWelcomeScreen a boolean setting for showing the mobile welcome screen
      *
      * @return updated user settings
@@ -60,10 +68,12 @@ class UsersTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, pr
             postalCode: String,
             city: String,
             country: String,
+            pollutantPenalties: PollutantPenalties,
+            pollutantThresholds: PollutantThresholds,
             showMobileWelcomeScreen: Boolean
     ): UserSettings {
         val homeAddress = HomeAddress(streetAddress, postalCode, city, country)
-        val userSettings = UserSettings(showMobileWelcomeScreen, homeAddress)
+        val userSettings = UserSettings(showMobileWelcomeScreen, pollutantPenalties, pollutantThresholds, homeAddress)
         return api.updateUserSettings(userSettings)
     }
 

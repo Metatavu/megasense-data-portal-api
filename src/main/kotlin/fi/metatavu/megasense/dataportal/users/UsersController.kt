@@ -1,5 +1,7 @@
 package fi.metatavu.megasense.dataportal.users
 
+import fi.metatavu.megasense.dataportal.api.spec.model.PollutantPenalties
+import fi.metatavu.megasense.dataportal.api.spec.model.PollutantThresholds
 import fi.metatavu.megasense.dataportal.exposure.ExposureInstanceController
 import fi.metatavu.megasense.dataportal.persistence.dao.UserSettingsDAO
 import fi.metatavu.megasense.dataportal.persistence.model.ExposureInstance
@@ -90,12 +92,22 @@ class UsersController {
      * @param city city
      * @param country country
      * @param showMobileWelcomeScreen a boolean setting for showing the mobile welcome screen
+     * @param pollutantPenalties pollutant penalties
+     * @param pollutantThresholds pollutant thresholds
      * @param creatorId id of the user to whom these setting belong
      *
      * @return created user settings
      */
-    fun createUserSettings (streetAddress: String?, postalCode: String?, city: String?, country: String?, showMobileWelcomeScreen: Boolean, creatorId: UUID): UserSettings {
-        return userSettingsDAO.create(UUID.randomUUID(), streetAddress, postalCode, city, country, showMobileWelcomeScreen, creatorId)
+    fun createUserSettings (
+            streetAddress: String?,
+            postalCode: String?,
+            city: String?,
+            country: String?,
+            showMobileWelcomeScreen: Boolean,
+            pollutantPenalties: PollutantPenalties,
+            pollutantThresholds: PollutantThresholds,
+            creatorId: UUID): UserSettings {
+        return userSettingsDAO.create(UUID.randomUUID(), streetAddress, postalCode, city, country, showMobileWelcomeScreen, pollutantPenalties, pollutantThresholds, creatorId)
     }
 
     /**
@@ -118,16 +130,29 @@ class UsersController {
      * @param city new city
      * @param country new country
      * @param showMobileWelcomeScreen a boolean setting for showing the mobile welcome screen
+     * @param pollutantPenalties pollutant penalties
+     * @param pollutantThresholds pollutant thresholds
      * @param modifierId id of the user who is modifying these settings
      *
      * @return updated user settings
      */
-    fun updateUserSettings (userSettings: UserSettings, streetAddress: String?, postalCode: String?, city: String?, country: String?, showMobileWelcomeScreen: Boolean, modifierId: UUID): UserSettings {
+    fun updateUserSettings (
+            userSettings: UserSettings,
+            streetAddress: String?,
+            postalCode: String?,
+            city: String?,
+            country: String?,
+            showMobileWelcomeScreen: Boolean,
+            pollutantPenalties: PollutantPenalties,
+            pollutantThresholds: PollutantThresholds,
+            modifierId: UUID): UserSettings {
         userSettingsDAO.updateStreetAddress(userSettings, streetAddress, modifierId)
         userSettingsDAO.updatePostalCode(userSettings, postalCode, modifierId)
         userSettingsDAO.updateCity(userSettings, city, modifierId)
         userSettingsDAO.updateCountry(userSettings, country, modifierId)
         userSettingsDAO.updateShowMobileWelcomeScreen(userSettings, showMobileWelcomeScreen, modifierId)
+        userSettingsDAO.updatePollutantPenalties(userSettings, pollutantPenalties, modifierId)
+        userSettingsDAO.updatePollutantThresholds(userSettings, pollutantThresholds, modifierId)
 
         return userSettings
     }
