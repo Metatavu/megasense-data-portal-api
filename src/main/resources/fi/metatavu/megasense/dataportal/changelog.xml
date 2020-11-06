@@ -110,4 +110,22 @@
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet id="custompenaltiesandthresholds" author="Simeon Platonov">
+        <addColumn tableName="usersettings">
+            <column name="carbonmonoxidepenalty" type="float"/>
+            <column name="nitrogenmonoxidepenalty" type="float"/>
+            <column name="nitrogendioxidepenalty" type="float"/>
+            <column name="ozonepenalty" type="float"/>
+            <column name="sulfurdioxidepenalty" type="float"/>
+            <column name="harmfulmicroparticlespenalty" type="float"/>
+
+            <column name="carbonmonoxidethreshold" type="float"/>
+            <column name="nitrogenmonoxidethreshold" type="float"/>
+            <column name="nitrogendioxidethreshold" type="float"/>
+            <column name="ozonethreshold" type="float"/>
+            <column name="sulfurdioxidethreshold" type="float"/>
+            <column name="harmfulmicroparticlesthreshold" type="float"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

@@ -1,5 +1,7 @@
 package fi.metatavu.megasense.dataportal.persistence.dao
 
+import fi.metatavu.megasense.dataportal.api.spec.model.PollutantPenalties
+import fi.metatavu.megasense.dataportal.api.spec.model.PollutantThresholds
 import fi.metatavu.megasense.dataportal.persistence.model.UserSettings_
 import fi.metatavu.megasense.dataportal.persistence.model.UserSettings
 import java.util.*
@@ -20,11 +22,23 @@ class UserSettingsDAO: AbstractDAO<UserSettings>() {
      * @param city city
      * @param country country
      * @param showMobileWelcomeScreen a boolean setting for showing the mobile welcome screen
+     * @param pollutantPenalties pollutant penalties
+     * @param pollutantThresholds pollutant thresholds
      * @param creatorId id of the user to whom these setting belong
      *
      * @return created user settings
      */
-    fun create (id: UUID, streetAddress: String?, postalCode: String?, city: String?, country: String?, showMobileWelcomeScreen: Boolean, creatorId: UUID): UserSettings {
+    fun create (
+            id: UUID,
+            streetAddress: String?,
+            postalCode: String?,
+            city: String?,
+            country: String?,
+            showMobileWelcomeScreen: Boolean,
+            pollutantPenalties: PollutantPenalties,
+            pollutantThresholds: PollutantThresholds,
+            creatorId: UUID
+    ): UserSettings {
         val userSettings = UserSettings()
         userSettings.id = id
         userSettings.streetAddress = streetAddress
@@ -33,10 +47,68 @@ class UserSettingsDAO: AbstractDAO<UserSettings>() {
         userSettings.country = country
         userSettings.showMobileWelcomeScreen = showMobileWelcomeScreen
         userSettings.creatorId = creatorId
+
+        userSettings.carbonMonoxidePenalty = pollutantPenalties.carbonMonoxidePenalty
+        userSettings.nitrogenMonoxidePenalty = pollutantPenalties.nitrogenMonoxidePenalty
+        userSettings.nitrogenDioxidePenalty = pollutantPenalties.nitrogenDioxidePenalty
+        userSettings.ozonePenalty = pollutantPenalties.ozonePenalty
+        userSettings.sulfurDioxidePenalty = pollutantPenalties.sulfurDioxidePenalty
+        userSettings.harmfulMicroparticlesPenalty = pollutantPenalties.harmfulMicroparticlesPenalty
+
+        userSettings.carbonMonoxideThreshold = pollutantThresholds.carbonMonoxideThreshold
+        userSettings.nitrogenMonoxideThreshold = pollutantThresholds.nitrogenMonoxideThreshold
+        userSettings.nitrogenDioxideThreshold = pollutantThresholds.nitrogenDioxideThreshold
+        userSettings.ozoneThreshold = pollutantThresholds.ozoneThreshold
+        userSettings.sulfurDioxideThreshold = pollutantThresholds.sulfurDioxideThreshold
+        userSettings.harmfulMicroparticlesThreshold = pollutantThresholds.harmfulMicroparticlesThreshold
+
         userSettings.lastModifierId = creatorId
 
         return persist(userSettings)
     }
+
+    /**
+     * Updates pollutant penalties
+     *
+     * @param userSettings user settings to update
+     * @param pollutantPenalties new pollutant penalties
+     * @param lastModifierId id of the user who is modifying pollutant penalties
+     *
+     * @return updated user settings
+     */
+    fun updatePollutantPenalties (userSettings: UserSettings, pollutantPenalties: PollutantPenalties, lastModifierId: UUID): UserSettings {
+        userSettings.carbonMonoxidePenalty = pollutantPenalties.carbonMonoxidePenalty
+        userSettings.nitrogenMonoxidePenalty = pollutantPenalties.nitrogenMonoxidePenalty
+        userSettings.nitrogenDioxidePenalty = pollutantPenalties.nitrogenDioxidePenalty
+        userSettings.ozonePenalty = pollutantPenalties.ozonePenalty
+        userSettings.sulfurDioxidePenalty = pollutantPenalties.sulfurDioxidePenalty
+        userSettings.harmfulMicroparticlesPenalty = pollutantPenalties.harmfulMicroparticlesPenalty
+
+        userSettings.lastModifierId = lastModifierId
+        return persist(userSettings)
+    }
+
+    /**
+     * Updates pollutant thresholds
+     *
+     * @param userSettings user settings to update
+     * @param pollutantThresholds new pollutant thresholds
+     * @param lastModifierId id of the user who is modifying pollutant thresholds
+     *
+     * @return updated user settings
+     */
+    fun updatePollutantThresholds (userSettings: UserSettings, pollutantThresholds: PollutantThresholds, lastModifierId: UUID): UserSettings {
+        userSettings.carbonMonoxideThreshold = pollutantThresholds.carbonMonoxideThreshold
+        userSettings.nitrogenMonoxideThreshold = pollutantThresholds.nitrogenMonoxideThreshold
+        userSettings.nitrogenDioxideThreshold = pollutantThresholds.nitrogenDioxideThreshold
+        userSettings.ozoneThreshold = pollutantThresholds.ozoneThreshold
+        userSettings.sulfurDioxideThreshold = pollutantThresholds.sulfurDioxideThreshold
+        userSettings.harmfulMicroparticlesThreshold = pollutantThresholds.harmfulMicroparticlesThreshold
+
+        userSettings.lastModifierId = lastModifierId
+        return persist(userSettings)
+    }
+
 
     /**
      * Updates the setting for showing mobile welcome screen

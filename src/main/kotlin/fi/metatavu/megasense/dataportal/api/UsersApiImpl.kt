@@ -35,6 +35,8 @@ class UsersApiImpl: UsersApi, AbstractApi() {
                 homeAddress?.city,
                 homeAddress?.country,
                 userSettings.showMobileWelcomeScreen,
+                userSettings.pollutantPenalties,
+                userSettings.pollutantThresholds,
                 userId
         )
         return createOk(userSettingsTranslator.translate(createdUserSettings))
@@ -58,6 +60,8 @@ class UsersApiImpl: UsersApi, AbstractApi() {
                 homeAddress?.city,
                 homeAddress?.country,
                 userSettings.showMobileWelcomeScreen,
+                userSettings.pollutantPenalties,
+                userSettings.pollutantThresholds,
                 userId
         )
 

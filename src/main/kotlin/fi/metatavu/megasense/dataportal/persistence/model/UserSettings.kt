@@ -12,6 +12,7 @@ class UserSettings {
     @Id
     var id: UUID? = null
 
+    /** Home address */
     @Column
     var streetAddress: String? = null
 
@@ -24,8 +25,50 @@ class UserSettings {
     @Column
     var country: String? = null
 
+    /** Show mobile screen */
+
     @Column(nullable = false)
     var showMobileWelcomeScreen: Boolean? = null
+
+    /** Pollutant thresholds */
+
+    @Column
+    var carbonMonoxideThreshold: Float? = null
+
+    @Column
+    var nitrogenMonoxideThreshold: Float? = null
+
+    @Column
+    var nitrogenDioxideThreshold: Float? = null
+
+    @Column
+    var ozoneThreshold: Float? = null
+
+    @Column
+    var sulfurDioxideThreshold: Float? = null
+
+    @Column
+    var harmfulMicroparticlesThreshold: Float? = null
+
+    /** Pollutant penalties */
+
+    @Column
+    var carbonMonoxidePenalty: Float? = null
+
+    @Column
+    var nitrogenMonoxidePenalty: Float? = null
+
+    @Column
+    var nitrogenDioxidePenalty: Float? = null
+
+    @Column
+    var ozonePenalty: Float? = null
+
+    @Column
+    var sulfurDioxidePenalty: Float? = null
+
+    @Column
+    var harmfulMicroparticlesPenalty: Float? = null
 
     @Column(nullable = false)
     var createdAt: OffsetDateTime? = null

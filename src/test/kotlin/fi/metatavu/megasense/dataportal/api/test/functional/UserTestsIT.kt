@@ -1,6 +1,8 @@
 package fi.metatavu.megasense.dataportal.api.test.functional
 
 import fi.metatavu.megasense.dataportal.api.client.models.ExposureInstance
+import fi.metatavu.megasense.dataportal.api.client.models.PollutantPenalties
+import fi.metatavu.megasense.dataportal.api.client.models.PollutantThresholds
 import fi.metatavu.megasense.dataportal.api.client.models.Route
 import fi.metatavu.megasense.dataportal.api.test.functional.builder.AbstractFunctionalTest
 import fi.metatavu.megasense.dataportal.api.test.functional.builder.TestBuilder
@@ -15,7 +17,26 @@ class UserTestsIT: AbstractFunctionalTest() {
     @Test
     fun userSettingsTest() {
         TestBuilder().use { testBuilder ->
-            val createdSettings = testBuilder.admin().users().createUserSettings("Mutatie 9", "50708", "Mutala", "Suomi", false)
+
+            val pollutantPenalties = PollutantPenalties(
+                    1f,
+                    1f,
+                    1f,
+                    1f,
+                    1f,
+                    1f
+            )
+
+            val pollutantThresholds = PollutantThresholds(
+                    2f,
+                    2f,
+                    2f,
+                    2f,
+                    2f,
+                    2f
+            )
+
+            val createdSettings = testBuilder.admin().users().createUserSettings("Mutatie 9", "50708", "Mutala", "Suomi", pollutantPenalties, pollutantThresholds,false)
 
             assertNotNull(createdSettings)
             assertEquals("Mutatie 9", createdSettings.homeAddress?.streetAddress)
@@ -23,6 +44,8 @@ class UserTestsIT: AbstractFunctionalTest() {
             assertEquals("Mutala", createdSettings.homeAddress?.city)
             assertEquals("Suomi", createdSettings.homeAddress?.country)
             assertEquals(false, createdSettings.showMobileWelcomeScreen)
+            assertPollutantPenaltiesEqual(pollutantPenalties, createdSettings.pollutantPenalties)
+            assertPollutantThresholdsEqual(pollutantThresholds, createdSettings.pollutantThresholds)
 
             val foundSettings = testBuilder.admin().users().getUserSettings()
 
@@ -32,14 +55,36 @@ class UserTestsIT: AbstractFunctionalTest() {
             assertEquals("Mutala", foundSettings.homeAddress?.city)
             assertEquals("Suomi", foundSettings.homeAddress?.country)
             assertEquals(false, foundSettings.showMobileWelcomeScreen)
+            assertPollutantPenaltiesEqual(pollutantPenalties, foundSettings.pollutantPenalties)
+            assertPollutantThresholdsEqual(pollutantThresholds, foundSettings.pollutantThresholds)
 
-            val updatedSettings = testBuilder.admin().users().updateUserSettings("Kuratie 19", "70898", "Kurala", "Suomaa", true)
+            val updatedPollutantPenalties = PollutantPenalties(
+                    3f,
+                    3f,
+                    3f,
+                    3f,
+                    3f,
+                    3f
+            )
+
+            val updatedPollutantThresholds = PollutantThresholds(
+                    4f,
+                    4f,
+                    4f,
+                    4f,
+                    4f,
+                    4f
+            )
+
+            val updatedSettings = testBuilder.admin().users().updateUserSettings("Kuratie 19", "70898", "Kurala", "Suomaa", updatedPollutantPenalties, updatedPollutantThresholds, true)
             assertNotNull(updatedSettings)
             assertEquals("Kuratie 19", updatedSettings.homeAddress?.streetAddress)
             assertEquals("70898", updatedSettings.homeAddress?.postalCode)
             assertEquals("Kurala", updatedSettings.homeAddress?.city)
             assertEquals("Suomaa", updatedSettings.homeAddress?.country)
             assertEquals(true, updatedSettings.showMobileWelcomeScreen)
+            assertPollutantPenaltiesEqual(updatedPollutantPenalties, updatedSettings.pollutantPenalties)
+            assertPollutantThresholdsEqual(updatedPollutantThresholds, updatedSettings.pollutantThresholds)
         }
     }
 
@@ -117,6 +162,36 @@ class UserTestsIT: AbstractFunctionalTest() {
             assertCorrectCsvRow(exposureInstance2, firstExposureEntry)
             assertCorrectCsvRow(exposureInstance, secondExposureEntry)
         }
+    }
+
+    /**
+     * Asserts that pollutant penalties equal
+     *
+     * @param expected expected pollutant penalties
+     * @param actual actual pollutant penalties
+     */
+    private fun assertPollutantPenaltiesEqual (expected: PollutantPenalties, actual: PollutantPenalties) {
+        assertEquals(expected.carbonMonoxidePenalty, actual.carbonMonoxidePenalty)
+        assertEquals(expected.nitrogenMonoxidePenalty, actual.nitrogenMonoxidePenalty)
+        assertEquals(expected.nitrogenDioxidePenalty, actual.nitrogenDioxidePenalty)
+        assertEquals(expected.ozonePenalty, actual.ozonePenalty)
+        assertEquals(expected.sulfurDioxidePenalty, actual.sulfurDioxidePenalty)
+        assertEquals(expected.harmfulMicroparticlesPenalty, actual.harmfulMicroparticlesPenalty)
+    }
+
+    /**
+     * Asserts that pollutant penalties equal
+     *
+     * @param expected expected pollutant penalties
+     * @param actual actual pollutant penalties
+     */
+    private fun assertPollutantThresholdsEqual (expected: PollutantThresholds, actual: PollutantThresholds) {
+        assertEquals(expected.carbonMonoxideThreshold, actual.carbonMonoxideThreshold)
+        assertEquals(expected.nitrogenMonoxideThreshold, actual.nitrogenMonoxideThreshold)
+        assertEquals(expected.nitrogenDioxideThreshold, actual.nitrogenDioxideThreshold)
+        assertEquals(expected.ozoneThreshold, actual.ozoneThreshold)
+        assertEquals(expected.sulfurDioxideThreshold, actual.sulfurDioxideThreshold)
+        assertEquals(expected.harmfulMicroparticlesThreshold, actual.harmfulMicroparticlesThreshold)
     }
 
     /**
