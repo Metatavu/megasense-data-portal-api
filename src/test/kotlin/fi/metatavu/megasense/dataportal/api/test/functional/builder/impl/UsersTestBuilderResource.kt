@@ -29,12 +29,18 @@ class UsersTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, pr
      * @param postalCode postal code
      * @param city city
      * @param country country
+     * @param showMobileWelcomeScreen a boolean setting for showing the mobile welcome screen
      *
      * @return created user settings
      */
-    fun createUserSettings(streetAddress: String, postalCode: String, city: String, country: String): UserSettings {
+    fun createUserSettings(
+            streetAddress: String,
+            postalCode: String,
+            city: String,
+            country: String,
+            showMobileWelcomeScreen: Boolean): UserSettings {
         val homeAddress = HomeAddress(streetAddress, postalCode, city, country)
-        val userSettings = UserSettings(homeAddress)
+        val userSettings = UserSettings(showMobileWelcomeScreen, homeAddress)
         return addClosable(api.createUserSettings(userSettings))
     }
 
@@ -45,12 +51,19 @@ class UsersTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, pr
      * @param postalCode new postal code
      * @param city new city
      * @param country new country
+     * @param showMobileWelcomeScreen a boolean setting for showing the mobile welcome screen
      *
      * @return updated user settings
      */
-    fun updateUserSettings(streetAddress: String, postalCode: String, city: String, country: String): UserSettings {
+    fun updateUserSettings(
+            streetAddress: String,
+            postalCode: String,
+            city: String,
+            country: String,
+            showMobileWelcomeScreen: Boolean
+    ): UserSettings {
         val homeAddress = HomeAddress(streetAddress, postalCode, city, country)
-        val userSettings = UserSettings(homeAddress)
+        val userSettings = UserSettings(showMobileWelcomeScreen, homeAddress)
         return api.updateUserSettings(userSettings)
     }
 

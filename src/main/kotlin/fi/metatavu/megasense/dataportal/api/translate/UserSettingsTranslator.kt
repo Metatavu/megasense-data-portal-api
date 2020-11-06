@@ -18,6 +18,7 @@ class UserSettingsTranslator: AbstractTranslator<fi.metatavu.megasense.dataporta
      */
     override fun translate(entity: UserSettings): fi.metatavu.megasense.dataportal.api.spec.model.UserSettings {
         val userSettings = fi.metatavu.megasense.dataportal.api.spec.model.UserSettings()
+
         val city = entity.city
         val country = entity.country
         val postalCode = entity.postalCode
@@ -31,6 +32,8 @@ class UserSettingsTranslator: AbstractTranslator<fi.metatavu.megasense.dataporta
             homeAddress.streetAddress = streetAddress
             userSettings.homeAddress = homeAddress
         }
+
+        userSettings.showMobileWelcomeScreen = entity.showMobileWelcomeScreen
 
         return userSettings
     }

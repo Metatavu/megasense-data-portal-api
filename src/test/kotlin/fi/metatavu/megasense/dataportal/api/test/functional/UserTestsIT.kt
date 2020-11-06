@@ -15,13 +15,14 @@ class UserTestsIT: AbstractFunctionalTest() {
     @Test
     fun userSettingsTest() {
         TestBuilder().use { testBuilder ->
-            val createdSettings = testBuilder.admin().users().createUserSettings("Mutatie 9", "50708", "Mutala", "Suomi")
+            val createdSettings = testBuilder.admin().users().createUserSettings("Mutatie 9", "50708", "Mutala", "Suomi", false)
 
             assertNotNull(createdSettings)
             assertEquals("Mutatie 9", createdSettings.homeAddress?.streetAddress)
             assertEquals("50708", createdSettings.homeAddress?.postalCode)
             assertEquals("Mutala", createdSettings.homeAddress?.city)
             assertEquals("Suomi", createdSettings.homeAddress?.country)
+            assertEquals(false, createdSettings.showMobileWelcomeScreen)
 
             val foundSettings = testBuilder.admin().users().getUserSettings()
 
@@ -30,13 +31,15 @@ class UserTestsIT: AbstractFunctionalTest() {
             assertEquals("50708", foundSettings.homeAddress?.postalCode)
             assertEquals("Mutala", foundSettings.homeAddress?.city)
             assertEquals("Suomi", foundSettings.homeAddress?.country)
+            assertEquals(false, foundSettings.showMobileWelcomeScreen)
 
-            val updatedSettings = testBuilder.admin().users().updateUserSettings("Kuratie 19", "70898", "Kurala", "Suomaa")
+            val updatedSettings = testBuilder.admin().users().updateUserSettings("Kuratie 19", "70898", "Kurala", "Suomaa", true)
             assertNotNull(updatedSettings)
             assertEquals("Kuratie 19", updatedSettings.homeAddress?.streetAddress)
             assertEquals("70898", updatedSettings.homeAddress?.postalCode)
             assertEquals("Kurala", updatedSettings.homeAddress?.city)
             assertEquals("Suomaa", updatedSettings.homeAddress?.country)
+            assertEquals(true, updatedSettings.showMobileWelcomeScreen)
         }
     }
 
