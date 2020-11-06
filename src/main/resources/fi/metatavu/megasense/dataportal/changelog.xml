@@ -102,4 +102,12 @@
             <column name="country" type="longtext"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="showmobilewelcomescreensetting" author="Simeon Platonov">
+        <addColumn tableName="usersettings">
+            <column name="showmobilewelcomescreen" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

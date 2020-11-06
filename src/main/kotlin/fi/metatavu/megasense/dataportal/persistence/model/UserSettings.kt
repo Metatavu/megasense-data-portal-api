@@ -25,6 +25,9 @@ class UserSettings {
     var country: String? = null
 
     @Column(nullable = false)
+    var showMobileWelcomeScreen: Boolean? = null
+
+    @Column(nullable = false)
     var createdAt: OffsetDateTime? = null
 
     @Column(nullable = false)

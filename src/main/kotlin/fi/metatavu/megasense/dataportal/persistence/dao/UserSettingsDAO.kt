@@ -19,20 +19,37 @@ class UserSettingsDAO: AbstractDAO<UserSettings>() {
      * @param postalCode postal code
      * @param city city
      * @param country country
+     * @param showMobileWelcomeScreen a boolean setting for showing the mobile welcome screen
      * @param creatorId id of the user to whom these setting belong
      *
      * @return created user settings
      */
-    fun create (id: UUID, streetAddress: String?, postalCode: String?, city: String?, country: String?, creatorId: UUID): UserSettings {
+    fun create (id: UUID, streetAddress: String?, postalCode: String?, city: String?, country: String?, showMobileWelcomeScreen: Boolean, creatorId: UUID): UserSettings {
         val userSettings = UserSettings()
         userSettings.id = id
         userSettings.streetAddress = streetAddress
         userSettings.postalCode = postalCode
         userSettings.city = city
         userSettings.country = country
+        userSettings.showMobileWelcomeScreen = showMobileWelcomeScreen
         userSettings.creatorId = creatorId
         userSettings.lastModifierId = creatorId
 
+        return persist(userSettings)
+    }
+
+    /**
+     * Updates the setting for showing mobile welcome screen
+     *
+     * @param userSettings user settings to update
+     * @param showMobileWelcomeScreen a new value for this setting
+     * @param lastModifierId id of the user who is modifying this setting
+     *
+     * @return updated user settings
+     */
+    fun updateShowMobileWelcomeScreen (userSettings: UserSettings, showMobileWelcomeScreen: Boolean, lastModifierId: UUID): UserSettings {
+        userSettings.showMobileWelcomeScreen = showMobileWelcomeScreen
+        userSettings.lastModifierId = lastModifierId
         return persist(userSettings)
     }
 
@@ -41,7 +58,7 @@ class UserSettingsDAO: AbstractDAO<UserSettings>() {
      *
      * @param userSettings user settings to update
      * @param streetAddress new street address
-     * @param modifierId id of the user to whom these settings belong
+     * @param modifierId id of the user who is modifying this setting
      *
      * @return updated user settings
      */
@@ -56,7 +73,7 @@ class UserSettingsDAO: AbstractDAO<UserSettings>() {
      *
      * @param userSettings user settings to update
      * @param postalCode new postal code
-     * @param modifierId id of the user to whom these settings belong
+     * @param modifierId id of the user who is modifying this setting
      *
      * @return updated user settings
      */
@@ -71,7 +88,7 @@ class UserSettingsDAO: AbstractDAO<UserSettings>() {
      *
      * @param userSettings user settings to update
      * @param city new city
-     * @param modifierId id of the user to whom these settings belong
+     * @param modifierId id of the user who is modifying this setting
      *
      * @return updated user settings
      */
@@ -86,7 +103,7 @@ class UserSettingsDAO: AbstractDAO<UserSettings>() {
      *
      * @param userSettings user settings to update
      * @param country country
-     * @param modifierId id of the user to whom these settings belong
+     * @param modifierId id of the user who is modifying this setting
      *
      * @return updated user settings
      */

@@ -89,12 +89,13 @@ class UsersController {
      * @param postalCode postal code
      * @param city city
      * @param country country
+     * @param showMobileWelcomeScreen a boolean setting for showing the mobile welcome screen
      * @param creatorId id of the user to whom these setting belong
      *
      * @return created user settings
      */
-    fun createUserSettings (streetAddress: String?, postalCode: String?, city: String?, country: String?, creatorId: UUID): UserSettings {
-        return userSettingsDAO.create(UUID.randomUUID(), streetAddress, postalCode, city, country, creatorId)
+    fun createUserSettings (streetAddress: String?, postalCode: String?, city: String?, country: String?, showMobileWelcomeScreen: Boolean, creatorId: UUID): UserSettings {
+        return userSettingsDAO.create(UUID.randomUUID(), streetAddress, postalCode, city, country, showMobileWelcomeScreen, creatorId)
     }
 
     /**
@@ -116,15 +117,17 @@ class UsersController {
      * @param postalCode new postal code
      * @param city new city
      * @param country new country
-     * @param modifierId id of the user to whom these settings belong
+     * @param showMobileWelcomeScreen a boolean setting for showing the mobile welcome screen
+     * @param modifierId id of the user who is modifying these settings
      *
      * @return updated user settings
      */
-    fun updateUserSettings (userSettings: UserSettings, streetAddress: String?, postalCode: String?, city: String?, country: String?, modifierId: UUID): UserSettings {
+    fun updateUserSettings (userSettings: UserSettings, streetAddress: String?, postalCode: String?, city: String?, country: String?, showMobileWelcomeScreen: Boolean, modifierId: UUID): UserSettings {
         userSettingsDAO.updateStreetAddress(userSettings, streetAddress, modifierId)
         userSettingsDAO.updatePostalCode(userSettings, postalCode, modifierId)
         userSettingsDAO.updateCity(userSettings, city, modifierId)
         userSettingsDAO.updateCountry(userSettings, country, modifierId)
+        userSettingsDAO.updateShowMobileWelcomeScreen(userSettings, showMobileWelcomeScreen, modifierId)
 
         return userSettings
     }

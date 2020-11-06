@@ -29,7 +29,14 @@ class UsersApiImpl: UsersApi, AbstractApi() {
         }
 
         val homeAddress = userSettings.homeAddress
-        val createdUserSettings = usersController.createUserSettings(homeAddress?.streetAddress, homeAddress?.postalCode, homeAddress?.city, homeAddress?.country, userId)
+        val createdUserSettings = usersController.createUserSettings(
+                homeAddress?.streetAddress,
+                homeAddress?.postalCode,
+                homeAddress?.city,
+                homeAddress?.country,
+                userSettings.showMobileWelcomeScreen,
+                userId
+        )
         return createOk(userSettingsTranslator.translate(createdUserSettings))
     }
 
@@ -42,8 +49,18 @@ class UsersApiImpl: UsersApi, AbstractApi() {
     override fun updateUserSettings(userSettings: UserSettings): Response {
         val userId = loggerUserId!!
         val foundUserSettings = usersController.findUserSettings(userId) ?: return createNotFound("User settings not found!")
+
         val homeAddress = userSettings.homeAddress
-        val updatedUserSettings = usersController.updateUserSettings(foundUserSettings, homeAddress?.streetAddress, homeAddress?.postalCode, homeAddress?.city, homeAddress?.country, userId)
+        val updatedUserSettings = usersController.updateUserSettings(
+                foundUserSettings,
+                homeAddress?.streetAddress,
+                homeAddress?.postalCode,
+                homeAddress?.city,
+                homeAddress?.country,
+                userSettings.showMobileWelcomeScreen,
+                userId
+        )
+
         return createOk(userSettingsTranslator.translate(updatedUserSettings))
     }
 
