@@ -12,14 +12,15 @@ class RoutesTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, p
     /**
      * Sends a request to create a route
      *
+     * @param name string representing a route name
      * @param routePoints string representing a route
      * @param locationFromName location from name
      * @param locationToName location to name
      *
      * @return created route
      */
-    fun create (routePoints: String, locationFromName: String, locationToName: String): Route {
-        val route = Route(routePoints, locationFromName, locationToName)
+    fun create (name:String, routePoints: String, locationFromName: String, locationToName: String): Route {
+        val route = Route(name, routePoints, locationFromName, locationToName)
         return addClosable(api.createRoute(route))
     }
 

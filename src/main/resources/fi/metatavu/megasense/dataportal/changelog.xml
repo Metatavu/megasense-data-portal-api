@@ -128,4 +128,12 @@
             <column name="harmfulmicroparticlesthreshold" type="float"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="routenames" author="Katja Danilova">
+        <addColumn tableName="route">
+            <column name="name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
