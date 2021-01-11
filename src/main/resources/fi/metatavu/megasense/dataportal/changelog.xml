@@ -7,9 +7,6 @@
             <column name="id" type="binary(16)">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="name" type="varchar(100)">
-                <constraints nullable="false"/>
-            </column>
             <column name="routepoints" type="longtext">
                 <constraints nullable="false"/>
             </column>
@@ -129,6 +126,14 @@
             <column name="ozonethreshold" type="float"/>
             <column name="sulfurdioxidethreshold" type="float"/>
             <column name="harmfulmicroparticlesthreshold" type="float"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="routenames" author="Katja Danilova">
+        <addColumn tableName="route">
+            <column name="name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
         </addColumn>
     </changeSet>
 </databaseChangeLog>
