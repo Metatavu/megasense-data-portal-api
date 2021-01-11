@@ -13,6 +13,9 @@ class Route {
     var id: UUID? = null
 
     @Column(nullable = false)
+    var name: String? = null
+
+    @Column(nullable = false)
     var routePoints: String? = null
 
     @Column(nullable = false)

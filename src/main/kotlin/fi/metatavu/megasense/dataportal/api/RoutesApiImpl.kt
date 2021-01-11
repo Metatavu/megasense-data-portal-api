@@ -23,7 +23,7 @@ class RoutesApiImpl: RoutesApi, AbstractApi() {
     private lateinit var routeTranslator: RouteTranslator
 
     override fun createRoute(route: Route): Response {
-        return createOk(routeTranslator.translate(routeController.createRoute(route.routePoints, route.locationFromName, route.locationToName, loggerUserId!!)))
+        return createOk(routeTranslator.translate(routeController.createRoute(route.name, route.routePoints, route.locationFromName, route.locationToName, loggerUserId!!)))
     }
 
     override fun deleteRoute(routeId: UUID): Response {
