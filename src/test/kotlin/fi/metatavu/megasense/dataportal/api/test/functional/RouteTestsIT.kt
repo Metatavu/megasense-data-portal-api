@@ -12,8 +12,9 @@ class RouteTestsIT: AbstractFunctionalTest() {
     @Test
     fun testCreateRoute () {
         TestBuilder().use { testBuilder ->
-            val route = testBuilder.admin().routes().create("TEST_STRING", "Mikkeli", "Hirvensalmi")
+            val route = testBuilder.admin().routes().create("Name", "TEST_STRING", "Mikkeli", "Hirvensalmi")
             assertNotNull(route)
+            assertEquals("Name", route.name)
             assertEquals("TEST_STRING", route.routePoints)
             assertEquals("Mikkeli", route.locationFromName)
             assertEquals("Hirvensalmi", route.locationToName)
@@ -24,7 +25,7 @@ class RouteTestsIT: AbstractFunctionalTest() {
     @Test
     fun testFindRoute () {
         TestBuilder().use { testBuilder ->
-            val routeId = testBuilder.admin().routes().create("TEST_STRING", "Mikkeli", "Hirvensalmi").id!!
+            val routeId = testBuilder.admin().routes().create("Name", "TEST_STRING", "Mikkeli", "Hirvensalmi").id!!
             val foundRoute = testBuilder.admin().routes().find(routeId)
             assertNotNull(foundRoute)
         }
@@ -33,9 +34,9 @@ class RouteTestsIT: AbstractFunctionalTest() {
     @Test
     fun testListRoutes () {
         TestBuilder().use { testBuilder ->
-            testBuilder.admin().routes().create("TEST_STRING", "Mikkeli", "Hirvensalmi")
-            testBuilder.admin().routes().create("TEST_STRING", "Mikkeli", "Hirvensalmi")
-            testBuilder.admin().routes().create("TEST_STRING", "Mikkeli", "Hirvensalmi")
+            testBuilder.admin().routes().create("Name", "TEST_STRING", "Mikkeli", "Hirvensalmi")
+            testBuilder.admin().routes().create("Name", "TEST_STRING", "Mikkeli", "Hirvensalmi")
+            testBuilder.admin().routes().create("Name", "TEST_STRING", "Mikkeli", "Hirvensalmi")
 
             val routeList = testBuilder.admin().routes().listAll()
             assertNotNull(routeList)

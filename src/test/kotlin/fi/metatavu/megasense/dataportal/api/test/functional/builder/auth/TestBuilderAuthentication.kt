@@ -19,6 +19,7 @@ class TestBuilderAuthentication(testBuilder: AbstractTestBuilder<ApiClient>, acc
 
     private var accessTokenProvider: AccessTokenProvider? = accessTokenProvider
     private var routes: RoutesTestBuilderResource? = null
+    private var favourites: FavouritesTestBuilderResource? = null
     private var exposureInstances: ExposureInstancesTestBuilderResource? = null
     private var totalExposure: TotalExposureTestBuilderResource? = null
     private var airQuality: AirQualityTestBuilderResource? = null
@@ -47,6 +48,19 @@ class TestBuilderAuthentication(testBuilder: AbstractTestBuilder<ApiClient>, acc
         }
 
         return routes!!
+    }
+
+    /**
+     * Returns a test builder resource for favourites
+     *
+     * @return a test builder resource for favourites
+     */
+    fun favourites (): FavouritesTestBuilderResource {
+        if (favourites == null) {
+            favourites = FavouritesTestBuilderResource(testBuilder, accessTokenProvider, createClient())
+        }
+
+        return favourites!!
     }
 
     /**
