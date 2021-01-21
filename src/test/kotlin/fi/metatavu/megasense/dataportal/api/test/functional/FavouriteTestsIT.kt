@@ -8,7 +8,7 @@ import org.junit.Test
 /**
  * A test class for favourites
  */
-class FavouritesTestsIT: AbstractFunctionalTest() {
+class FavouriteTestsIT: AbstractFunctionalTest() {
     @Test
     fun testCreateFavourite () {
         TestBuilder().use { testBuilder ->

@@ -10,7 +10,7 @@ import javax.persistence.criteria.Predicate
  * DAO class for Favourite locations
  */
 @ApplicationScoped
-class FavouritesDAO: AbstractDAO<Favourite>() {
+class FavouriteDAO: AbstractDAO<Favourite>() {
     /**
      * Creates favourite locations
      *
