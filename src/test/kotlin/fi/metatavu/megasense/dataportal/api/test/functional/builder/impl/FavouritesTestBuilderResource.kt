@@ -19,7 +19,7 @@ class FavouritesTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>
      * @return created favourite
      */
     fun create (name: String, latitude: Float, longitude: Float): FavouriteLocation {
-        val favourite = FavouriteLocation(name, latitude, longitude, null)
+        val favourite = FavouriteLocation(name, latitude, longitude, UUID.randomUUID())
         return addClosable(api.createUserFavouriteLocation(favourite))
     }
 

@@ -6,7 +6,7 @@ import org.junit.Assert.*
 import org.junit.Test
 
 /**
- * A test class for routes
+ * A test class for favourites
  */
 class FavouritesTestsIT: AbstractFunctionalTest() {
     @Test
@@ -17,29 +17,33 @@ class FavouritesTestsIT: AbstractFunctionalTest() {
             assertEquals("Name", favourite.name)
             assertEquals(20.7182818284f, favourite.latitude)
             assertEquals(60.7182818284f, favourite.longitude)
-            //assertNotNull(favourite.id)
+            assertNotNull(favourite.id)
         }
     }
 
-//    @Test
-//    fun testFindRoute () {
-//        TestBuilder().use { testBuilder ->
-//            val routeId = testBuilder.admin().routes().create("Name", "TEST_STRING", "Mikkeli", "Hirvensalmi").id!!
-//            val foundRoute = testBuilder.admin().routes().find(routeId)
-//            assertNotNull(foundRoute)
-//        }
-//    }
-//
-//    @Test
-//    fun testListRoutes () {
-//        TestBuilder().use { testBuilder ->
-//            testBuilder.admin().routes().create("Name", "TEST_STRING", "Mikkeli", "Hirvensalmi")
-//            testBuilder.admin().routes().create("Name", "TEST_STRING", "Mikkeli", "Hirvensalmi")
-//            testBuilder.admin().routes().create("Name", "TEST_STRING", "Mikkeli", "Hirvensalmi")
-//
-//            val routeList = testBuilder.admin().routes().listAll()
-//            assertNotNull(routeList)
-//            assertEquals(3, routeList.size)
-//        }
-//    }
+    @Test
+    fun testUpdateFavourite () {
+        TestBuilder().use { testBuilder ->
+            val favourite = testBuilder.admin().favourites().create("Name", 20.7182818284f, 60.7182818284f)
+            val newFavourite = testBuilder.admin().favourites().update(favourite.id!!,"New Name", 21.7182818284f, 63.7182818284f)
+            assertNotNull(favourite)
+            assertEquals("New Name", newFavourite.name)
+            assertEquals(21.7182818284f, newFavourite.latitude)
+            assertEquals(63.7182818284f, newFavourite.longitude)
+            assertNotNull(newFavourite.id)
+        }
+    }
+
+    @Test
+    fun testListFavourites () {
+        TestBuilder().use { testBuilder ->
+            testBuilder.admin().favourites().create("Name1", 21.7182818284f, 61.7182818284f)
+            testBuilder.admin().favourites().create("Name2", 22.7182818284f, 62.7182818284f)
+            testBuilder.admin().favourites().create("Name3", 23.7182818284f, 63.7182818284f)
+
+            val favouriteList = testBuilder.admin().favourites().listAll()
+            assertNotNull(favouriteList)
+            assertEquals(3, favouriteList.size)
+        }
+    }
 }

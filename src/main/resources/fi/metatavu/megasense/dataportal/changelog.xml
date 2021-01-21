@@ -138,7 +138,7 @@
     </changeSet>
 
     <changeSet id="favourites" author="Daniil Smirnov">
-        <createTable tableName="favourites">
+        <createTable tableName="favourite">
             <column name="id" type="binary(16)">
                 <constraints nullable="false" primaryKey="true"/>
             </column>

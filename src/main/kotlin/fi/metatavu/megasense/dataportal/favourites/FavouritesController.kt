@@ -1,7 +1,7 @@
 package fi.metatavu.megasense.dataportal.favourites
 
 import fi.metatavu.megasense.dataportal.persistence.dao.FavouritesDAO
-import fi.metatavu.megasense.dataportal.persistence.model.Favourites
+import fi.metatavu.megasense.dataportal.persistence.model.Favourite
 import java.util.*
 import javax.enterprise.context.ApplicationScoped
 import javax.inject.Inject
@@ -24,7 +24,7 @@ class FavouritesController {
      *
      * @return created favourite location
      */
-    fun createFavourite (name: String, latitude: Float, longitude: Float, creatorId: UUID): Favourites {
+    fun createFavourite (name: String, latitude: Float, longitude: Float, creatorId: UUID): Favourite {
         return favouritesDAO.create(UUID.randomUUID(), name, latitude, longitude, creatorId)
     }
 
@@ -35,7 +35,7 @@ class FavouritesController {
      *
      * @return favourite locations
      */
-    fun listFavourites (userId: UUID): List<Favourites> {
+    fun listFavourites (userId: UUID): List<Favourite> {
         return favouritesDAO.list(userId)
     }
 
@@ -46,7 +46,7 @@ class FavouritesController {
      *
      * @return found favourite location or null if not found
      */
-    fun findFavourite (favouriteId: UUID): Favourites? {
+    fun findFavourite (favouriteId: UUID): Favourite? {
         return favouritesDAO.findById(favouriteId)
     }
 
@@ -57,7 +57,7 @@ class FavouritesController {
      *
      * @return updated favourite location or null if not found
      */
-    fun updateFavourite (favouriteId: UUID, name: String, latitude: Float, longitude: Float, modifierId: UUID): Favourites {
+    fun updateFavourite (favouriteId: UUID, name: String, latitude: Float, longitude: Float, modifierId: UUID): Favourite {
         val foundFavourite = favouritesDAO.findById(favouriteId)!!
         favouritesDAO.updateFavouritesName(foundFavourite, name, modifierId)
         favouritesDAO.updateFavouritesCoordinates(foundFavourite, latitude, longitude, modifierId)
@@ -70,7 +70,7 @@ class FavouritesController {
      * @param favourite a favourite location to delete
      * @param userId id of the user who is deleting this favourite location
      */
-    fun deleteFavourite (favourite: Favourites, userId: UUID) {
+    fun deleteFavourite (favourite: Favourite, userId: UUID) {
         favouritesDAO.delete(favourite)
     }
 }

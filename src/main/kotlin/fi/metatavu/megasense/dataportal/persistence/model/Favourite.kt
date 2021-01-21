@@ -8,7 +8,7 @@ import javax.persistence.*
  * JPA entity representing user settings
  */
 @Entity
-class Favourites {
+class Favourite {
     @Id
     var id: UUID? = null
 
