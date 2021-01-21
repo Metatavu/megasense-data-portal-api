@@ -12,6 +12,7 @@ class RoutesTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, p
     /**
      * Sends a request to create a route
      *
+     * @param name string representing a route name
      * @param routePoints string representing a route
      * @param locationFromName location from name
      * @param locationToName location to name

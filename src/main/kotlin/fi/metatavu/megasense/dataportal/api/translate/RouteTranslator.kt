@@ -18,6 +18,7 @@ class RouteTranslator: AbstractTranslator<fi.metatavu.megasense.dataportal.persi
     override fun translate(entity: Route): fi.metatavu.megasense.dataportal.api.spec.model.Route {
         val route = fi.metatavu.megasense.dataportal.api.spec.model.Route()
         route.id = entity.id
+        route.name = entity.name
         route.routePoints = entity.routePoints
         route.locationFromName = entity.locationFromName
         route.locationToName = entity.locationToName

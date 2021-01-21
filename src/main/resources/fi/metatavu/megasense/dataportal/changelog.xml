@@ -129,6 +129,14 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="routenames" author="Katja Danilova">
+        <addColumn tableName="route">
+            <column name="name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
     <changeSet id="favourites" author="Daniil Smirnov">
         <createTable tableName="favourites">
             <column name="id" type="binary(16)">
