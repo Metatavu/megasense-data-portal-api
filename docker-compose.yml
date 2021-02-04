@@ -58,6 +58,16 @@ services:
       FILE_STORAGE_PROVIDER: LOCAL
       LOCAL_FILE_STORAGE_PATH: /opt/uploads
       JAVA_OPTS: '-javaagent:/opt/jacoco-jacocoagent.jar=output=file,append=false,dumponexit=true,destfile=/opt/jacoco/it.exec'
+      AIR_QUALITY_TIME: time
+      AIR_QUALITY_LAT: lat
+      AIR_QUALITY_LON: lon
+      AIR_QUALITY_DAYMAX_PM10: daymax_cnc_PM10
+      AIR_QUALITY_DAYMAX_PM2_5: daymax_cnc_PM2_5
+      CARBON_MONOXIDE: daymax_cnc_CO
+      NITROGEN_MONOXIDE: daymax_cnc_NO
+      NITROGEN_DIOXIDE: daymax_cnc_NO2
+      OZONE: daymax_cnc_O3
+      SULFUR_DIOXIDE: daymax_cnc_SO2
     volumes:
       - ./test-volumes/uploads:/opt/uploads
       - $JACOCO_AGENT:/opt/jacoco-jacocoagent.jar
