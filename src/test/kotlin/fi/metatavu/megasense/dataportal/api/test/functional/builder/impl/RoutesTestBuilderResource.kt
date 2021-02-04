@@ -19,7 +19,7 @@ class RoutesTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, p
      *
      * @return created route
      */
-    fun create (name: String, routePoints: String, locationFromName: String, locationToName: String): Route {
+    fun create(name: String, routePoints: String, locationFromName: String, locationToName: String): Route {
         val route = Route(name, routePoints, locationFromName, locationToName, UUID.randomUUID())
         return addClosable(api.createRoute(route))
     }
@@ -29,7 +29,7 @@ class RoutesTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, p
      *
      * @return all routes created by the user
      */
-    fun listAll (): Array<Route> {
+    fun listAll(): Array<Route> {
         return api.listRoutes()
     }
 
@@ -40,15 +40,15 @@ class RoutesTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, p
      *
      * @return found route
      */
-    fun find (routeId: UUID): Route {
+    fun find(routeId: UUID): Route {
         return api.findRoute(routeId)
     }
 
-    override fun clean (route: Route) {
+    override fun clean(route: Route) {
         api.deleteRoute(route.id!!)
     }
 
-    override fun getApi (): RoutesApi {
+    override fun getApi(): RoutesApi {
         ApiClient.accessToken = accessTokenProvider?.accessToken
         return RoutesApi(TestSettings.apiBasePath)
     }

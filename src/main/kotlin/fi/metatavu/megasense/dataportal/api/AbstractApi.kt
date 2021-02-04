@@ -22,11 +22,8 @@ import javax.ws.rs.core.Response
 
 /**
  * Abstract base class for all API services
- *
  */
 abstract class AbstractApi {
-
-    protected val UNAUTHORIZED = "Unauthorized"
 
     /**
      * Returns list parameter as <E> translated by given translate function.
@@ -58,7 +55,7 @@ abstract class AbstractApi {
     protected fun <E> getListParameter(parameter: String?, translate: Function<String, E>): List<E>? {
         return if (parameter == null) {
             null
-        } else getListParameter(Arrays.asList(*StringUtils.split(parameter, ',')), translate)
+        } else getListParameter(listOf(*StringUtils.split(parameter, ',')), translate)
     }
 
     /**

@@ -9,6 +9,7 @@ import javax.persistence.*
  */
 @Entity
 class ExposureInstance {
+
     @Id
     var id: UUID? = null
 

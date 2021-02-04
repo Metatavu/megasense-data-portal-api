@@ -9,7 +9,6 @@ import javax.ws.rs.ext.Provider
 
 /**
  * Jackson configurator for RESTEasy
- *
  */
 @Provider
 class JacksonConfigurator : ContextResolver<ObjectMapper> {

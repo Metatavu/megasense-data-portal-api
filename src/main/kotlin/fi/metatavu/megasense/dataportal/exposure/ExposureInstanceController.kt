@@ -13,6 +13,7 @@ import javax.inject.Inject
  */
 @ApplicationScoped
 class ExposureInstanceController {
+
     @Inject
     private lateinit var exposureInstanceDAO: ExposureInstanceDAO
 
@@ -32,7 +33,7 @@ class ExposureInstanceController {
      *
      * @return created exposure instance
      */
-    fun createExposureInstance (
+    fun createExposureInstance(
             route: Route?,
             startedAt: OffsetDateTime?,
             endedAt: OffsetDateTime?,
@@ -55,7 +56,7 @@ class ExposureInstanceController {
      *
      * @return exposure instances
      */
-    fun listExposureInstances (userId: UUID, createdBefore: OffsetDateTime?, createdAfter: OffsetDateTime?): List<ExposureInstance> {
+    fun listExposureInstances(userId: UUID, createdBefore: OffsetDateTime?, createdAfter: OffsetDateTime?): List<ExposureInstance> {
         return exposureInstanceDAO.list(userId, createdBefore, createdAfter, null)
     }
 
@@ -66,7 +67,7 @@ class ExposureInstanceController {
      *
      * @return found exposure instance or null if not found
      */
-    fun findExposureInstance (exposureInstanceId: UUID): ExposureInstance? {
+    fun findExposureInstance(exposureInstanceId: UUID): ExposureInstance? {
         return exposureInstanceDAO.findById(exposureInstanceId)
     }
 
@@ -79,7 +80,7 @@ class ExposureInstanceController {
      *
      * @return total exposure
      */
-    fun getTotalExposure (userId: UUID, exposedBefore: OffsetDateTime?, exposedAfter: OffsetDateTime?): ExposureInstance {
+    fun getTotalExposure(userId: UUID, exposedBefore: OffsetDateTime?, exposedAfter: OffsetDateTime?): ExposureInstance {
         val exposureInstances = exposureInstanceDAO.list(userId, exposedBefore, exposedAfter, null)
         var totalHarmfulMicroparticles = 0f
         var totalSulfurDioxide = 0f
@@ -89,35 +90,12 @@ class ExposureInstanceController {
         var totalCarbonMonoxide = 0f
 
         for (exposureInstance in exposureInstances) {
-            val harmfulMicroparticles = exposureInstance.harmfulMicroparticles
-            if (harmfulMicroparticles != null) {
-                totalHarmfulMicroparticles += harmfulMicroparticles
-            }
-
-            val sulfurDioxide = exposureInstance.sulfurDioxide
-            if (sulfurDioxide != null) {
-                totalSulfurDioxide += sulfurDioxide
-            }
-
-            val ozone = exposureInstance.ozone
-            if (ozone != null) {
-                totalOzone += ozone
-            }
-
-            val nitrogenDioxide = exposureInstance.nitrogenDioxide
-            if (nitrogenDioxide != null) {
-                totalNitrogenDioxide += nitrogenDioxide
-            }
-
-            val nitrogenMonoxide = exposureInstance.nitrogenMonoxide
-            if (nitrogenMonoxide != null) {
-                totalNitrogenMonoxide += nitrogenMonoxide
-            }
-
-            val carbonMonoxide = exposureInstance.carbonMonoxide
-            if (carbonMonoxide != null) {
-                totalCarbonMonoxide += carbonMonoxide
-            }
+            totalHarmfulMicroparticles += exposureInstance.harmfulMicroparticles ?: 0f
+            totalSulfurDioxide += exposureInstance.sulfurDioxide ?: 0f
+            totalOzone += exposureInstance.ozone ?: 0f
+            totalNitrogenDioxide += exposureInstance.nitrogenDioxide ?: 0f
+            totalNitrogenMonoxide += exposureInstance.nitrogenMonoxide ?: 0f
+            totalCarbonMonoxide += exposureInstance.carbonMonoxide ?: 0f
         }
 
         val exposureInstance = ExposureInstance()
@@ -153,7 +131,7 @@ class ExposureInstanceController {
      *
      * @param exposureInstance exposure instance to delete
      */
-    fun deleteExposureInstance (exposureInstance: ExposureInstance) {
+    fun deleteExposureInstance(exposureInstance: ExposureInstance) {
         exposureInstanceDAO.clearRouteField(exposureInstance)
         exposureInstanceDAO.delete(exposureInstance)
     }

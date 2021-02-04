@@ -9,6 +9,7 @@ import org.junit.Test
  * A test class for routes
  */
 class RouteTestsIT: AbstractFunctionalTest() {
+
     @Test
     fun testCreateRoute () {
         TestBuilder().use { testBuilder ->

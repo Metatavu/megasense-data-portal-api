@@ -6,7 +6,11 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
+/**
+ * A test class for air quality
+ */
 class AirQualityTestsIT: AbstractFunctionalTest(){
+
     @Test
     fun testGetAirQuality() {
         TestBuilder().use { testBuilder ->

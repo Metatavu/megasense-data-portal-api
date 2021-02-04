@@ -13,6 +13,7 @@ import org.keycloak.admin.client.Keycloak
 import org.keycloak.admin.client.KeycloakBuilder
 import java.io.File
 import java.io.FileOutputStream
+import java.lang.IllegalStateException
 
 import java.util.*
 import java.util.zip.ZipEntry
@@ -50,7 +51,11 @@ class UsersController {
             routeController.deleteRoute(route, userId)
         }
 
-        val userExposureInstances = exposureInstanceController.listExposureInstances(userId, null, null)
+        val userExposureInstances = exposureInstanceController.listExposureInstances(
+            userId = userId,
+            createdBefore = null,
+            createdAfter = null
+        )
 
         for (instance in userExposureInstances) {
             exposureInstanceController.deleteExposureInstance(instance)
@@ -63,7 +68,7 @@ class UsersController {
         val deleteResponse = usersResource.delete(userId.toString())
 
         if (deleteResponse.status < 200 || deleteResponse.status > 299) {
-            throw Error("Keycloak returned an error when deleting an user!")
+            throw IllegalStateException("Keycloak returned an error when deleting an user!")
         }
     }
 
@@ -107,7 +112,17 @@ class UsersController {
             pollutantPenalties: PollutantPenalties,
             pollutantThresholds: PollutantThresholds,
             creatorId: UUID): UserSettings {
-        return userSettingsDAO.create(UUID.randomUUID(), streetAddress, postalCode, city, country, showMobileWelcomeScreen, pollutantPenalties, pollutantThresholds, creatorId)
+        return userSettingsDAO.create(
+            id = UUID.randomUUID(),
+            streetAddress = streetAddress,
+            postalCode = postalCode,
+            city = city,
+            country = country,
+            showMobileWelcomeScreen = showMobileWelcomeScreen,
+            pollutantPenalties = pollutantPenalties,
+            pollutantThresholds = pollutantThresholds,
+            creatorId = creatorId
+        )
     }
 
     /**
@@ -117,7 +132,7 @@ class UsersController {
      *
      * @return user settings
      */
-    fun findUserSettings (userId: UUID): UserSettings? {
+    fun findUserSettings(userId: UUID): UserSettings? {
         return userSettingsDAO.findByUserId(userId)
     }
 
@@ -146,15 +161,14 @@ class UsersController {
             pollutantPenalties: PollutantPenalties,
             pollutantThresholds: PollutantThresholds,
             modifierId: UUID): UserSettings {
-        userSettingsDAO.updateStreetAddress(userSettings, streetAddress, modifierId)
-        userSettingsDAO.updatePostalCode(userSettings, postalCode, modifierId)
-        userSettingsDAO.updateCity(userSettings, city, modifierId)
-        userSettingsDAO.updateCountry(userSettings, country, modifierId)
-        userSettingsDAO.updateShowMobileWelcomeScreen(userSettings, showMobileWelcomeScreen, modifierId)
-        userSettingsDAO.updatePollutantPenalties(userSettings, pollutantPenalties, modifierId)
-        userSettingsDAO.updatePollutantThresholds(userSettings, pollutantThresholds, modifierId)
-
-        return userSettings
+        var result = userSettingsDAO.updateStreetAddress(userSettings, streetAddress, modifierId)
+        result = userSettingsDAO.updatePostalCode(result, postalCode, modifierId)
+        result = userSettingsDAO.updateCity(result, city, modifierId)
+        result = userSettingsDAO.updateCountry(result, country, modifierId)
+        result = userSettingsDAO.updateShowMobileWelcomeScreen(result, showMobileWelcomeScreen, modifierId)
+        result = userSettingsDAO.updatePollutantPenalties(result, pollutantPenalties, modifierId)
+        result = userSettingsDAO.updatePollutantThresholds(result, pollutantThresholds, modifierId)
+        return result
     }
 
     /**

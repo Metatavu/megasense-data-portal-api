@@ -18,7 +18,6 @@ class AirQualityTestBuilderResource (testBuilder: AbstractTestBuilder<ApiClient?
      * Returns air quality values
      *
      * @param pollutantType return only values for this pollutant
-     * @param precision precision in meters for the returned data
      * @param boundingBoxCorner1 lower left of the bounding box
      * @param boundingBoxCorner2 upper right of the bounding box
      *

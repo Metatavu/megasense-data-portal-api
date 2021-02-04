@@ -13,6 +13,7 @@ import javax.persistence.criteria.Predicate
  */
 @ApplicationScoped
 class UserSettingsDAO: AbstractDAO<UserSettings>() {
+
     /**
      * Creates user settings
      *

@@ -8,12 +8,12 @@ import java.util.*
 import javax.enterprise.context.ApplicationScoped
 import javax.persistence.criteria.Predicate
 
-
 /**
  * DAO class for exposure instance
  */
 @ApplicationScoped
 class ExposureInstanceDAO: AbstractDAO<ExposureInstance>() {
+
     /**
      * Creates an exposure instance
      *
@@ -77,7 +77,7 @@ class ExposureInstanceDAO: AbstractDAO<ExposureInstance>() {
         val root = criteria.from(ExposureInstance::class.java)
 
         criteria.select(root)
-        val restrictions = ArrayList<Predicate>()
+        val restrictions = mutableListOf<Predicate>()
         if (createdAfter != null) {
             restrictions.add(criteriaBuilder.greaterThanOrEqualTo(root.get(ExposureInstance_.createdAt), createdAfter))
         }
@@ -92,7 +92,7 @@ class ExposureInstanceDAO: AbstractDAO<ExposureInstance>() {
 
         restrictions.add(criteriaBuilder.equal(root.get(ExposureInstance_.creatorId), userId))
 
-        criteria.where(criteriaBuilder.and(*restrictions.toTypedArray()));
+        criteria.where(criteriaBuilder.and(*restrictions.toTypedArray()))
         criteria.orderBy(criteriaBuilder.desc(root.get(ExposureInstance_.createdAt)))
 
         val query = entityManager.createQuery(criteria)

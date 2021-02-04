@@ -9,6 +9,7 @@ import javax.persistence.*
  */
 @Entity
 class Favourite {
+
     @Id
     var id: UUID? = null
 

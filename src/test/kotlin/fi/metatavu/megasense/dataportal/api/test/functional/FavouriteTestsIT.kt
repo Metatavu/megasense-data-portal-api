@@ -9,6 +9,7 @@ import org.junit.Test
  * A test class for favourites
  */
 class FavouriteTestsIT: AbstractFunctionalTest() {
+
     @Test
     fun testCreateFavourite () {
         TestBuilder().use { testBuilder ->

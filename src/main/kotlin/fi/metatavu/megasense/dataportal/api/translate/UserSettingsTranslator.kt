@@ -11,6 +11,7 @@ import javax.enterprise.context.ApplicationScoped
  */
 @ApplicationScoped
 class UserSettingsTranslator: AbstractTranslator<fi.metatavu.megasense.dataportal.persistence.model.UserSettings, fi.metatavu.megasense.dataportal.api.spec.model.UserSettings>() {
+
     /**
      * Translates JPA user settings into REST user settings
      *

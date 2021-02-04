@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response
 @Stateful
 @RequestScoped
 class RoutesApiImpl: RoutesApi, AbstractApi() {
+
     @Inject
     private lateinit var routeController: RouteController
 
@@ -28,7 +29,7 @@ class RoutesApiImpl: RoutesApi, AbstractApi() {
 
     override fun deleteRoute(routeId: UUID): Response {
         val route = routeController.findRoute(routeId) ?: return createBadRequest("Route not found!")
-        if (!route.creatorId!!.equals(loggerUserId!!)) {
+        if (route.creatorId!! != loggerUserId!!) {
             return createNotFound("Route not found!")
         }
         routeController.deleteRoute(route, loggerUserId!!)
@@ -37,9 +38,10 @@ class RoutesApiImpl: RoutesApi, AbstractApi() {
 
     override fun findRoute(routeId: UUID): Response {
         val route = routeController.findRoute(routeId) ?: return createNotFound("Route not found!")
-        if (!route.creatorId!!.equals(loggerUserId!!)) {
+        if (route.creatorId!! != loggerUserId!!) {
             return createNotFound("Route not found")
         }
+
         return createOk(routeTranslator.translate(route))
     }
 

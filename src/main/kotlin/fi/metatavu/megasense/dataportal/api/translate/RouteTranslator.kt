@@ -8,6 +8,7 @@ import javax.enterprise.context.ApplicationScoped
  */
 @ApplicationScoped
 class RouteTranslator: AbstractTranslator<fi.metatavu.megasense.dataportal.persistence.model.Route, fi.metatavu.megasense.dataportal.api.spec.model.Route>() {
+
     /**
      * Translates JPA routes into REST routes
      *

@@ -19,6 +19,7 @@ import javax.ws.rs.core.Response
 @Stateful
 @RequestScoped
 class ExposureInstancesApiImpl: ExposureInstancesApi, AbstractApi() {
+
     @Inject
     private lateinit var exposureInstanceTranslator: ExposureInstanceTranslator
 
@@ -65,6 +66,7 @@ class ExposureInstancesApiImpl: ExposureInstancesApi, AbstractApi() {
         if (!exposureInstance.creatorId!!.equals(loggerUserId!!)) {
             return createNotFound("Exposure instance not found")
         }
+
         return createOk(exposureInstanceTranslator.translate(exposureInstance))
     }
 
@@ -79,6 +81,7 @@ class ExposureInstancesApiImpl: ExposureInstancesApi, AbstractApi() {
         if (createdAfter != null) {
             createdAfterDate = OffsetDateTime.parse(createdAfter)
         }
+
         return createOk(exposureInstanceTranslator.translate(exposureInstanceController.listExposureInstances(loggerUserId!!, createdBeforeDate, createdAfterDate)))
     }
 

@@ -2,7 +2,6 @@ package fi.metatavu.megasense.dataportal.api.test.functional.settings
 
 /**
  * Utility class for retrieving functional test settings
- *
  */
 object TestSettings {
 

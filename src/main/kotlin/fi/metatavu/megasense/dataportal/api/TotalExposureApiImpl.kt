@@ -15,6 +15,7 @@ import javax.ws.rs.core.Response
 @Stateful
 @RequestScoped
 class TotalExposureApiImpl: TotalExposureApi, AbstractApi() {
+
     @Inject
     private lateinit var exposureInstanceTranslator: ExposureInstanceTranslator
 

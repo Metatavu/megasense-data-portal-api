@@ -20,7 +20,6 @@ import java.util.zip.ZipFile
 
 /**
  * Abstract base class for functional tests
- *
  */
 abstract class AbstractFunctionalTest {
 

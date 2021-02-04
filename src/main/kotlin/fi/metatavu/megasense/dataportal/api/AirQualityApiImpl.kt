@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response
 @RequestScoped
 @Stateful
 class AirQualityApiImpl: AirQualityApi, AbstractApi() {
+
     @Inject
     private lateinit var airQualityController: AirQualityController
 

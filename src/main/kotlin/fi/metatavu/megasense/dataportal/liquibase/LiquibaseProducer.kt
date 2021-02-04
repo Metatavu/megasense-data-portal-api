@@ -14,7 +14,6 @@ import kotlin.collections.ArrayList
 
 /**
  * Liquibase producer
- *
  */
 @Dependent
 class LiquibaseProducer {

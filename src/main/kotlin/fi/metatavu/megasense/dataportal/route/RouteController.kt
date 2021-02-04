@@ -12,6 +12,7 @@ import javax.inject.Inject
  */
 @ApplicationScoped
 class RouteController {
+
     @Inject
     private lateinit var routeDAO: RouteDAO
 
@@ -41,7 +42,9 @@ class RouteController {
      * @return routes
      */
     fun listRoutes (userId: UUID): List<Route> {
-        return routeDAO.list(userId)
+        return routeDAO.list(
+            userId = userId
+        )
     }
 
     /**
@@ -62,10 +65,13 @@ class RouteController {
      * @param userId id of the user who is deleting this route
      */
     fun deleteRoute (route: Route, userId: UUID) {
-        val exposureInstancesToClear = exposureInstanceDAO.list(userId, null, null, route)
-        for (exposureInstance in exposureInstancesToClear) {
-            exposureInstanceDAO.clearRouteField(exposureInstance)
-        }
+        val exposureInstancesToClear = exposureInstanceDAO.list(
+            userId = userId,
+            createdAfter = null,
+            createdBefore = null,
+            route = route
+        )
+        exposureInstancesToClear.forEach(exposureInstanceDAO::clearRouteField)
 
         routeDAO.delete(route)
     }

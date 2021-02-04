@@ -3,8 +3,12 @@ package fi.metatavu.megasense.dataportal.settings
 import org.apache.commons.lang3.StringUtils
 import javax.enterprise.context.ApplicationScoped
 
+/**
+ * System settings controller class used to read System settings
+ */
 @ApplicationScoped
 class SystemSettingsController {
+
     /**
      * Returns system setting from any of setting sources.
      *

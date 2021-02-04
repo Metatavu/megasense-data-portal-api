@@ -15,6 +15,7 @@ import javax.ws.rs.core.Response
 @Stateful
 @RequestScoped
 class UsersApiImpl: UsersApi, AbstractApi() {
+
     @Inject
     private lateinit var usersController: UsersController
 

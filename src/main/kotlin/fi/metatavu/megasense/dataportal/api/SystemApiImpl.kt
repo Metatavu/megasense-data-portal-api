@@ -15,7 +15,6 @@ import javax.ws.rs.core.Response
 
 /**
  * System API REST endpoints
- *
  */
 @RequestScoped
 @Stateful
