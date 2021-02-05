@@ -30,6 +30,8 @@ class ExposureInstancesApiImpl: ExposureInstancesApi, AbstractApi() {
     private lateinit var routeController: RouteController
 
     override fun createExposureInstance(exposureInstance: ExposureInstance): Response {
+        loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
+
         var route: Route? = null
         if (exposureInstance.routeId != null) {
             route = routeController.findRoute(exposureInstance.routeId)
@@ -63,14 +65,18 @@ class ExposureInstancesApiImpl: ExposureInstancesApi, AbstractApi() {
 
     override fun findExposureInstance(exposureInstanceId: UUID): Response {
         val exposureInstance = exposureInstanceController.findExposureInstance(exposureInstanceId) ?: return createNotFound("Exposure instance not found")
-        if (!exposureInstance.creatorId!!.equals(loggerUserId!!)) {
-            return createNotFound("Exposure instance not found")
+        if (exposureInstance.creatorId!! != loggerUserId!!) {
+            return createUnauthorized("Exposure instance not found")
         }
 
         return createOk(exposureInstanceTranslator.translate(exposureInstance))
     }
 
     override fun listExposureInstances(createdBefore: String?, createdAfter: String?): Response {
+        if (loggerUserId == null) {
+            return createUnauthorized(UNAUTHORIZED)
+        }
+
         var createdBeforeDate: OffsetDateTime? = null
         var createdAfterDate: OffsetDateTime? = null
 

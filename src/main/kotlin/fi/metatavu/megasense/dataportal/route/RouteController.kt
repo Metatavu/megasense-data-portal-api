@@ -31,7 +31,7 @@ class RouteController {
      * @return created route
      */
     fun createRoute (name: String, routePoints: String, locationFromName: String, locationToName: String, creatorId: UUID): Route {
-        return routeDAO.create(UUID.randomUUID(), name, routePoints, locationFromName, locationToName, creatorId)
+        return routeDAO.create(UUID.randomUUID(), name, routePoints, locationFromName, locationToName, creatorId, creatorId)
     }
 
     /**

@@ -24,10 +24,14 @@ class RoutesApiImpl: RoutesApi, AbstractApi() {
     private lateinit var routeTranslator: RouteTranslator
 
     override fun createRoute(route: Route): Response {
+        loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
+
         return createOk(routeTranslator.translate(routeController.createRoute(route.name, route.routePoints, route.locationFromName, route.locationToName, loggerUserId!!)))
     }
 
     override fun deleteRoute(routeId: UUID): Response {
+        loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
+
         val route = routeController.findRoute(routeId) ?: return createBadRequest("Route not found!")
         if (route.creatorId!! != loggerUserId!!) {
             return createNotFound("Route not found!")
@@ -37,6 +41,8 @@ class RoutesApiImpl: RoutesApi, AbstractApi() {
     }
 
     override fun findRoute(routeId: UUID): Response {
+        loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
+
         val route = routeController.findRoute(routeId) ?: return createNotFound("Route not found!")
         if (route.creatorId!! != loggerUserId!!) {
             return createNotFound("Route not found")
@@ -46,6 +52,8 @@ class RoutesApiImpl: RoutesApi, AbstractApi() {
     }
 
     override fun listRoutes(): Response {
+        loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
+
         return createOk(routeTranslator.translate(routeController.listRoutes(loggerUserId!!)))
     }
 }

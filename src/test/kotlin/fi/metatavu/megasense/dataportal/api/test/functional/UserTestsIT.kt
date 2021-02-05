@@ -6,8 +6,11 @@ import fi.metatavu.megasense.dataportal.api.client.models.PollutantThresholds
 import fi.metatavu.megasense.dataportal.api.client.models.Route
 import fi.metatavu.megasense.dataportal.api.test.functional.builder.AbstractFunctionalTest
 import fi.metatavu.megasense.dataportal.api.test.functional.builder.TestBuilder
+import org.apache.commons.csv.CSVFormat
+import org.apache.commons.csv.CSVPrinter
 import org.junit.Assert.*
 import org.junit.Test
+import java.io.StringWriter
 import java.time.OffsetDateTime
 
 /**

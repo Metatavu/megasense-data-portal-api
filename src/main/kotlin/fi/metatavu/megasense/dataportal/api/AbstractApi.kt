@@ -345,8 +345,8 @@ abstract class AbstractApi {
         }
 
     companion object {
-        protected const val NOT_FOUND_MESSAGE = "Not found"
-        protected const val UNAUTHORIZED = "Unauthorized"
-        protected const val FORBIDDEN = "Forbidden"
+        const val NOT_FOUND_MESSAGE = "Not found"
+        const val UNAUTHORIZED = "Unauthorized"
+        const val FORBIDDEN = "Forbidden"
     }
 }

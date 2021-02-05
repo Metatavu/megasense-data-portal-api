@@ -26,7 +26,7 @@ class UserSettingsDAO: AbstractDAO<UserSettings>() {
      * @param pollutantPenalties pollutant penalties
      * @param pollutantThresholds pollutant thresholds
      * @param creatorId id of the user to whom these setting belong
-     *
+     * @param lastModifierId id of the user who was the last to modify the settings
      * @return created user settings
      */
     fun create (
@@ -38,7 +38,8 @@ class UserSettingsDAO: AbstractDAO<UserSettings>() {
             showMobileWelcomeScreen: Boolean,
             pollutantPenalties: PollutantPenalties,
             pollutantThresholds: PollutantThresholds,
-            creatorId: UUID
+            creatorId: UUID,
+            lastModifierId: UUID
     ): UserSettings {
         val userSettings = UserSettings()
         userSettings.id = id
@@ -63,53 +64,207 @@ class UserSettingsDAO: AbstractDAO<UserSettings>() {
         userSettings.sulfurDioxideThreshold = pollutantThresholds.sulfurDioxideThreshold
         userSettings.harmfulMicroparticlesThreshold = pollutantThresholds.harmfulMicroparticlesThreshold
 
-        userSettings.lastModifierId = creatorId
+        userSettings.lastModifierId = lastModifierId
 
         return persist(userSettings)
     }
 
     /**
-     * Updates pollutant penalties
+     * Finds user settings belonging to a specific user
+     *
+     * @param userId user id
+     *
+     * @return user settings
+     */
+    fun findByUserId (userId: UUID): UserSettings? {
+        val entityManager = getEntityManager()
+        val criteriaBuilder = entityManager.criteriaBuilder
+        val criteria = criteriaBuilder.createQuery(UserSettings::class.java)
+        val root = criteria.from(UserSettings::class.java)
+
+        criteria.select(root)
+        val restrictions = ArrayList<Predicate>()
+
+        restrictions.add(criteriaBuilder.equal(root.get(UserSettings_.creatorId), userId))
+
+        criteria.where(criteriaBuilder.and(*restrictions.toTypedArray()));
+
+        val query = entityManager.createQuery(criteria)
+
+        if (query.resultList.size < 1) {
+            return null
+        }
+
+        return query.resultList[0]
+    }
+
+    /**
+     * Update carbon monoxide penalty
      *
      * @param userSettings user settings to update
-     * @param pollutantPenalties new pollutant penalties
-     * @param lastModifierId id of the user who is modifying pollutant penalties
-     *
+     * @param carbonMonoxidePenalty new value of carbonMonoxidePenalty
+     * @param lastModifierId id of the user who is modifying this setting
      * @return updated user settings
      */
-    fun updatePollutantPenalties (userSettings: UserSettings, pollutantPenalties: PollutantPenalties, lastModifierId: UUID): UserSettings {
-        userSettings.carbonMonoxidePenalty = pollutantPenalties.carbonMonoxidePenalty
-        userSettings.nitrogenMonoxidePenalty = pollutantPenalties.nitrogenMonoxidePenalty
-        userSettings.nitrogenDioxidePenalty = pollutantPenalties.nitrogenDioxidePenalty
-        userSettings.ozonePenalty = pollutantPenalties.ozonePenalty
-        userSettings.sulfurDioxidePenalty = pollutantPenalties.sulfurDioxidePenalty
-        userSettings.harmfulMicroparticlesPenalty = pollutantPenalties.harmfulMicroparticlesPenalty
-
+    fun updateCarbonMonoxidePenalty(userSettings: UserSettings, carbonMonoxidePenalty: Float, lastModifierId: UUID): UserSettings {
+        userSettings.carbonMonoxidePenalty = carbonMonoxidePenalty
         userSettings.lastModifierId = lastModifierId
         return persist(userSettings)
     }
 
     /**
-     * Updates pollutant thresholds
+     * Update nitrogen monoxide penalty
      *
      * @param userSettings user settings to update
-     * @param pollutantThresholds new pollutant thresholds
-     * @param lastModifierId id of the user who is modifying pollutant thresholds
-     *
+     * @param nitrogenMonoxidePenalty new value of nitrogenMonoxidePenalty
+     * @param lastModifierId id of the user who is modifying this setting
      * @return updated user settings
      */
-    fun updatePollutantThresholds (userSettings: UserSettings, pollutantThresholds: PollutantThresholds, lastModifierId: UUID): UserSettings {
-        userSettings.carbonMonoxideThreshold = pollutantThresholds.carbonMonoxideThreshold
-        userSettings.nitrogenMonoxideThreshold = pollutantThresholds.nitrogenMonoxideThreshold
-        userSettings.nitrogenDioxideThreshold = pollutantThresholds.nitrogenDioxideThreshold
-        userSettings.ozoneThreshold = pollutantThresholds.ozoneThreshold
-        userSettings.sulfurDioxideThreshold = pollutantThresholds.sulfurDioxideThreshold
-        userSettings.harmfulMicroparticlesThreshold = pollutantThresholds.harmfulMicroparticlesThreshold
-
+    fun updateNitrogenMonoxidePenalty(userSettings: UserSettings, nitrogenMonoxidePenalty: Float, lastModifierId: UUID): UserSettings {
+        userSettings.nitrogenMonoxidePenalty = nitrogenMonoxidePenalty
         userSettings.lastModifierId = lastModifierId
         return persist(userSettings)
     }
 
+    /**
+     * Update nitrogen dioxide penalty
+     *
+     * @param userSettings user settings to update
+     * @param nitrogenDioxidePenalty new value of nitrogenDioxidePenalty
+     * @param lastModifierId id of the user who is modifying this setting
+     * @return updated user settings
+     */
+    fun updateNitrogenDioxidePenalty(userSettings: UserSettings, nitrogenDioxidePenalty: Float, lastModifierId: UUID): UserSettings {
+        userSettings.nitrogenDioxidePenalty = nitrogenDioxidePenalty
+        userSettings.lastModifierId = lastModifierId
+        return persist(userSettings)
+    }
+
+    /**
+     * Update ozone penalty
+     *
+     * @param userSettings user settings to update
+     * @param ozonePenalty new value of ozonePenalty
+     * @param lastModifierId id of the user who is modifying this setting
+     * @return updated user settings
+     */
+    fun updateOzonePenalty(userSettings: UserSettings, ozonePenalty: Float, lastModifierId: UUID): UserSettings {
+        userSettings.ozonePenalty = ozonePenalty
+        userSettings.lastModifierId = lastModifierId
+        return persist(userSettings)
+    }
+
+    /**
+     * Update sulfur dioxide penalty
+     *
+     * @param userSettings user settings to update
+     * @param sulfurDioxidePenalty new value of sulfurDioxidePenalty
+     * @param lastModifierId id of the user who is modifying this setting
+     * @return updated user settings
+     */
+    fun updateSulfurDioxidePenalty(userSettings: UserSettings, sulfurDioxidePenalty: Float, lastModifierId: UUID): UserSettings {
+        userSettings.sulfurDioxidePenalty = sulfurDioxidePenalty
+        userSettings.lastModifierId = lastModifierId
+        return persist(userSettings)
+    }
+
+    /**
+     * Update harmful microparticles penalty
+     *
+     * @param userSettings user settings to update
+     * @param harmfulMicroparticlesPenalty new value of harmfulMicroparticlesPenalty
+     * @param lastModifierId id of the user who is modifying this setting
+     * @return updated user settings
+     */
+    fun updateHarmfulMicroparticlesPenalty(userSettings: UserSettings, harmfulMicroparticlesPenalty: Float, lastModifierId: UUID): UserSettings {
+        userSettings.harmfulMicroparticlesPenalty = harmfulMicroparticlesPenalty
+        userSettings.lastModifierId = lastModifierId
+        return persist(userSettings)
+    }
+
+    /**
+     * Update carbon monoxide threshold
+     *
+     * @param userSettings user settings to update
+     * @param carbonMonoxideThreshold new value of carbonMonoxideThreshold
+     * @param lastModifierId id of the user who is modifying this setting
+     * @return updated user settings
+     */
+    fun updateCarbonMonoxideThreshold(userSettings: UserSettings, carbonMonoxideThreshold: Float, lastModifierId: UUID): UserSettings {
+        userSettings.carbonMonoxideThreshold = carbonMonoxideThreshold
+        userSettings.lastModifierId = lastModifierId
+        return persist(userSettings)
+    }
+
+    /**
+     * Update nitrogen monoxide threshold
+     *
+     * @param userSettings user settings to update
+     * @param nitrogenMonoxideThreshold new value of nitrogenMonoxideThreshold
+     * @param lastModifierId id of the user who is modifying this setting
+     * @return updated user settings
+     */
+    fun updateNitrogenMonoxideThreshold(userSettings: UserSettings, nitrogenMonoxideThreshold: Float, lastModifierId: UUID): UserSettings {
+        userSettings.nitrogenMonoxideThreshold = nitrogenMonoxideThreshold
+        userSettings.lastModifierId = lastModifierId
+        return persist(userSettings)
+    }
+
+    /**
+     * Update nitrogen dioxide threshold
+     *
+     * @param userSettings user settings to update
+     * @param nitrogenDioxideThreshold new value of nitrogenDioxideThreshold
+     * @param lastModifierId id of the user who is modifying this setting
+     * @return updated user settings
+     */
+    fun updateNitrogenDioxideThreshold(userSettings: UserSettings, nitrogenDioxideThreshold: Float, lastModifierId: UUID): UserSettings {
+        userSettings.nitrogenDioxideThreshold = nitrogenDioxideThreshold
+        userSettings.lastModifierId = lastModifierId
+        return persist(userSettings)
+    }
+
+    /**
+     * Update ozone threshold
+     *
+     * @param userSettings user settings to update
+     * @param ozoneThreshold new value of ozoneThreshold
+     * @param lastModifierId id of the user who is modifying this setting
+     * @return updated user settings
+     */
+    fun updateOzoneThreshold(userSettings: UserSettings, ozoneThreshold: Float, lastModifierId: UUID): UserSettings {
+        userSettings.ozoneThreshold = ozoneThreshold
+        userSettings.lastModifierId = lastModifierId
+        return persist(userSettings)
+    }
+
+    /**
+     * Update sulfur dioxide threshold
+     *
+     * @param userSettings user settings to update
+     * @param sulfurDioxideThreshold new value of sulfurDioxideThreshold
+     * @param lastModifierId id of the user who is modifying this setting
+     * @return updated user settings
+     */
+    fun updateSulfurDioxideThreshold(userSettings: UserSettings, sulfurDioxideThreshold: Float, lastModifierId: UUID): UserSettings {
+        userSettings.sulfurDioxideThreshold = sulfurDioxideThreshold
+        userSettings.lastModifierId = lastModifierId
+        return persist(userSettings)
+    }
+
+    /**
+     * Updates harmful microparticles threshold
+     *
+     * @param userSettings user settings to update
+     * @param harmfulMicroparticlesThreshold new value of harmfulMicroparticlesThreshold
+     * @param lastModifierId id of the user who is modifying this setting
+     * @return updated user settings
+     */
+    fun updateHarmfulMicroparticlesThreshold(userSettings: UserSettings, harmfulMicroparticlesThreshold: Float, lastModifierId: UUID): UserSettings {
+        userSettings.harmfulMicroparticlesThreshold = harmfulMicroparticlesThreshold
+        userSettings.lastModifierId = lastModifierId
+        return persist(userSettings)
+    }
 
     /**
      * Updates the setting for showing mobile welcome screen
@@ -184,34 +339,5 @@ class UserSettingsDAO: AbstractDAO<UserSettings>() {
         userSettings.country = country
         userSettings.lastModifierId = modifierId
         return persist(userSettings)
-    }
-
-    /**
-     * Finds user settings belonging to a specific user
-     *
-     * @param userId user id
-     *
-     * @return user settings
-     */
-    fun findByUserId (userId: UUID): UserSettings? {
-        val entityManager = getEntityManager()
-        val criteriaBuilder = entityManager.criteriaBuilder
-        val criteria = criteriaBuilder.createQuery(UserSettings::class.java)
-        val root = criteria.from(UserSettings::class.java)
-
-        criteria.select(root)
-        val restrictions = ArrayList<Predicate>()
-
-        restrictions.add(criteriaBuilder.equal(root.get(UserSettings_.creatorId), userId))
-
-        criteria.where(criteriaBuilder.and(*restrictions.toTypedArray()));
-
-        val query = entityManager.createQuery(criteria)
-
-        if (query.resultList.size < 1) {
-            return null
-        }
-
-        return query.resultList[0]
     }
 }

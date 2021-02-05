@@ -9,7 +9,7 @@ import javax.enterprise.context.ApplicationScoped
 import javax.inject.Inject
 
 /**
- * A controller for creating exposure instances
+ * A controller for managing exposure instances
  */
 @ApplicationScoped
 class ExposureInstanceController {
@@ -44,7 +44,7 @@ class ExposureInstanceController {
             sulfurDioxide: Float?,
             harmfulMicroparticles: Float?,
             creatorId: UUID): ExposureInstance {
-        return exposureInstanceDAO.create(UUID.randomUUID(), route, startedAt, endedAt, carbonMonoxide, nitrogenMonoxide, nitrogenDioxide, ozone, sulfurDioxide, harmfulMicroparticles, creatorId)
+        return exposureInstanceDAO.create(UUID.randomUUID(), route, startedAt, endedAt, carbonMonoxide, nitrogenMonoxide, nitrogenDioxide, ozone, sulfurDioxide, harmfulMicroparticles, creatorId, creatorId)
     }
 
     /**
@@ -99,29 +99,12 @@ class ExposureInstanceController {
         }
 
         val exposureInstance = ExposureInstance()
-        if (totalHarmfulMicroparticles > 0f) {
-            exposureInstance.harmfulMicroparticles = totalHarmfulMicroparticles
-        }
-
-        if (totalSulfurDioxide > 0f) {
-            exposureInstance.sulfurDioxide = totalSulfurDioxide
-        }
-
-        if (totalOzone > 0f) {
-            exposureInstance.ozone = totalOzone
-        }
-
-        if (totalNitrogenDioxide > 0f) {
-            exposureInstance.nitrogenDioxide = totalNitrogenDioxide
-        }
-
-        if (totalNitrogenMonoxide > 0f) {
-            exposureInstance.nitrogenMonoxide = totalNitrogenMonoxide
-        }
-
-        if (totalCarbonMonoxide > 0f) {
-            exposureInstance.carbonMonoxide = totalCarbonMonoxide
-        }
+        exposureInstance.harmfulMicroparticles = totalHarmfulMicroparticles
+        exposureInstance.sulfurDioxide = totalSulfurDioxide
+        exposureInstance.ozone = totalOzone
+        exposureInstance.nitrogenDioxide = totalNitrogenDioxide
+        exposureInstance.nitrogenMonoxide = totalNitrogenMonoxide
+        exposureInstance.carbonMonoxide = totalCarbonMonoxide
 
         return exposureInstance
     }

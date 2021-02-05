@@ -112,8 +112,11 @@ class AirQualityController {
      */
     private fun getPollutionValuesFromNetcdf (netcdfFile: NetcdfFile, pollutant: String): Array {
         val foundVariable = netcdfFile.findVariable(System.getenv(pollutant));
-        if (foundVariable == null)
+
+        if (foundVariable == null) {
             throw Error("Unrecognized pollutant $pollutant")
+        }
+
         else return foundVariable.read()
     }
 

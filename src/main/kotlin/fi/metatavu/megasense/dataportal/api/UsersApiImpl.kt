@@ -23,7 +23,7 @@ class UsersApiImpl: UsersApi, AbstractApi() {
     private lateinit var userSettingsTranslator: UserSettingsTranslator
 
     override fun createUserSettings(userSettings: UserSettings): Response {
-        val userId = loggerUserId!!
+        val userId = loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
         val foundUserSettings = usersController.findUserSettings(userId)
         if (foundUserSettings != null) {
             return createBadRequest("User settings already exist. Use a PUT-request to update user settings.")
@@ -44,13 +44,13 @@ class UsersApiImpl: UsersApi, AbstractApi() {
     }
 
     override fun getUserSettings(): Response {
-        val userId = loggerUserId!!
+        val userId = loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
         val foundUserSettings = usersController.findUserSettings(userId) ?: return createNotFound("User settings not found!")
         return createOk(userSettingsTranslator.translate(foundUserSettings))
     }
 
     override fun updateUserSettings(userSettings: UserSettings): Response {
-        val userId = loggerUserId!!
+        val userId = loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
         val foundUserSettings = usersController.findUserSettings(userId) ?: return createNotFound("User settings not found!")
 
         val homeAddress = userSettings.homeAddress
@@ -70,16 +70,19 @@ class UsersApiImpl: UsersApi, AbstractApi() {
     }
 
     override fun deleteUser(): Response {
-        usersController.deleteUser(loggerUserId!!)
+        val userId = loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
+        usersController.deleteUser(userId)
         return createNoContent()
     }
 
     override fun deleteUserSettings(): Response {
-        usersController.deleteUserSettings(loggerUserId!!)
+        val userId = loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
+        usersController.deleteUserSettings(userId)
         return createNoContent()
     }
 
     override fun downloadUserData(): Response {
-        return streamResponse(usersController.findUserData(loggerUserId!!), "application/zip")
+        val userId = loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
+        return streamResponse(usersController.findUserData(userId), "application/zip")
     }
 }
