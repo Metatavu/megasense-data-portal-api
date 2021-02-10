@@ -10,19 +10,13 @@ object TestSettings {
      * Returns API service base path
      */
     val apiBasePath: String
-        get() = "http://localhost:1234/v1"
+        get() = "http://localhost:8081"
 
     /**
      * Returns API service base path
      */
     val filesBasePath: String
         get() = "http://localhost:1234/files"
-
-    /**
-     * Returns Keycloak host
-     */
-    val keycloakHost: String
-        get() = "http://test-keycloak:8080/auth"
 
     /**
      * Returns Keycloak realm

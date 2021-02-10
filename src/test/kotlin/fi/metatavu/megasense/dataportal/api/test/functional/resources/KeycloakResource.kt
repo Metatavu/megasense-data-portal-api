@@ -11,11 +11,10 @@ class KeycloakResource : QuarkusTestResourceLifecycleManager {
     override fun start(): Map<String, String> {
         keycloak.start()
 
-        TestSettings.keycloakHost = keycloak.authServerUrl
-
         val config: MutableMap<String, String> = HashMap()
         config["quarkus.oidc.auth-server-url"] = String.format("%s/realms/megasense-data-portal", keycloak.authServerUrl)
         config["quarkus.oidc.client-id"] = "api"
+        config["megasense.keycloak.host"] = keycloak.authServerUrl
 
         return config
     }
