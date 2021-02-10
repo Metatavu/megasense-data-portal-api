@@ -7,6 +7,9 @@ import fi.metatavu.megasense.dataportal.api.client.infrastructure.ApiClient
 import fi.metatavu.megasense.dataportal.api.client.models.ExposureInstance
 import fi.metatavu.megasense.dataportal.api.test.functional.settings.TestSettings
 
+/**
+ * Test builder resource for handling total exposure
+ */
 class TotalExposureTestBuilderResource (testBuilder: AbstractTestBuilder<ApiClient?>?, private val accessTokenProvider: AccessTokenProvider?, apiClient: ApiClient): ApiTestBuilderResource<ExposureInstance, ApiClient> (testBuilder, apiClient) {
 
     /**

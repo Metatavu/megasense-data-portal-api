@@ -9,6 +9,9 @@ import fi.metatavu.megasense.dataportal.api.test.functional.settings.TestSetting
 import org.junit.Assert.assertTrue
 import java.lang.Exception
 
+/**
+ * Test builder resource for handling air quality
+ */
 class AirQualityTestBuilderResource (testBuilder: AbstractTestBuilder<ApiClient?>?, private val accessTokenProvider: AccessTokenProvider?, apiClient: ApiClient): ApiTestBuilderResource<AirQuality, ApiClient> (testBuilder, apiClient) {
     override fun clean(t: AirQuality?) {
         TODO("Not yet implemented")
@@ -20,7 +23,6 @@ class AirQualityTestBuilderResource (testBuilder: AbstractTestBuilder<ApiClient?
      * @param pollutantType return only values for this pollutant
      * @param boundingBoxCorner1 lower left of the bounding box
      * @param boundingBoxCorner2 upper right of the bounding box
-     *
      * @return air quality values
      */
     fun getAirQuality (pollutantType: String, boundingBoxCorner1: String, boundingBoxCorner2: String): List<AirQuality> {
@@ -32,7 +34,6 @@ class AirQualityTestBuilderResource (testBuilder: AbstractTestBuilder<ApiClient?
      *
      * @param coordinates coordinates
      * @param pollutantType type of the pollutant
-     *
      * @return air quality
      */
     fun getAirQualityForCoordinates (coordinates: String, pollutantType: String): AirQuality {

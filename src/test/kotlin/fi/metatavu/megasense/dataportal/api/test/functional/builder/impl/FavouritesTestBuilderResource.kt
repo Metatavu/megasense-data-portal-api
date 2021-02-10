@@ -8,6 +8,9 @@ import fi.metatavu.megasense.dataportal.api.client.models.FavouriteLocation
 import fi.metatavu.megasense.dataportal.api.test.functional.settings.TestSettings
 import java.util.*
 
+/**
+ * Test builder resource for handling favourites
+ */
 class FavouritesTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, private val accessTokenProvider: AccessTokenProvider?, apiClient: ApiClient): ApiTestBuilderResource<FavouriteLocation, ApiClient> (testBuilder, apiClient) {
     /**
      * Sends a request to create a favourite

@@ -9,6 +9,9 @@ import ucar.nc2.NetcdfFile
 import javax.enterprise.context.ApplicationScoped
 import kotlin.math.abs
 
+/**
+ * A controller class for air quality data
+ */
 @ApplicationScoped
 class AirQualityController {
     /**

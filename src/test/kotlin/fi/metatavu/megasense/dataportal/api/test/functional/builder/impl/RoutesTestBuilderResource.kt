@@ -8,6 +8,9 @@ import fi.metatavu.megasense.dataportal.api.client.models.Route
 import fi.metatavu.megasense.dataportal.api.test.functional.settings.TestSettings
 import java.util.*
 
+/**
+ * Test builder resource for handling routes
+ */
 class RoutesTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, private val accessTokenProvider: AccessTokenProvider?, apiClient: ApiClient): ApiTestBuilderResource<Route, ApiClient> (testBuilder, apiClient) {
     /**
      * Sends a request to create a route

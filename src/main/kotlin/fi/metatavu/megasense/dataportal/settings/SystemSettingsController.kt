@@ -10,24 +10,13 @@ import javax.enterprise.context.ApplicationScoped
 class SystemSettingsController {
 
     /**
-     * Returns system setting from any of setting sources.
-     *
-     * Settings are resolved in following order:
-     *
-     * 1) Environment variable
-     * 2) System property
-     * 3) Database
-     * 4) Default value
+     * Returns environment variable
      *
      * @param key key
-     * @param defaultValue default value
      * @return setting value
      */
-    private fun getEnvPropertySetting(key: String, defaultValue: String): String? {
-        val result = System.getenv(key)
-        return if (StringUtils.isNotBlank(result)) {
-            result
-        } else System.getProperty(key, defaultValue)
+    private fun getEnvPropertySetting(key: String): String? {
+        return System.getenv(key)
     }
 
     /**
@@ -36,7 +25,7 @@ class SystemSettingsController {
      * @return Keycloak realm
      */
     fun getKeycloakRealm(): String? {
-        return getEnvPropertySetting("KEYCLOAK_REALM", "")
+        return getEnvPropertySetting("KEYCLOAK_REALM")
     }
 
     /**
@@ -45,7 +34,7 @@ class SystemSettingsController {
      * @return Keycloak URL
      */
     fun getKeycloakUrl(): String? {
-        return getEnvPropertySetting("KEYCLOAK_URL", "")
+        return getEnvPropertySetting("KEYCLOAK_URL")
     }
 
     /**
@@ -54,7 +43,7 @@ class SystemSettingsController {
      * @return Keycloak admin user
      */
     fun getKeycloakAdminUser(): String? {
-        return getEnvPropertySetting("KEYCLOAK_USER", "")
+        return getEnvPropertySetting("KEYCLOAK_USER")
     }
 
     /**
@@ -63,7 +52,7 @@ class SystemSettingsController {
      * @return Keycloak admin pass
      */
     fun getKeycloakAdminPassword(): String? {
-        return getEnvPropertySetting("KEYCLOAK_PASSWORD", "")
+        return getEnvPropertySetting("KEYCLOAK_PASSWORD")
     }
 
     /**
@@ -72,6 +61,6 @@ class SystemSettingsController {
      * @return Keycloak admin client id
      */
     fun getKeycloakAdminClientId(): String? {
-        return getEnvPropertySetting("KEYCLOAK_ADMIN_CLIENT_ID", "")
+        return getEnvPropertySetting("KEYCLOAK_ADMIN_CLIENT_ID")
     }
 }

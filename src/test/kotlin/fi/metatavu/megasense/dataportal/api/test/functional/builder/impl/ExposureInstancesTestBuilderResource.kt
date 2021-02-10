@@ -8,6 +8,9 @@ import fi.metatavu.megasense.dataportal.api.client.models.ExposureInstance
 import fi.metatavu.megasense.dataportal.api.test.functional.settings.TestSettings
 import java.util.*
 
+/**
+ * Test builder resource for handling exposure instances
+ */
 class ExposureInstancesTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, private val accessTokenProvider: AccessTokenProvider?, apiClient: ApiClient): ApiTestBuilderResource<ExposureInstance, ApiClient> (testBuilder, apiClient) {
 
     /**
@@ -33,8 +36,7 @@ class ExposureInstancesTestBuilderResource(testBuilder: AbstractTestBuilder<ApiC
                 nitrogenDioxide: Float?,
                 ozone: Float?,
                 sulfurDioxide: Float?,
-                harmfulMicroparticles: Float?
-    ): ExposureInstance {
+                harmfulMicroparticles: Float?): ExposureInstance {
         val exposureInstance = ExposureInstance(
             id = null,
             routeId = routeId,

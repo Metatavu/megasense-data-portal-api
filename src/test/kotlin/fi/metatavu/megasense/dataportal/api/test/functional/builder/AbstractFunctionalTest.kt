@@ -15,7 +15,6 @@ import org.skyscreamer.jsonassert.comparator.CustomComparator
 import java.io.File
 
 import java.io.IOException
-import java.io.InputStreamReader
 import java.util.zip.ZipFile
 
 /**
@@ -100,12 +99,11 @@ abstract class AbstractFunctionalTest {
      * @return lines
      */
     fun readLinesFromZipEntry (zipFile: File, entryName: String): List<String> {
-        val file = ZipFile(zipFile)
-        val zipEntry = file.getEntry(entryName)
-        val reader = InputStreamReader(file.getInputStream(zipEntry))
-        val lines = reader.readLines()
-        reader.close()
-        file.close()
-        return lines
+        return ZipFile(zipFile).use { zip ->
+            val zipEntry = zip.getEntry(entryName)
+            zip.getInputStream(zipEntry).use {
+                it.reader().readLines();
+            }
+        }
     }
 }
