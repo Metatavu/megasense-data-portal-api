@@ -168,7 +168,7 @@ class V1ApiImpl: V1Api, AbstractApi() {
     }
 
     override fun deleteExposureInstance(exposureInstanceId: UUID): Response {
-        val exposureInstance = exposureInstanceController.findExposureInstance(exposureInstanceId) ?: return createNotFound("Exposure instance not found")
+        val exposureInstance = exposureInstanceController.findExposureInstance(exposureInstanceId) ?: return createNotFound(EXPOSURE_INSTANCE_NOT_FOUND)
 
         if (exposureInstance.creatorId != loggerUserId!!) {
             return createUnauthorized("You are unauthorized to delete this!")
@@ -180,9 +180,9 @@ class V1ApiImpl: V1Api, AbstractApi() {
     }
 
     override fun findExposureInstance(exposureInstanceId: UUID): Response {
-        val exposureInstance = exposureInstanceController.findExposureInstance(exposureInstanceId) ?: return createNotFound("Exposure instance not found")
+        val exposureInstance = exposureInstanceController.findExposureInstance(exposureInstanceId) ?: return createNotFound(EXPOSURE_INSTANCE_NOT_FOUND)
         if (!exposureInstance.creatorId!!.equals(loggerUserId!!)) {
-            return createNotFound("Exposure instance not found")
+            return createNotFound(EXPOSURE_INSTANCE_NOT_FOUND)
         }
         return createOk(exposureInstanceTranslator.translate(exposureInstance))
     }
@@ -208,9 +208,9 @@ class V1ApiImpl: V1Api, AbstractApi() {
     }
 
     override fun deleteUserFavouriteLocation(favouriteId: UUID): Response {
-        val favourite = favouritesController.findFavourite(favouriteId) ?: return createBadRequest("Route not found!")
+        val favourite = favouritesController.findFavourite(favouriteId) ?: return createBadRequest(ROUTE_NOT_FOUND)
         if (!favourite.creatorId!!.equals(loggerUserId!!)) {
-            return createNotFound("Route not found!")
+            return createNotFound(ROUTE_NOT_FOUND)
         }
         favouritesController.deleteFavourite(favourite, loggerUserId!!)
         return createNoContent()
@@ -240,16 +240,16 @@ class V1ApiImpl: V1Api, AbstractApi() {
     }
 
     override fun deleteRoute(routeId: UUID): Response {
-        val route = routeController.findRoute(routeId) ?: return createBadRequest("Route not found!")
+        val route = routeController.findRoute(routeId) ?: return createBadRequest(ROUTE_NOT_FOUND)
         if (!route.creatorId!!.equals(loggerUserId!!)) {
-            return createNotFound("Route not found!")
+            return createNotFound(ROUTE_NOT_FOUND)
         }
         routeController.deleteRoute(route, loggerUserId!!)
         return createNoContent()
     }
 
     override fun findRoute(routeId: UUID): Response {
-        val route = routeController.findRoute(routeId) ?: return createNotFound("Route not found!")
+        val route = routeController.findRoute(routeId) ?: return createNotFound(ROUTE_NOT_FOUND)
         if (!route.creatorId!!.equals(loggerUserId!!)) {
             return createNotFound("Route not found")
         }
@@ -264,6 +264,11 @@ class V1ApiImpl: V1Api, AbstractApi() {
 
     override fun ping(): Response? {
         return Response.ok("pong").build()
+    }
+
+    companion object {
+        private const val EXPOSURE_INSTANCE_NOT_FOUND = "Exposure instance not found"
+        private const val ROUTE_NOT_FOUND = "Route not found!"
     }
 
 }
