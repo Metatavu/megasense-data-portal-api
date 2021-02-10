@@ -14,7 +14,7 @@ import java.lang.Exception
  */
 class AirQualityTestBuilderResource (testBuilder: AbstractTestBuilder<ApiClient?>?, private val accessTokenProvider: AccessTokenProvider?, apiClient: ApiClient): ApiTestBuilderResource<AirQuality, ApiClient> (testBuilder, apiClient) {
     override fun clean(t: AirQuality?) {
-        TODO("Not yet implemented")
+        //air quality is read from file -> nothing to clean up
     }
 
     /**

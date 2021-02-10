@@ -3,9 +3,11 @@ package fi.metatavu.megasense.dataportal.airquality
 import fi.metatavu.megasense.dataportal.api.spec.model.AirQuality
 import fi.metatavu.megasense.dataportal.api.spec.model.Location
 import fi.metatavu.megasense.dataportal.api.spec.model.PollutantType
+import org.apache.commons.io.FileUtils
 import ucar.ma2.Array
 import ucar.ma2.ArrayFloat
 import ucar.nc2.NetcdfFile
+import java.io.File
 import javax.enterprise.context.ApplicationScoped
 import kotlin.math.abs
 
@@ -14,6 +16,7 @@ import kotlin.math.abs
  */
 @ApplicationScoped
 class AirQualityController {
+
     /**
      * Gets air quality for specific coordinates
      *
@@ -24,25 +27,51 @@ class AirQualityController {
     fun getAirQualityForCoordinates (pollutant: String, coordinates: String): AirQuality {
         val netcdfFile = loadNetcdfFile()
 
-        val timeArray = netcdfFile.findVariable(System.getenv("AIR_QUALITY_TIME")).read()
-        val latitudeArray = netcdfFile.findVariable(System.getenv("AIR_QUALITY_LAT")).read()
-        val longitudeArray = netcdfFile.findVariable(System.getenv("AIR_QUALITY_LON")).read()
-        val latitude = coordinates.substringBefore(",").toFloat()
-        val longitude = coordinates.substringAfter(",").toFloat()
+        try {
+            val timeArray = netcdfFile.findVariable(System.getenv("AIR_QUALITY_TIME")).read()
+            val latitudeArray = netcdfFile.findVariable(System.getenv("AIR_QUALITY_LAT")).read()
+            val longitudeArray = netcdfFile.findVariable(System.getenv("AIR_QUALITY_LON")).read()
+            val latitude = coordinates.substringBefore(",").toFloat()
+            val longitude = coordinates.substringAfter(",").toFloat()
 
-        return if (pollutant == "MICRO_PARTICLES") {
-            val pollutantValuesArray1 = netcdfFile.findVariable(System.getenv("AIR_QUALITY_DAYMAX_PM10")).read()
-            val pollutantValuesArray2 = netcdfFile.findVariable(System.getenv("AIR_QUALITY_DAYMAX_PM2_5")).read()
+            return if (pollutant == "MICRO_PARTICLES") {
+                val pollutantValuesArray1 = netcdfFile.findVariable(System.getenv("AIR_QUALITY_DAYMAX_PM10")).read()
+                val pollutantValuesArray2 = netcdfFile.findVariable(System.getenv("AIR_QUALITY_DAYMAX_PM2_5")).read()
 
-            val pollutantValue1 = getClosestPollutantValue(latitudeArray, longitudeArray, timeArray, pollutantValuesArray1 as ArrayFloat.D4, latitude, longitude)
-            val pollutantValue2 = getClosestPollutantValue(latitudeArray, longitudeArray, timeArray, pollutantValuesArray2 as ArrayFloat.D4, latitude, longitude)
+                val pollutantValue1 = getClosestPollutantValue(
+                    latitudeArray,
+                    longitudeArray,
+                    timeArray,
+                    pollutantValuesArray1 as ArrayFloat.D4,
+                    latitude,
+                    longitude
+                )
+                val pollutantValue2 = getClosestPollutantValue(
+                    latitudeArray,
+                    longitudeArray,
+                    timeArray,
+                    pollutantValuesArray2 as ArrayFloat.D4,
+                    latitude,
+                    longitude
+                )
 
-            val combinedPollutantValue = pollutantValue1 + pollutantValue2
-            constructAirQuality(combinedPollutantValue, pollutant, latitude, longitude)
-        } else {
-            val pollutantValuesArray = getPollutionValuesFromNetcdf(netcdfFile, pollutant)
-            val pollutantValue = getClosestPollutantValue(latitudeArray, longitudeArray, timeArray, pollutantValuesArray as ArrayFloat.D4, latitude, longitude)
-            constructAirQuality(pollutantValue, pollutant, latitude, longitude)
+                val combinedPollutantValue = pollutantValue1 + pollutantValue2
+                constructAirQuality(combinedPollutantValue, pollutant, latitude, longitude)
+            } else {
+                val pollutantValuesArray = getPollutionValuesFromNetcdf(netcdfFile, pollutant)
+                val pollutantValue = getClosestPollutantValue(
+                    latitudeArray,
+                    longitudeArray,
+                    timeArray,
+                    pollutantValuesArray as ArrayFloat.D4,
+                    latitude,
+                    longitude
+                )
+                constructAirQuality(pollutantValue, pollutant, latitude, longitude)
+            }
+        }
+        finally {
+            netcdfFile.close()
         }
     }
 
@@ -57,41 +86,69 @@ class AirQualityController {
     fun getAirQuality(pollutant: String, boundingBoxCorner1: String, boundingBoxCorner2: String): List<AirQuality> {
         val netcdfFile = loadNetcdfFile()
 
-        val timeArray = netcdfFile.findVariable(System.getenv("AIR_QUALITY_TIME")).read()
-        val latitudeArray = netcdfFile.findVariable(System.getenv("AIR_QUALITY_LAT")).read()
-        val longitudeArray = netcdfFile.findVariable(System.getenv("AIR_QUALITY_LON")).read()
+        try {
+            val timeArray = netcdfFile.findVariable(System.getenv("AIR_QUALITY_TIME")).read()
+            val latitudeArray = netcdfFile.findVariable(System.getenv("AIR_QUALITY_LAT")).read()
+            val longitudeArray = netcdfFile.findVariable(System.getenv("AIR_QUALITY_LON")).read()
 
-        if (pollutant == "MICRO_PARTICLES") {
-            val pollutantValuesArray1 = netcdfFile.findVariable(System.getenv("AIR_QUALITY_DAYMAX_PM10")).read()
-            val data1 = extractData(timeArray, latitudeArray, longitudeArray, pollutantValuesArray1 as ArrayFloat.D4, pollutant, boundingBoxCorner1, boundingBoxCorner2)
+            if (pollutant == "MICRO_PARTICLES") {
+                val pollutantValuesArray1 = netcdfFile.findVariable(System.getenv("AIR_QUALITY_DAYMAX_PM10")).read()
+                val data1 = extractData(
+                    timeArray,
+                    latitudeArray,
+                    longitudeArray,
+                    pollutantValuesArray1 as ArrayFloat.D4,
+                    pollutant,
+                    boundingBoxCorner1,
+                    boundingBoxCorner2
+                )
 
-            val pollutantValuesArray2 = netcdfFile.findVariable(System.getenv("AIR_QUALITY_DAYMAX_PM2_5")).read()
-            val data2 = extractData(timeArray, latitudeArray, longitudeArray, pollutantValuesArray2 as ArrayFloat.D4, pollutant, boundingBoxCorner1, boundingBoxCorner2)
+                val pollutantValuesArray2 = netcdfFile.findVariable(System.getenv("AIR_QUALITY_DAYMAX_PM2_5")).read()
+                val data2 = extractData(
+                    timeArray,
+                    latitudeArray,
+                    longitudeArray,
+                    pollutantValuesArray2 as ArrayFloat.D4,
+                    pollutant,
+                    boundingBoxCorner1,
+                    boundingBoxCorner2
+                )
 
-            // Combining two different lists of particle observations into a single list
-            val combined = data1 + data2
-            val airQualityForLocation = mutableMapOf<String, AirQuality>()
-            for (airQuality in combined) {
-                val latitude = airQuality.location.latitude
-                val longitude = airQuality.location.longitude
-                val locationString = "$latitude,$longitude"
+                // Combining two different lists of particle observations into a single list
+                val combined = data1 + data2
+                val airQualityForLocation = mutableMapOf<String, AirQuality>()
+                for (airQuality in combined) {
+                    val latitude = airQuality.location.latitude
+                    val longitude = airQuality.location.longitude
+                    val locationString = "$latitude,$longitude"
 
-                val foundAirQuality = airQualityForLocation[locationString]
+                    val foundAirQuality = airQualityForLocation[locationString]
 
-                if (foundAirQuality == null) {
-                    airQualityForLocation[locationString] = airQuality
-                } else {
-                    foundAirQuality.pollutionValue += airQuality.pollutionValue
-                    airQualityForLocation[locationString] = foundAirQuality
+                    if (foundAirQuality == null) {
+                        airQualityForLocation[locationString] = airQuality
+                    } else {
+                        foundAirQuality.pollutionValue += airQuality.pollutionValue
+                        airQualityForLocation[locationString] = foundAirQuality
+                    }
                 }
+
+                return airQualityForLocation.values.toList()
+            } else {
+                val pollutantValuesArray = getPollutionValuesFromNetcdf(netcdfFile, pollutant)
+                return extractData(
+                    timeArray,
+                    latitudeArray,
+                    longitudeArray,
+                    pollutantValuesArray as ArrayFloat.D4,
+                    pollutant,
+                    boundingBoxCorner1,
+                    boundingBoxCorner2
+                )
             }
-
-            return airQualityForLocation.values.toList()
-        } else {
-            val pollutantValuesArray = getPollutionValuesFromNetcdf(netcdfFile, pollutant)
-            return extractData(timeArray, latitudeArray, longitudeArray, pollutantValuesArray as ArrayFloat.D4, pollutant, boundingBoxCorner1, boundingBoxCorner2)
         }
-
+        finally {
+            netcdfFile.close()
+        }
     }
 
     /**
@@ -100,10 +157,12 @@ class AirQualityController {
      * @return Netcdf-file
      */
     private fun loadNetcdfFile(): NetcdfFile {
-        val resourceStream = javaClass.classLoader.getResource("fi/metatavu/megasense/dataportal/airquality.nc")!!.openStream()
-        val bytes = resourceStream.readAllBytes()
-        resourceStream.close()
-        return NetcdfFile.openInMemory("airquality.nc", bytes)
+        javaClass.classLoader.getResource("fi/metatavu/megasense/dataportal/airquality.nc")!!.openStream().use {
+            val tempFile = File.createTempFile("airquality", ".nc")
+            FileUtils.copyInputStreamToFile(it, tempFile);
+            tempFile.deleteOnExit();
+            return NetcdfFile.open(tempFile.path)
+        }
     }
 
     /**
