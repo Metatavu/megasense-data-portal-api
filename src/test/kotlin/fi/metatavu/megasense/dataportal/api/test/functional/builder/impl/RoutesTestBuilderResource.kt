@@ -29,7 +29,7 @@ class RoutesTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, p
      *
      * @return all routes created by the user
      */
-    fun listAll (): Array<Route> {
+    fun listAll (): List<Route> {
         return api.listRoutes()
     }
 

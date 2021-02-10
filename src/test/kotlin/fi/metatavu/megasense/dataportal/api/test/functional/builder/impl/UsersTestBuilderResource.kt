@@ -93,7 +93,7 @@ class UsersTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, pr
      */
     fun downloadUserData(): File {
         val httpClient = HttpClient()
-        val downloadRequest = GetMethod("${TestSettings.apiBasePath}/users/data")
+        val downloadRequest = GetMethod("${TestSettings.apiBasePath}/v1/users/data")
         downloadRequest.setRequestHeader("Authorization", "Bearer ${accessTokenProvider?.accessToken}")
         httpClient.executeMethod(downloadRequest)
         val data = downloadRequest.responseBody
