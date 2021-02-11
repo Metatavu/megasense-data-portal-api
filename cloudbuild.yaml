@@ -14,8 +14,8 @@ steps:
       - '-c'
       - |
         if [ -n "${_TEST}" ]; then
-          java -version &&
-          apt update && apt install -y openjdk-11-jre-headless &&
+          add-apt-repository ppa:linuxuprising/java &&
+          apt update && apt install -y oracle-java11-installer &&
           java -version &&
           ./gradlew build -Dquarkus.package.type=native -Dquarkus.native.container-build=true
         fi
