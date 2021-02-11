@@ -58,6 +58,7 @@ services:
       FILE_STORAGE_PROVIDER: LOCAL
       LOCAL_FILE_STORAGE_PATH: /opt/uploads
       JAVA_OPTS: '-javaagent:/opt/jacoco-jacocoagent.jar=output=file,append=false,dumponexit=true,destfile=/opt/jacoco/it.exec'
+      AIR_QUALITY_FILE_PATH: /data/airquality.nc
       AIR_QUALITY_TIME: time
       AIR_QUALITY_LAT: lat
       AIR_QUALITY_LON: lon
@@ -70,5 +71,6 @@ services:
       SULFUR_DIOXIDE: daymax_cnc_SO2
     volumes:
       - ./test-volumes/uploads:/opt/uploads
+      - ./test-volumes/data:/data
       - $JACOCO_AGENT:/opt/jacoco-jacocoagent.jar
       - $JACOCO:/opt/jacoco
