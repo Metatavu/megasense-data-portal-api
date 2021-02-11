@@ -32,7 +32,8 @@ dependencies {
 
     implementation "org.geotools:gt-referencing:24.0"
     implementation "edu.ucar:netcdf:4.2"
-
+    implementation "org.apache.commons:commons-csv:1.8"
+    
     testImplementation 'io.quarkus:quarkus-junit5'
     testImplementation 'org.testcontainers:junit-jupiter:1.15.1'
     testImplementation 'org.testcontainers:mysql:1.15.1'

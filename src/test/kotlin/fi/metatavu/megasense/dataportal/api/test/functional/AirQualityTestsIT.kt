@@ -2,11 +2,12 @@ package fi.metatavu.megasense.dataportal.api.test.functional
 
 import fi.metatavu.megasense.dataportal.api.test.functional.builder.AbstractFunctionalTest
 import fi.metatavu.megasense.dataportal.api.test.functional.builder.TestBuilder
+import fi.metatavu.megasense.dataportal.api.test.functional.resources.AirQualityTestProfile
 import fi.metatavu.megasense.dataportal.api.test.functional.resources.KeycloakResource
 import fi.metatavu.megasense.dataportal.api.test.functional.resources.MysqlResource
 import io.quarkus.test.common.QuarkusTestResource
 import io.quarkus.test.junit.QuarkusTest
-import org.junit.jupiter.api.Assertions.*
+import io.quarkus.test.junit.TestProfile
 import org.junit.jupiter.api.Test
 import org.junit.Assert.assertNotNull
 
@@ -18,6 +19,7 @@ import org.junit.Assert.assertNotNull
     QuarkusTestResource(MysqlResource::class),
     QuarkusTestResource(KeycloakResource::class)
 )
+@TestProfile(AirQualityTestProfile::class)
 class AirQualityTestsIT: AbstractFunctionalTest() {
 
     @Test

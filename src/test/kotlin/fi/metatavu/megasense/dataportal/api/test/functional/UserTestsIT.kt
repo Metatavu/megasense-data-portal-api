@@ -12,11 +12,6 @@ import io.quarkus.test.common.QuarkusTestResource
 import io.quarkus.test.junit.QuarkusTest
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import org.apache.commons.csv.CSVFormat
-import org.apache.commons.csv.CSVPrinter
-import org.junit.Assert.*
-import org.junit.Test
-import java.io.StringWriter
 import java.time.OffsetDateTime
 
 /**
