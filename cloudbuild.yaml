@@ -1,0 +1,9 @@
+steps:
+  - name: openjdk:11.0.10-jdk
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        if [ -n "${_TEST}" ]; then
+          ./gradlew test
+        fi
