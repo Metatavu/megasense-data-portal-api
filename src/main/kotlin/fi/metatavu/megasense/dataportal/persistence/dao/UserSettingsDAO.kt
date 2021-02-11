@@ -81,21 +81,9 @@ class UserSettingsDAO: AbstractDAO<UserSettings>() {
         val criteriaBuilder = entityManager.criteriaBuilder
         val criteria = criteriaBuilder.createQuery(UserSettings::class.java)
         val root = criteria.from(UserSettings::class.java)
-
         criteria.select(root)
-        val restrictions = ArrayList<Predicate>()
-
-        restrictions.add(criteriaBuilder.equal(root.get(UserSettings_.creatorId), userId))
-
-        criteria.where(criteriaBuilder.and(*restrictions.toTypedArray()));
-
-        val query = entityManager.createQuery(criteria)
-
-        if (query.resultList.size < 1) {
-            return null
-        }
-
-        return query.resultList[0]
+        criteria.where(criteriaBuilder.equal(root.get(UserSettings_.creatorId), userId))
+        return getSingleResult(entityManager.createQuery(criteria))
     }
 
     /**

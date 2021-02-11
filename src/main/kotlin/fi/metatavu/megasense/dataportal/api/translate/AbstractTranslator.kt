@@ -18,9 +18,7 @@ abstract class AbstractTranslator<E, R> {
      */
     @Suppress("UNCHECKED_CAST")
     open fun translate(entities: List<E>): List<R> {
-        return entities
-            .map(this::translate)
-            .filter(Objects::nonNull)
+        return entities.mapNotNull(this::translate)
     }
 
 }

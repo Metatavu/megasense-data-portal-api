@@ -18,10 +18,6 @@ import kotlin.math.abs
 @ApplicationScoped
 class AirQualityController {
 
-    private fun getAirQualityParameter (airQualityParameterName: String): String {
-        return ConfigProvider.getConfig().getValue(airQualityParameterName, String::class.java)
-    }
-
     /**
      * Gets air quality for specific coordinates
      *
@@ -287,5 +283,15 @@ class AirQualityController {
             }
         }
         return (array.size - 1).toInt()
+    }
+
+    /**
+     * Gets air quality variable name for Netcdf file
+     *
+     * @param airQualityParameterName name of air quality property
+     * @return name of airQuality variable
+     */
+    private fun getAirQualityParameter (airQualityParameterName: String): String {
+        return ConfigProvider.getConfig().getValue("megasense.airquality.parameters.$airQualityParameterName", String::class.java)
     }
 }

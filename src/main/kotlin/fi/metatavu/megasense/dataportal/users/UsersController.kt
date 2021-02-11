@@ -22,6 +22,7 @@ import javax.enterprise.context.ApplicationScoped
 import javax.inject.Inject
 import org.apache.commons.csv.CSVFormat
 import org.apache.commons.csv.CSVPrinter
+import org.eclipse.microprofile.config.ConfigProvider
 import java.io.StringWriter
 
 /**
@@ -86,7 +87,7 @@ class UsersController {
                 .grantType(null)
                 .username(systemSettingsController.getKeycloakAdminUser())
                 .password(systemSettingsController.getKeycloakAdminPassword())
-                .realm("megasense")
+                .realm(ConfigProvider.getConfig().getValue("keycloak.realm", String::class.java))
                 .clientId(systemSettingsController.getKeycloakAdminClientId())
                 .serverUrl(systemSettingsController.getKeycloakUrl())
                 .build()
