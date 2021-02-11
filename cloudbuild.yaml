@@ -14,7 +14,7 @@ steps:
       - '-c'
       - |
         if [ -n "${_TEST}" ]; then
-          apt update && apt seatch openjdk && apt install -y openjdk-11-jdk &&
+          apt update && apt search openjdk && apt install -y openjdk-11-jdk &&
           java -version &&
           ./gradlew build -Dquarkus.package.type=native -Dquarkus.native.container-build=true
         fi
