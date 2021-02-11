@@ -54,8 +54,8 @@ java {
     targetCompatibility = JavaVersion.VERSION_11
 }
 
-sourceSets.main.java.srcDirs += ['src/gen/java']
-sourceSets.test.java.srcDirs += ['src/gen/kotlin']
+sourceSets.main.java.srcDirs += ['build/generated/api-spec/src/gen/java']
+sourceSets.test.java.srcDirs += ['build/generated/api-client/src/main/kotlin']
 
 allOpen {
     annotation("javax.ws.rs.Path")
@@ -66,7 +66,7 @@ allOpen {
 task generateApiSpec(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
     generatorName = "jaxrs-spec"
     inputSpec = "$rootDir/megasense-data-portal-api-spec/swagger.yaml".toString()
-    outputDir = "$rootDir/generated".toString()
+    outputDir = "$buildDir/generated/api-spec".toString()
 
 
     configOptions = [
@@ -85,45 +85,18 @@ task generateApiSpec(type: org.openapitools.generator.gradle.plugin.tasks.Genera
             returnResponse: "true",
             useSwaggerAnnotations: "false"
     ]
-
-    doLast {
-        copyApiSpec
-    }
-}
-
-task copyApiClient {
-    copy {
-        from "$rootDir/generated/src/main".toString()
-        into "$rootDir/src/gen".toString()
-    }
-
-    doLast {
-        delete "$rootDir/generated".toString()
-    }
 }
 
 task generateApiClient(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
     generatorName = "kotlin"
     library = "jvm-okhttp3"
     inputSpec = "$rootDir/megasense-data-portal-api-spec/swagger.yaml".toString()
-    outputDir = "$rootDir/generated".toString()
+    outputDir = "$buildDir/generated/api-client".toString()
 
     packageName = "fi.metatavu.megasense.dataportal.api.client"
     configOptions = [
             dateLibrary: "string"
     ]
-
-    doLast {
-        copyApiClient
-    }
-}
-
-clean {
-
-    doFirst {
-        delete "$rootDir/src/gen".toString()
-    }
-
 }
 
 compileKotlin {
@@ -139,15 +112,4 @@ compileTestKotlin {
 
 kapt {
     correctErrorTypes = true
-}
-
-task copyApiSpec {
-    copy {
-        from "$rootDir/generated/src/gen".toString()
-        into "$rootDir/src/gen".toString()
-    }
-
-    doLast {
-        delete "$rootDir/generated".toString()
-    }
 }
