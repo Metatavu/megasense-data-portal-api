@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test
     QuarkusTestResource(KeycloakResource::class)
 )
 class FavouriteTestsIT: AbstractFunctionalTest() {
+
     @Test
     fun testCreateFavourite () {
         TestBuilder().use { testBuilder ->

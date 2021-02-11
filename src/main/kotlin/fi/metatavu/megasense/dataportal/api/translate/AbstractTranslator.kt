@@ -2,9 +2,9 @@ package fi.metatavu.megasense.dataportal.api.translate
 
 import java.util.*
 import java.util.stream.Collectors
+
 /**
  * Abstract translator class
- *
  */
 abstract class AbstractTranslator<E, R> {
 
@@ -18,10 +18,7 @@ abstract class AbstractTranslator<E, R> {
      */
     @Suppress("UNCHECKED_CAST")
     open fun translate(entities: List<E>): List<R> {
-        return entities.stream()
-                .map { entity: E -> this.translate(entity) }
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList()) as List<R>
+        return entities.mapNotNull(this::translate)
     }
 
 }

@@ -9,6 +9,7 @@ import javax.persistence.*
  */
 @Entity
 class Route {
+
     @Id
     var id: UUID? = null
 

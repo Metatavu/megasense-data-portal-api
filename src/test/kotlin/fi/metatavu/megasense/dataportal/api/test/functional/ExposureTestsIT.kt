@@ -19,6 +19,7 @@ import java.time.OffsetDateTime
     QuarkusTestResource(KeycloakResource::class)
 )
 class ExposureTestsIT: AbstractFunctionalTest() {
+
     @Test
     fun testCreateExposureInstance () {
         TestBuilder().use { testBuilder ->
@@ -145,7 +146,7 @@ class ExposureTestsIT: AbstractFunctionalTest() {
                     60f
             )
 
-            val totalExposure = testBuilder.admin().totalExposure().get(null, null)
+            val totalExposure = testBuilder.admin().totalExposure().getTotalExposure(null, null)
             assertNotNull(totalExposure)
 
             assertEquals(300f, totalExposure.carbonMonoxide)

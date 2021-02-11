@@ -8,12 +8,12 @@ import java.util.*
 import javax.enterprise.context.ApplicationScoped
 import javax.persistence.criteria.Predicate
 
-
 /**
  * DAO class for exposure instance
  */
 @ApplicationScoped
 class ExposureInstanceDAO: AbstractDAO<ExposureInstance>() {
+
     /**
      * Creates an exposure instance
      *
@@ -28,7 +28,7 @@ class ExposureInstanceDAO: AbstractDAO<ExposureInstance>() {
      * @param sulfurDioxide the amount of sulfur dioxide exposure
      * @param harmfulMicroparticles the amount of harmful microparticles that user was exposed to
      * @param creatorId id of the user who created this instance
-     *
+     * @param lastModifierId id of the last modifier
      * @return created exposure instance
      */
     fun create (
@@ -42,7 +42,8 @@ class ExposureInstanceDAO: AbstractDAO<ExposureInstance>() {
             ozone: Float?,
             sulfurDioxide: Float?,
             harmfulMicroparticles: Float?,
-            creatorId: UUID): ExposureInstance {
+            creatorId: UUID,
+            lastModifierId: UUID): ExposureInstance {
         val exposureInstance = ExposureInstance()
         exposureInstance.id = id
         exposureInstance.route = route
@@ -55,7 +56,7 @@ class ExposureInstanceDAO: AbstractDAO<ExposureInstance>() {
         exposureInstance.sulfurDioxide = sulfurDioxide
         exposureInstance.harmfulMicroparticles = harmfulMicroparticles
         exposureInstance.creatorId = creatorId
-        exposureInstance.lastModifierId = creatorId
+        exposureInstance.lastModifierId = lastModifierId
 
         return persist(exposureInstance)
     }
@@ -77,7 +78,7 @@ class ExposureInstanceDAO: AbstractDAO<ExposureInstance>() {
         val root = criteria.from(ExposureInstance::class.java)
 
         criteria.select(root)
-        val restrictions = ArrayList<Predicate>()
+        val restrictions = mutableListOf<Predicate>()
         if (createdAfter != null) {
             restrictions.add(criteriaBuilder.greaterThanOrEqualTo(root.get(ExposureInstance_.createdAt), createdAfter))
         }
@@ -92,7 +93,7 @@ class ExposureInstanceDAO: AbstractDAO<ExposureInstance>() {
 
         restrictions.add(criteriaBuilder.equal(root.get(ExposureInstance_.creatorId), userId))
 
-        criteria.where(criteriaBuilder.and(*restrictions.toTypedArray()));
+        criteria.where(criteriaBuilder.and(*restrictions.toTypedArray()))
         criteria.orderBy(criteriaBuilder.desc(root.get(ExposureInstance_.createdAt)))
 
         val query = entityManager.createQuery(criteria)

@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory
 
 /**
  * TestBuilder implementation
- *
  */
 class TestBuilder: AbstractTestBuilder<ApiClient> () {
 

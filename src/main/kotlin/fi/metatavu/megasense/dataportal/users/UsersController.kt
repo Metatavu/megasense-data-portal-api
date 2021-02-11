@@ -13,12 +13,17 @@ import org.keycloak.admin.client.Keycloak
 import org.keycloak.admin.client.KeycloakBuilder
 import java.io.File
 import java.io.FileOutputStream
+import java.lang.IllegalStateException
 
 import java.util.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 import javax.enterprise.context.ApplicationScoped
 import javax.inject.Inject
+import org.apache.commons.csv.CSVFormat
+import org.apache.commons.csv.CSVPrinter
+import org.eclipse.microprofile.config.ConfigProvider
+import java.io.StringWriter
 
 /**
  * A controller for users
@@ -50,7 +55,11 @@ class UsersController {
             routeController.deleteRoute(route, userId)
         }
 
-        val userExposureInstances = exposureInstanceController.listExposureInstances(userId, null, null)
+        val userExposureInstances = exposureInstanceController.listExposureInstances(
+            userId = userId,
+            createdBefore = null,
+            createdAfter = null
+        )
 
         for (instance in userExposureInstances) {
             exposureInstanceController.deleteExposureInstance(instance)
@@ -63,7 +72,7 @@ class UsersController {
         val deleteResponse = usersResource.delete(userId.toString())
 
         if (deleteResponse.status < 200 || deleteResponse.status > 299) {
-            throw Error("Keycloak returned an error when deleting an user!")
+            throw IllegalStateException("Keycloak returned an error when deleting an user!")
         }
     }
 
@@ -78,7 +87,7 @@ class UsersController {
                 .grantType(null)
                 .username(systemSettingsController.getKeycloakAdminUser())
                 .password(systemSettingsController.getKeycloakAdminPassword())
-                .realm("master")
+                .realm(ConfigProvider.getConfig().getValue("keycloak.realm", String::class.java))
                 .clientId(systemSettingsController.getKeycloakAdminClientId())
                 .serverUrl(systemSettingsController.getKeycloakUrl())
                 .build()
@@ -107,7 +116,18 @@ class UsersController {
             pollutantPenalties: PollutantPenalties,
             pollutantThresholds: PollutantThresholds,
             creatorId: UUID): UserSettings {
-        return userSettingsDAO.create(UUID.randomUUID(), streetAddress, postalCode, city, country, showMobileWelcomeScreen, pollutantPenalties, pollutantThresholds, creatorId)
+        return userSettingsDAO.create(
+            id = UUID.randomUUID(),
+            streetAddress = streetAddress,
+            postalCode = postalCode,
+            city = city,
+            country = country,
+            showMobileWelcomeScreen = showMobileWelcomeScreen,
+            pollutantPenalties = pollutantPenalties,
+            pollutantThresholds = pollutantThresholds,
+            creatorId = creatorId,
+            lastModifierId = creatorId
+        )
     }
 
     /**
@@ -117,7 +137,7 @@ class UsersController {
      *
      * @return user settings
      */
-    fun findUserSettings (userId: UUID): UserSettings? {
+    fun findUserSettings(userId: UUID): UserSettings? {
         return userSettingsDAO.findByUserId(userId)
     }
 
@@ -146,15 +166,52 @@ class UsersController {
             pollutantPenalties: PollutantPenalties,
             pollutantThresholds: PollutantThresholds,
             modifierId: UUID): UserSettings {
-        userSettingsDAO.updateStreetAddress(userSettings, streetAddress, modifierId)
-        userSettingsDAO.updatePostalCode(userSettings, postalCode, modifierId)
-        userSettingsDAO.updateCity(userSettings, city, modifierId)
-        userSettingsDAO.updateCountry(userSettings, country, modifierId)
-        userSettingsDAO.updateShowMobileWelcomeScreen(userSettings, showMobileWelcomeScreen, modifierId)
-        userSettingsDAO.updatePollutantPenalties(userSettings, pollutantPenalties, modifierId)
-        userSettingsDAO.updatePollutantThresholds(userSettings, pollutantThresholds, modifierId)
+        var result = userSettingsDAO.updateStreetAddress(userSettings, streetAddress, modifierId)
+        result = userSettingsDAO.updatePostalCode(result, postalCode, modifierId)
+        result = userSettingsDAO.updateCity(result, city, modifierId)
+        result = userSettingsDAO.updateCountry(result, country, modifierId)
+        result = userSettingsDAO.updateShowMobileWelcomeScreen(result, showMobileWelcomeScreen, modifierId)
+        result = updatePollutantPenalties(result, pollutantPenalties, modifierId)
+        result = updatePollutantThresholds(result, pollutantThresholds, modifierId)
+        return result
+    }
 
-        return userSettings
+    /**
+     * Updates pollutant penalties
+     *
+     * @param userSettings user settings to update
+     * @param pollutantPenalties new pollutant penalties
+     * @param lastModifierId id of the user who is modifying pollutant penalties
+     *
+     * @return updated user settings
+     */
+    private fun updatePollutantPenalties(userSettings: UserSettings, pollutantPenalties: PollutantPenalties, modifierId: UUID): UserSettings {
+        var result = userSettingsDAO.updateCarbonMonoxidePenalty(userSettings, pollutantPenalties.carbonMonoxidePenalty, modifierId)
+        result = userSettingsDAO.updateNitrogenMonoxidePenalty(result, pollutantPenalties.nitrogenMonoxidePenalty, modifierId)
+        result = userSettingsDAO.updateNitrogenDioxidePenalty(result, pollutantPenalties.nitrogenDioxidePenalty, modifierId)
+        result = userSettingsDAO.updateOzonePenalty(result, pollutantPenalties.ozonePenalty, modifierId)
+        result = userSettingsDAO.updateSulfurDioxidePenalty(result, pollutantPenalties.sulfurDioxidePenalty, modifierId)
+        result = userSettingsDAO.updateHarmfulMicroparticlesPenalty(result, pollutantPenalties.harmfulMicroparticlesPenalty, modifierId)
+        return result
+    }
+
+    /**
+     * Updates pollutant thresholds
+     *
+     * @param userSettings user settings to update
+     * @param pollutantThresholds new pollutant thresholds
+     * @param lastModifierId id of the user who is modifying pollutant thresholds
+     *
+     * @return updated user settings
+     */
+    private fun updatePollutantThresholds(userSettings: UserSettings, pollutantThresholds: PollutantThresholds, modifierId: UUID): UserSettings {
+        var result = userSettingsDAO.updateCarbonMonoxideThreshold(userSettings, pollutantThresholds.carbonMonoxideThreshold, modifierId)
+        result = userSettingsDAO.updateNitrogenMonoxideThreshold(result, pollutantThresholds.nitrogenMonoxideThreshold, modifierId)
+        result = userSettingsDAO.updateNitrogenDioxideThreshold(result, pollutantThresholds.nitrogenDioxideThreshold, modifierId)
+        result = userSettingsDAO.updateOzoneThreshold(result, pollutantThresholds.ozoneThreshold, modifierId)
+        result = userSettingsDAO.updateSulfurDioxideThreshold(result, pollutantThresholds.sulfurDioxideThreshold, modifierId)
+        result = userSettingsDAO.updateHarmfulMicroparticlesThreshold(result, pollutantThresholds.harmfulMicroparticlesThreshold, modifierId)
+        return result
     }
 
     /**
@@ -215,38 +272,27 @@ class UsersController {
      * @return csv strings
      */
     private fun writeExposureInstancesToCsv (exposureInstances: List<ExposureInstance>): String {
-        var csv = "Route,Started at,Ended at,Carbon monoxide,Nitrogen monoxide,Nitrogen dioxide,Ozone,Sulfur dioxide,Microparticles"
-        csv += "\n"
-        for (exposureInstance in exposureInstances) {
-            csv += anyToString(exposureInstance.route?.id)
-            csv += ","
+        val writer =  StringWriter()
 
-            csv += anyToString(exposureInstance.startedAt)
-            csv += ","
+        CSVPrinter(writer, CSVFormat.DEFAULT.withHeader("Route", "Started at", "Ended at", "Carbon monoxide", "Nitrogen monoxide", "Nitrogen dioxide",
+            "Ozone", "Sulfur dioxide", "Microparticles"))
+            .use { csvPrinter ->
+                for (exposureInstance in exposureInstances)
+                    csvPrinter.printRecord(exposureInstance.route?.id,
+                        exposureInstance.startedAt,
+                        exposureInstance.endedAt,
+                        exposureInstance.carbonMonoxide,
+                        exposureInstance.nitrogenMonoxide,
+                        exposureInstance.nitrogenDioxide,
+                        exposureInstance.ozone,
+                        exposureInstance.sulfurDioxide,
+                        exposureInstance.harmfulMicroparticles)
+            }
+        val result: String = writer.toString()
+        writer.flush()
+        writer.close()
 
-            csv += anyToString(exposureInstance.endedAt)
-            csv += ","
-
-            csv += anyToString(exposureInstance.carbonMonoxide)
-            csv += ","
-
-            csv += anyToString(exposureInstance.nitrogenMonoxide)
-            csv += ","
-
-            csv += anyToString(exposureInstance.nitrogenDioxide)
-            csv += ","
-
-            csv += anyToString(exposureInstance.ozone)
-            csv += ","
-
-            csv += anyToString(exposureInstance.sulfurDioxide)
-            csv += ","
-
-            csv += anyToString(exposureInstance.harmfulMicroparticles)
-            csv += "\n"
-        }
-
-        return csv
+        return result
     }
 
     /**
@@ -257,41 +303,20 @@ class UsersController {
      * @return csv string
      */
     private fun writeRoutesToCsv (routes: List<Route>): String {
-        var csv = "Id,Route points,Start location,End location,Saved at"
-        csv += "\n"
+        val writer =  StringWriter()
+        CSVPrinter(writer, CSVFormat.DEFAULT.withHeader("Id", "Route points", "Start location", "End location", "Saved at"))
+            .use { csvPrinter ->
+                for (route in routes)
+                    csvPrinter.printRecord(route.id,
+                        route.routePoints,
+                        route.locationFromName,
+                        route.locationToName,
+                        route.createdAt)
+            }
+        val result: String = writer.toString()
+        writer.flush()
+        writer.close()
 
-        for (route in routes) {
-            csv += anyToString(route.id)
-            csv += ","
-
-            csv += anyToString(route.routePoints)
-            csv += ","
-
-            csv += anyToString(route.locationFromName)
-            csv += ","
-
-            csv += anyToString(route.locationToName)
-            csv += ","
-
-            csv += anyToString(route.createdAt)
-            csv += "\n"
-        }
-
-        return csv
-    }
-
-    /**
-     * Returns string value of a parameter or empty string if the parameter is null
-     *
-     * @param parameter
-     *
-     * @return string value
-     */
-    private fun anyToString (parameter: Any?): String {
-        if (parameter == null) {
-            return ""
-        }
-
-        return parameter.toString()
+        return result
     }
 }

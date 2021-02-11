@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test
     QuarkusTestResource(KeycloakResource::class)
 )
 class RouteTestsIT: AbstractFunctionalTest() {
+
     @Test
     fun testCreateRoute () {
         TestBuilder().use { testBuilder ->

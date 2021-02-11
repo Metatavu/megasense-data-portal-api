@@ -9,6 +9,7 @@ import javax.persistence.*
  */
 @Entity
 class UserSettings {
+
     @Id
     var id: UUID? = null
 

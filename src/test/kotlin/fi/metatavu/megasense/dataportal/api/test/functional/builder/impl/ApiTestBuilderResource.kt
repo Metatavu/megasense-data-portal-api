@@ -24,6 +24,9 @@ abstract class ApiTestBuilderResource<T, A>(testBuilder: AbstractTestBuilder<Api
         return apiClient
     }
 
+    /**
+     * Sets the api client
+     */
     init {
         this.apiClient = apiClient
     }

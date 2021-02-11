@@ -22,18 +22,18 @@ class RouteDAO: AbstractDAO<Route>() {
      * @param locationFromName The name of the starting location
      * @param locationToName The name of the starting location
      * @param creatorId id of the user who created this route
-     *
+     * @param lastModifierId if of the last user to modify the route
      * @return created route
      */
-    fun create (id: UUID, name: String, routePoints: String, locationFromName: String, locationToName: String, creatorId: UUID): Route {
+    fun create (id: UUID, name: String, routePoints: String, locationFromName: String, locationToName: String, creatorId: UUID, lastModifierId: UUID): Route {
         val route = Route()
         route.id = id
-        route.name = name;
+        route.name = name
         route.locationFromName = locationFromName
         route.locationToName = locationToName
         route.routePoints = routePoints
         route.creatorId = creatorId
-        route.lastModifierId = creatorId
+        route.lastModifierId = lastModifierId
         return persist(route)
     }
 
@@ -51,11 +51,11 @@ class RouteDAO: AbstractDAO<Route>() {
         val root = criteria.from(Route::class.java)
 
         criteria.select(root)
-        val restrictions = ArrayList<Predicate>()
+        val restrictions = mutableListOf<Predicate>()
 
         restrictions.add(criteriaBuilder.equal(root.get(Route_.creatorId), userId))
 
-        criteria.where(criteriaBuilder.and(*restrictions.toTypedArray()));
+        criteria.where(criteriaBuilder.and(*restrictions.toTypedArray()))
         criteria.orderBy(criteriaBuilder.desc(root.get(Route_.createdAt)))
 
         val query = entityManager.createQuery(criteria)

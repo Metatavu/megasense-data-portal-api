@@ -8,7 +8,11 @@ import fi.metatavu.megasense.dataportal.api.client.models.ExposureInstance
 import fi.metatavu.megasense.dataportal.api.test.functional.settings.TestSettings
 import java.util.*
 
+/**
+ * Test builder resource for handling exposure instances
+ */
 class ExposureInstancesTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, private val accessTokenProvider: AccessTokenProvider?, apiClient: ApiClient): ApiTestBuilderResource<ExposureInstance, ApiClient> (testBuilder, apiClient) {
+
     /**
      * Sends a request to create an exposure instance
      *
@@ -24,18 +28,26 @@ class ExposureInstancesTestBuilderResource(testBuilder: AbstractTestBuilder<ApiC
      *
      * @return created exposure instance
      */
-    fun create (
-    routeId: UUID?,
-    startedAt: String?,
-    endedAt: String?,
-    carbonMonoxide: Float?,
-    nitrogenMonoxide: Float?,
-    nitrogenDioxide: Float?,
-    ozone: Float?,
-    sulfurDioxide: Float?,
-    harmfulMicroparticles: Float?
-    ): ExposureInstance {
-        val exposureInstance = ExposureInstance(null, routeId, startedAt, endedAt, carbonMonoxide, nitrogenMonoxide, nitrogenDioxide, ozone, sulfurDioxide, harmfulMicroparticles)
+    fun create(routeId: UUID?,
+                startedAt: String?,
+                endedAt: String?,
+                carbonMonoxide: Float?,
+                nitrogenMonoxide: Float?,
+                nitrogenDioxide: Float?,
+                ozone: Float?,
+                sulfurDioxide: Float?,
+                harmfulMicroparticles: Float?): ExposureInstance {
+        val exposureInstance = ExposureInstance(
+            id = null,
+            routeId = routeId,
+            startedAt = startedAt,
+            endedAt = endedAt,
+            carbonMonoxide = carbonMonoxide,
+            nitrogenMonoxide = nitrogenMonoxide,
+            nitrogenDioxide = nitrogenDioxide,
+            ozone = ozone,
+            sulfurDioxide = sulfurDioxide,
+            harmfulMicroparticles = harmfulMicroparticles)
         return addClosable(api.createExposureInstance(exposureInstance))
     }
 
@@ -46,7 +58,7 @@ class ExposureInstancesTestBuilderResource(testBuilder: AbstractTestBuilder<ApiC
      *
      * @return found exposure instance
      */
-    fun find (exposureInstanceId: UUID): ExposureInstance {
+    fun find(exposureInstanceId: UUID): ExposureInstance {
         return api.findExposureInstance(exposureInstanceId)
     }
 
@@ -60,11 +72,11 @@ class ExposureInstancesTestBuilderResource(testBuilder: AbstractTestBuilder<ApiC
         return api.listExposureInstances(createdBefore, createdAfter)
     }
 
-    override fun clean (exposureInstance: ExposureInstance) {
+    override fun clean(exposureInstance: ExposureInstance) {
         api.deleteExposureInstance(exposureInstance.id!!)
     }
 
-    override fun getApi (): ExposureInstancesApi {
+    override fun getApi(): ExposureInstancesApi {
         ApiClient.accessToken = accessTokenProvider?.accessToken
         return ExposureInstancesApi(TestSettings.apiBasePath)
     }

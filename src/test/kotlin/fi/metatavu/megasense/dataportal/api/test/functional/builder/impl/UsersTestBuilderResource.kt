@@ -14,6 +14,9 @@ import org.apache.commons.httpclient.methods.GetMethod
 import java.io.File
 import java.io.FileOutputStream
 
+/**
+ * Test builder resource for handling users
+ */
 class UsersTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, private val accessTokenProvider: AccessTokenProvider?, apiClient: ApiClient): ApiTestBuilderResource<UserSettings, ApiClient>(testBuilder, apiClient) {
     override fun clean(userSettings: UserSettings) {
         api.deleteUserSettings()

@@ -29,21 +29,21 @@ class UserTestsIT: AbstractFunctionalTest() {
         TestBuilder().use { testBuilder ->
 
             val pollutantPenalties = PollutantPenalties(
-                    1f,
-                    1f,
-                    1f,
-                    1f,
-                    1f,
-                    1f
+                    carbonMonoxidePenalty = 1f,
+                    nitrogenMonoxidePenalty = 1f,
+                    nitrogenDioxidePenalty = 1f,
+                    ozonePenalty = 1f,
+                    sulfurDioxidePenalty = 1f,
+                    harmfulMicroparticlesPenalty = 1f
             )
 
             val pollutantThresholds = PollutantThresholds(
-                    2f,
-                    2f,
-                    2f,
-                    2f,
-                    2f,
-                    2f
+                    carbonMonoxideThreshold = 2f,
+                    nitrogenMonoxideThreshold = 2f,
+                    nitrogenDioxideThreshold = 2f,
+                    ozoneThreshold = 2f,
+                    sulfurDioxideThreshold = 2f,
+                    harmfulMicroparticlesThreshold = 2f
             )
 
             val createdSettings = testBuilder.admin().users().createUserSettings("Mutatie 9", "50708", "Mutala", "Suomi", pollutantPenalties, pollutantThresholds,false)
@@ -69,21 +69,21 @@ class UserTestsIT: AbstractFunctionalTest() {
             assertPollutantThresholdsEqual(pollutantThresholds, foundSettings.pollutantThresholds)
 
             val updatedPollutantPenalties = PollutantPenalties(
-                    3f,
-                    3f,
-                    3f,
-                    3f,
-                    3f,
-                    3f
+                    carbonMonoxidePenalty = 3f,
+                    nitrogenMonoxidePenalty = 3f,
+                    nitrogenDioxidePenalty = 3f,
+                    ozonePenalty = 3f,
+                    sulfurDioxidePenalty = 3f,
+                    harmfulMicroparticlesPenalty = 3f
             )
 
             val updatedPollutantThresholds = PollutantThresholds(
-                    4f,
-                    4f,
-                    4f,
-                    4f,
-                    4f,
-                    4f
+                    carbonMonoxideThreshold = 4f,
+                    nitrogenMonoxideThreshold = 4f,
+                    nitrogenDioxideThreshold = 4f,
+                    ozoneThreshold = 4f,
+                    sulfurDioxideThreshold = 4f,
+                    harmfulMicroparticlesThreshold = 4f
             )
 
             val updatedSettings = testBuilder.admin().users().updateUserSettings("Kuratie 19", "70898", "Kurala", "Suomaa", updatedPollutantPenalties, updatedPollutantThresholds, true)
@@ -111,27 +111,27 @@ class UserTestsIT: AbstractFunctionalTest() {
             val endedAt2 = OffsetDateTime.now().minusHours(6).toString().replace("+02:00", "Z").replace("+03:00", "Z")
 
            val exposureInstance = testBuilder.admin().exposureInstances().create(
-                    route.id!!,
-                    startedAt,
-                    endedAt,
-                    100f,
-                    20f,
-                    30f,
-                    40f,
-                    50f,
-                    60f
+                    routeId = route.id!!,
+                    startedAt = startedAt,
+                    endedAt = endedAt,
+                    carbonMonoxide = 100f,
+                    nitrogenMonoxide = 20f,
+                    nitrogenDioxide = 30f,
+                    ozone = 40f,
+                    sulfurDioxide = 50f,
+                    harmfulMicroparticles = 60f
             )
 
             val exposureInstance2 = testBuilder.admin().exposureInstances().create(
-                    route2.id!!,
-                    startedAt2,
-                    endedAt2,
-                    90f,
-                    10f,
-                    20f,
-                    30f,
-                    40f,
-                    50f
+                    routeId = route2.id!!,
+                    startedAt = startedAt2,
+                    endedAt = endedAt2,
+                    carbonMonoxide = 90f,
+                    nitrogenMonoxide = 10f,
+                    nitrogenDioxide = 20f,
+                    ozone = 30f,
+                    sulfurDioxide = 40f,
+                    harmfulMicroparticles = 50f
             )
 
             val zipFile = testBuilder.admin().users().downloadUserData()

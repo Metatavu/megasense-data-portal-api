@@ -8,6 +8,9 @@ import fi.metatavu.megasense.dataportal.api.client.models.Route
 import fi.metatavu.megasense.dataportal.api.test.functional.settings.TestSettings
 import java.util.*
 
+/**
+ * Test builder resource for handling routes
+ */
 class RoutesTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, private val accessTokenProvider: AccessTokenProvider?, apiClient: ApiClient): ApiTestBuilderResource<Route, ApiClient> (testBuilder, apiClient) {
     /**
      * Sends a request to create a route
@@ -19,7 +22,7 @@ class RoutesTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, p
      *
      * @return created route
      */
-    fun create (name: String, routePoints: String, locationFromName: String, locationToName: String): Route {
+    fun create(name: String, routePoints: String, locationFromName: String, locationToName: String): Route {
         val route = Route(name, routePoints, locationFromName, locationToName, UUID.randomUUID())
         return addClosable(api.createRoute(route))
     }

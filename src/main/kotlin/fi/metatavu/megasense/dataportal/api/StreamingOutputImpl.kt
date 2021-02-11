@@ -5,7 +5,6 @@ import java.io.InputStream
 import java.io.OutputStream
 import javax.ws.rs.core.StreamingOutput
 
-
 /**
  * Implementation of JAX-RS StreamingOutput
  */

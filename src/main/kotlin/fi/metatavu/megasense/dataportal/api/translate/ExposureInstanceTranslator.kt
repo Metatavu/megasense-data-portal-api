@@ -8,6 +8,7 @@ import javax.enterprise.context.ApplicationScoped
  */
 @ApplicationScoped
 class ExposureInstanceTranslator: AbstractTranslator<fi.metatavu.megasense.dataportal.persistence.model.ExposureInstance, fi.metatavu.megasense.dataportal.api.spec.model.ExposureInstance>() {
+
     /**
      * Translates JPA exposure instances into REST exposure instances
      *

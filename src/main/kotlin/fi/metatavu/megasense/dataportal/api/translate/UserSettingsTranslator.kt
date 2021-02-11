@@ -11,6 +11,7 @@ import javax.enterprise.context.ApplicationScoped
  */
 @ApplicationScoped
 class UserSettingsTranslator: AbstractTranslator<fi.metatavu.megasense.dataportal.persistence.model.UserSettings, fi.metatavu.megasense.dataportal.api.spec.model.UserSettings>() {
+
     /**
      * Translates JPA user settings into REST user settings
      *
@@ -36,7 +37,19 @@ class UserSettingsTranslator: AbstractTranslator<fi.metatavu.megasense.dataporta
         }
 
         userSettings.showMobileWelcomeScreen = entity.showMobileWelcomeScreen
+        userSettings.pollutantPenalties = translatePollutantPenalties(entity)
+        userSettings.pollutantThresholds = translatePollutantThresholds(entity)
 
+        return userSettings
+    }
+
+    /**
+     * Translates user settings entity into pollutant penalties
+     *
+     * @param entity user settings
+     * @return pollutant penalties
+     */
+    private fun translatePollutantPenalties(entity: UserSettings): PollutantPenalties {
         val pollutantPenalties = PollutantPenalties()
         pollutantPenalties.carbonMonoxidePenalty = entity.carbonMonoxidePenalty
         pollutantPenalties.nitrogenMonoxidePenalty = entity.nitrogenMonoxidePenalty
@@ -44,7 +57,16 @@ class UserSettingsTranslator: AbstractTranslator<fi.metatavu.megasense.dataporta
         pollutantPenalties.ozonePenalty = entity.ozonePenalty
         pollutantPenalties.sulfurDioxidePenalty = entity.sulfurDioxidePenalty
         pollutantPenalties.harmfulMicroparticlesPenalty = entity.harmfulMicroparticlesPenalty
+        return pollutantPenalties
+    }
 
+    /**
+     * Translates user settings entity into pollutant thresholds
+     *
+     * @param entity user settings
+     * @return pollutant thresholds
+     */
+    private fun translatePollutantThresholds(entity: UserSettings): PollutantThresholds {
         val pollutantThresholds = PollutantThresholds()
         pollutantThresholds.carbonMonoxideThreshold = entity.carbonMonoxideThreshold
         pollutantThresholds.nitrogenMonoxideThreshold = entity.nitrogenMonoxideThreshold
@@ -52,10 +74,6 @@ class UserSettingsTranslator: AbstractTranslator<fi.metatavu.megasense.dataporta
         pollutantThresholds.ozoneThreshold = entity.ozoneThreshold
         pollutantThresholds.sulfurDioxideThreshold = entity.sulfurDioxideThreshold
         pollutantThresholds.harmfulMicroparticlesThreshold = entity.harmfulMicroparticlesThreshold
-
-        userSettings.pollutantPenalties = pollutantPenalties
-        userSettings.pollutantThresholds = pollutantThresholds
-
-        return userSettings
+        return pollutantThresholds;
     }
 }
