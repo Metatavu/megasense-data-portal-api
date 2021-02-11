@@ -15,7 +15,7 @@ steps:
       - |
         if [ -n "${_TEST}" ]; then
           add-apt-repository ppa:linuxuprising/java &&
-          apt update && apt install -y oracle-java11-installer &&
+          apt update && apt install -y oracle-java11-installer-local &&
           java -version &&
           ./gradlew build -Dquarkus.package.type=native -Dquarkus.native.container-build=true
         fi
