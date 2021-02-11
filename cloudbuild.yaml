@@ -1,4 +1,6 @@
 timeout: 7200s
+options:
+  machineType: N1_HIGHCPU_8
 steps:
   - name: 'gcr.io/cloud-builders/git'
     entrypoint: 'bash'
@@ -7,14 +9,6 @@ steps:
       - |
         git submodule init
         git submodule update
-  - name: 'ghcr.io/graalvm/graalvm-ce:${_GRAAL_VM_VERSION}'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        if [ -n "${_TEST}" ]; then
-          ./gradlew testNative
-        fi
   - name: 'gcr.io/cloud-builders/docker'
     entrypoint: 'bash'
     timeout: 7200s
