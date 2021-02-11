@@ -28,7 +28,7 @@ class FavouritesTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>
      *
      * @return all favourites created by the user
      */
-    fun listAll (): Array<FavouriteLocation> {
+    fun listAll (): List<FavouriteLocation> {
         return api.listUserFavouriteLocations()
     }
 

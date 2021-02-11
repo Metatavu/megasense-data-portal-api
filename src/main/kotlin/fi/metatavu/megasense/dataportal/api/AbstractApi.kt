@@ -3,12 +3,6 @@ package fi.metatavu.megasense.dataportal.api
 import fi.metatavu.megasense.dataportal.api.spec.model.Error
 import org.apache.commons.lang3.EnumUtils
 import org.apache.commons.lang3.StringUtils
-import org.jboss.resteasy.spi.ResteasyProviderFactory
-import org.keycloak.KeycloakPrincipal
-import org.keycloak.KeycloakSecurityContext
-import org.keycloak.authorization.client.AuthzClient
-import org.keycloak.authorization.client.ClientAuthorizationContext
-import org.keycloak.representations.AccessToken
 import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.InputStream
@@ -16,15 +10,21 @@ import java.time.OffsetDateTime
 import java.util.*
 import java.util.function.Function
 import java.util.stream.Collectors
-import javax.servlet.http.HttpServletRequest
+import javax.enterprise.context.RequestScoped
+import javax.inject.Inject
 import javax.ws.rs.core.Response
 
+import org.eclipse.microprofile.jwt.JsonWebToken
 
 /**
  * Abstract base class for all API services
  *
  */
+@RequestScoped
 abstract class AbstractApi {
+
+    @Inject
+    private lateinit var jsonWebToken: JsonWebToken
 
     protected val UNAUTHORIZED = "Unauthorized"
 
@@ -70,7 +70,7 @@ abstract class AbstractApi {
      * @throws IllegalArgumentException if parameters contain invalid values
      */
     protected fun <T : Enum<T?>?> getEnumListParameter(enumType: Class<T>, parameter: List<String>?): List<T>? {
-        return getListParameter(parameter, Function { name: String -> java.lang.Enum.valueOf(enumType, name) })
+        return getListParameter(parameter) { name: String -> java.lang.Enum.valueOf(enumType, name) }
     }
 
     /**
@@ -116,23 +116,13 @@ abstract class AbstractApi {
     }
 
     /**
-     * Return current HttpServletRequest
-     *
-     * @return current http servlet request
-     */
-    protected val httpServletRequest: HttpServletRequest
-        get() = ResteasyProviderFactory.getContextData(HttpServletRequest::class.java)
-
-    /**
      * Returns logged user id
      *
      * @return logged user id
      */
     protected val loggerUserId: UUID?
         get() {
-            val httpServletRequest = httpServletRequest
-            val remoteUser = httpServletRequest.remoteUser ?: return null
-            return UUID.fromString(remoteUser)
+            return UUID.fromString(jsonWebToken.subject)
         }
 
     /**
@@ -278,33 +268,6 @@ abstract class AbstractApi {
     }
 
     /**
-     * Returns whether logged user has at least one of specified organization roles
-     *
-     * @param roles roles
-     * @return whether logged user has specified organization role or not
-     */
-    protected fun hasOrganizationRole(vararg roles: String?): Boolean {
-        val keycloakSecurityContext = keycloakSecurityContext ?: return false
-        val token = keycloakSecurityContext.token ?: return false
-        val realmAccess = token.realmAccess ?: return false
-        for (i in 0 until roles.size) {
-            if (realmAccess.isUserInRole(roles[i])) {
-                return true
-            }
-        }
-        return false
-    }
-
-    /**
-     * Return keycloak authorization client
-     */
-    protected val authzClient: AuthzClient?
-        get() {
-            val clientAuthorizationContext: ClientAuthorizationContext = authorizationContext ?: return null
-            return clientAuthorizationContext.getClient()
-        }
-
-    /**
      * Parses date time from string
      *
      * @param timeString
@@ -315,37 +278,6 @@ abstract class AbstractApi {
             null
         } else OffsetDateTime.parse(timeString)
     }
-
-    /**
-     * Returns keycloak security context from request or null if not available
-     */
-    private val keycloakSecurityContext: KeycloakSecurityContext?
-        get() {
-            val request = httpServletRequest
-            val userPrincipal = request.userPrincipal
-            val kcPrincipal = userPrincipal as KeycloakPrincipal<*>
-            return kcPrincipal.keycloakSecurityContext
-        }
-
-    /**
-     * Return keycloak authorization client context or null if not available
-     */
-    private val authorizationContext: ClientAuthorizationContext?
-        get() {
-            val keycloakSecurityContext = keycloakSecurityContext ?: return null
-            return keycloakSecurityContext.authorizationContext as ClientAuthorizationContext
-        }
-
-    /**
-     * Returns access token
-     *
-     * @return access token
-     */
-    protected val accessToken: AccessToken?
-        get() {
-            val keycloakSecurityContext = keycloakSecurityContext ?: return null
-            return keycloakSecurityContext.token
-        }
 
     companion object {
         protected const val NOT_FOUND_MESSAGE = "Not found"

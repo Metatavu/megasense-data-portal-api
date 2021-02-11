@@ -1,3 +1,11 @@
-rootProject.name = 'megasense-data-portal-api'
-include 'api-spec'
-include 'api-client'
+pluginManagement {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+    plugins {
+        id "${quarkusPluginId}" version "${quarkusPluginVersion}"
+    }
+}
+rootProject.name='megasense-data-portal-api'
