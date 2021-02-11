@@ -14,6 +14,7 @@ steps:
       - '-c'
       - |
         if [ -n "${_TEST}" ]; then
+          java -version &&
           apt update && apt install -y openjdk-11-jre-headless &&
           java -version &&
           ./gradlew build -Dquarkus.package.type=native -Dquarkus.native.container-build=true
