@@ -1,6 +1,6 @@
 timeout: 7200s
 options:
-  machineType: N1_HIGHCPU_8
+  machineType: N1_HIGHCPU_32
 steps:
   - name: 'gcr.io/cloud-builders/git'
     entrypoint: 'bash'
