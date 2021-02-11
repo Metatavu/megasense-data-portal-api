@@ -9,6 +9,7 @@ import fi.metatavu.jaxrs.test.functional.builder.auth.KeycloakAccessTokenProvide
 import fi.metatavu.jaxrs.test.functional.builder.auth.AuthorizedTestBuilderAuthentication
 
 import fi.metatavu.megasense.dataportal.api.test.functional.settings.TestSettings
+import org.eclipse.microprofile.config.ConfigProvider
 
 import org.slf4j.LoggerFactory
 
@@ -34,7 +35,7 @@ class TestBuilder: AbstractTestBuilder<ApiClient> () {
     @kotlin.jvm.Throws(IOException::class)
     fun admin(): TestBuilderAuthentication {
         if (admin == null) {
-            val authServerUrl = TestSettings.keycloakHost
+            val authServerUrl: String = ConfigProvider.getConfig().getValue("megasense.keycloak.host", String::class.java)
             val realm = TestSettings.keycloakRealm
             val clientId = TestSettings.keycloakClientId
             val adminUser = TestSettings.keycloakAdminUser

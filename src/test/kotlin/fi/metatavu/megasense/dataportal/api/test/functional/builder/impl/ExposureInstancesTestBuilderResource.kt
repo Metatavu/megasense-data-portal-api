@@ -68,7 +68,7 @@ class ExposureInstancesTestBuilderResource(testBuilder: AbstractTestBuilder<ApiC
      * @param createdBefore include only instances created before this date
      * @param createdAfter include only instances created after this date
      */
-    fun list(createdBefore: String?, createdAfter: String?): Array<ExposureInstance> {
+    fun list (createdBefore: String?, createdAfter: String?): List<ExposureInstance> {
         return api.listExposureInstances(createdBefore, createdAfter)
     }
 

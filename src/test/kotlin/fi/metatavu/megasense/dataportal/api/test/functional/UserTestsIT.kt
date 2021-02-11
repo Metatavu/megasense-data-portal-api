@@ -6,6 +6,12 @@ import fi.metatavu.megasense.dataportal.api.client.models.PollutantThresholds
 import fi.metatavu.megasense.dataportal.api.client.models.Route
 import fi.metatavu.megasense.dataportal.api.test.functional.builder.AbstractFunctionalTest
 import fi.metatavu.megasense.dataportal.api.test.functional.builder.TestBuilder
+import fi.metatavu.megasense.dataportal.api.test.functional.resources.KeycloakResource
+import fi.metatavu.megasense.dataportal.api.test.functional.resources.MysqlResource
+import io.quarkus.test.common.QuarkusTestResource
+import io.quarkus.test.junit.QuarkusTest
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Test
 import org.apache.commons.csv.CSVFormat
 import org.apache.commons.csv.CSVPrinter
 import org.junit.Assert.*
@@ -16,6 +22,11 @@ import java.time.OffsetDateTime
 /**
  * User tests
  */
+@QuarkusTest
+@QuarkusTestResource.List(
+    QuarkusTestResource(MysqlResource::class),
+    QuarkusTestResource(KeycloakResource::class)
+)
 class UserTestsIT: AbstractFunctionalTest() {
 
     @Test
@@ -129,6 +140,8 @@ class UserTestsIT: AbstractFunctionalTest() {
             )
 
             val zipFile = testBuilder.admin().users().downloadUserData()
+            assertNotNull(zipFile)
+
             val exposureLines = readLinesFromZipEntry(zipFile, "exposure.csv")
             val routeLines = readLinesFromZipEntry(zipFile, "routes.csv")
             zipFile.delete()
@@ -222,13 +235,25 @@ class UserTestsIT: AbstractFunctionalTest() {
      */
     private fun assertCorrectCsvRow (exposureInstance: ExposureInstance, csvRow: List<String>) {
         assertEquals(exposureInstance.routeId.toString(), csvRow[0])
-        assertEquals(exposureInstance.startedAt.toString().split(".")[0], csvRow[1].split(".")[0])
-        assertEquals(exposureInstance.endedAt.toString().split(".")[0], csvRow[2].split(".")[0])
+        assertCsvDatesEquals(exposureInstance.startedAt, csvRow[1])
+        assertCsvDatesEquals(exposureInstance.endedAt, csvRow[2])
         assertEquals(exposureInstance.carbonMonoxide.toString(), csvRow[3])
         assertEquals(exposureInstance.nitrogenMonoxide.toString(), csvRow[4])
         assertEquals(exposureInstance.nitrogenDioxide.toString(), csvRow[5])
         assertEquals(exposureInstance.ozone.toString(), csvRow[6])
         assertEquals(exposureInstance.sulfurDioxide.toString(), csvRow[7])
         assertEquals(exposureInstance.harmfulMicroparticles.toString(), csvRow[8])
+    }
+
+    /**
+     * Asserts that two iso dates equals
+     *
+     * @param expected expected
+     * @param actual actual
+     */
+    private fun assertCsvDatesEquals(expected: String?, actual: String) {
+        val expectedDateTime = OffsetDateTime.parse(expected)
+        val actualDateTime = OffsetDateTime.parse(actual)
+        assertEquals(expectedDateTime.toInstant().epochSecond, actualDateTime.toInstant().epochSecond)
     }
 }

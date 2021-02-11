@@ -32,7 +32,7 @@ class RoutesTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, p
      *
      * @return all routes created by the user
      */
-    fun listAll(): Array<Route> {
+    fun listAll (): List<Route> {
         return api.listRoutes()
     }
 
@@ -43,15 +43,15 @@ class RoutesTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, p
      *
      * @return found route
      */
-    fun find(routeId: UUID): Route {
+    fun find (routeId: UUID): Route {
         return api.findRoute(routeId)
     }
 
-    override fun clean(route: Route) {
+    override fun clean (route: Route) {
         api.deleteRoute(route.id!!)
     }
 
-    override fun getApi(): RoutesApi {
+    override fun getApi (): RoutesApi {
         ApiClient.accessToken = accessTokenProvider?.accessToken
         return RoutesApi(TestSettings.apiBasePath)
     }

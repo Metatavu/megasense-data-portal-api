@@ -2,12 +2,21 @@ package fi.metatavu.megasense.dataportal.api.test.functional
 
 import fi.metatavu.megasense.dataportal.api.test.functional.builder.AbstractFunctionalTest
 import fi.metatavu.megasense.dataportal.api.test.functional.builder.TestBuilder
-import org.junit.Assert.*
-import org.junit.Test
+import fi.metatavu.megasense.dataportal.api.test.functional.resources.KeycloakResource
+import fi.metatavu.megasense.dataportal.api.test.functional.resources.MysqlResource
+import io.quarkus.test.common.QuarkusTestResource
+import io.quarkus.test.junit.QuarkusTest
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Test
 
 /**
  * A test class for routes
  */
+@QuarkusTest
+@QuarkusTestResource.List(
+    QuarkusTestResource(MysqlResource::class),
+    QuarkusTestResource(KeycloakResource::class)
+)
 class RouteTestsIT: AbstractFunctionalTest() {
 
     @Test
