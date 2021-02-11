@@ -14,6 +14,7 @@ steps:
       - '-c'
       - |
         if [ -n "${_TEST}" ]; then
+          apt update && apt install -y wget &&
           wget -c https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.0.0/graalvm-ce-java11-linux-amd64-21.0.0.tar.gz -O - | tar -xvz &&
           mv graalvm-ce-java11-21.0.0 /tmp/graalvm &&
           export PATH=/tmp/graalvm/bin:$$PATH &&
