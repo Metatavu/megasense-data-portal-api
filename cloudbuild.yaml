@@ -12,5 +12,6 @@ steps:
       - '-c'
       - |
         if [ -n "${_TEST}" ]; then
+          ./gradlew build -Dquarkus.package.type=native -Dquarkus.native.container-build=true
           ./gradlew test
         fi
