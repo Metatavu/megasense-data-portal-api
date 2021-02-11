@@ -8,10 +8,13 @@ steps:
         git submodule update
   - name: 'gcr.io/cloud-builders/docker'
     entrypoint: 'bash'
+    env:
+      - "DEBIAN_FRONTEND=noninteractive"
     args:
       - '-c'
       - |
         if [ -n "${_TEST}" ]; then
+          apt update && apt install -y openjdk-11-jdk &&
           ./gradlew build -Dquarkus.package.type=native -Dquarkus.native.container-build=true
         fi
   - name: 'openjdk:11.0.10-jdk'
