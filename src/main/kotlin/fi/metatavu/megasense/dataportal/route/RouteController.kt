@@ -71,7 +71,9 @@ class RouteController {
             createdBefore = null,
             route = route
         )
-        exposureInstancesToClear.forEach(exposureInstanceDAO::clearRouteField)
+        exposureInstancesToClear.forEach { exposureInstance ->
+            exposureInstanceDAO.updateRoute(exposureInstance, null);
+        }
 
         routeDAO.delete(route)
     }

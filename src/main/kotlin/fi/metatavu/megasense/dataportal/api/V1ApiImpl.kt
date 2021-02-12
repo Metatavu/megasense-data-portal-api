@@ -15,6 +15,7 @@ import fi.metatavu.megasense.dataportal.persistence.model.Route
 import fi.metatavu.megasense.dataportal.route.RouteController
 import fi.metatavu.megasense.dataportal.users.UsersController
 import java.time.OffsetDateTime
+import java.time.format.DateTimeParseException
 import java.util.*
 import javax.enterprise.context.RequestScoped
 import javax.inject.Inject
@@ -68,7 +69,7 @@ class V1ApiImpl: V1Api, AbstractApi() {
     /* Users */
 
     override fun createUserSettings(userSettings: UserSettings): Response {
-        val userId = loggerUserId!!
+        val userId = loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
         val foundUserSettings = usersController.findUserSettings(userId)
         if (foundUserSettings != null) {
             return createBadRequest("User settings already exist. Use a PUT-request to update user settings.")
@@ -89,14 +90,14 @@ class V1ApiImpl: V1Api, AbstractApi() {
     }
 
     override fun getUserSettings(): Response {
-        val userId = loggerUserId!!
-        val foundUserSettings = usersController.findUserSettings(userId) ?: return createNotFound("User settings not found!")
+        val userId = loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
+        val foundUserSettings = usersController.findUserSettings(userId) ?: return createNotFound(getUserNotFoundError(userId))
         return createOk(userSettingsTranslator.translate(foundUserSettings))
     }
 
     override fun updateUserSettings(userSettings: UserSettings): Response {
-        val userId = loggerUserId!!
-        val foundUserSettings = usersController.findUserSettings(userId) ?: return createNotFound("User settings not found!")
+        val userId = loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
+        val foundUserSettings = usersController.findUserSettings(userId) ?: return createNotFound(getUserNotFoundError(userId))
 
         val homeAddress = userSettings.homeAddress
         val updatedUserSettings = usersController.updateUserSettings(
@@ -115,42 +116,60 @@ class V1ApiImpl: V1Api, AbstractApi() {
     }
 
     override fun deleteUser(): Response {
-        usersController.deleteUser(loggerUserId!!)
+        val userId = loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
+        usersController.deleteUser(userId)
         return createNoContent()
     }
 
     override fun deleteUserSettings(): Response {
-        usersController.deleteUserSettings(loggerUserId!!)
+        val userId = loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
+        usersController.deleteUserSettings(userId)
         return createNoContent()
     }
 
     override fun downloadUserData(): Response {
-        return streamResponse(usersController.findUserData(loggerUserId!!), "application/zip")
+        val userId = loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
+        return streamResponse(usersController.findUserData(userId), "application/zip")
     }
 
     /* TotalExposure */
 
     override fun totalExposure(exposedBefore: String?, exposedAfter: String?): Response {
+        val userId = loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
         var exposedBeforeDate: OffsetDateTime? = null
         var exposedAfterDate: OffsetDateTime? = null
 
-        if (exposedBefore != null) {
-            exposedBeforeDate = OffsetDateTime.parse(exposedBefore)
+        try {
+            if (exposedBefore != null) {
+                exposedBeforeDate = OffsetDateTime.parse(exposedBefore)
+            }
+        }
+        catch (ex: DateTimeParseException){
+            return createBadRequest("Could not parse exposedBefore")
         }
 
-        if (exposedAfter != null) {
-            exposedAfterDate = OffsetDateTime.parse(exposedAfter)
+        try {
+            if (exposedAfter != null) {
+                exposedAfterDate = OffsetDateTime.parse(exposedAfter)
+            }
+        }
+        catch (ex: DateTimeParseException){
+            return createBadRequest("Could not parse exposedAfter")
         }
 
-        return createOk(exposureInstanceTranslator.translate(exposureInstanceController.getTotalExposure(loggerUserId!!, exposedBeforeDate, exposedAfterDate)))
+        return createOk(exposureInstanceTranslator.translate(exposureInstanceController.getTotalExposure(userId, exposedBeforeDate, exposedAfterDate)))
     }
 
     /* ExposureInstances */
 
     override fun createExposureInstance(exposureInstance: ExposureInstance): Response {
+        val userId = loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
         var route: Route? = null
         if (exposureInstance.routeId != null) {
             route = routeController.findRoute(exposureInstance.routeId)
+            if (route == null) {
+                return createBadRequest("Route not found!")
+            }
         }
 
         return createOk(exposureInstanceTranslator.translate(exposureInstanceController.createExposureInstance(
@@ -163,14 +182,15 @@ class V1ApiImpl: V1Api, AbstractApi() {
             exposureInstance.ozone,
             exposureInstance.sulfurDioxide,
             exposureInstance.harmfulMicroparticles,
-            loggerUserId!!
+            userId
         )))
     }
 
     override fun deleteExposureInstance(exposureInstanceId: UUID): Response {
-        val exposureInstance = exposureInstanceController.findExposureInstance(exposureInstanceId) ?: return createNotFound(EXPOSURE_INSTANCE_NOT_FOUND)
+        val userId = loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
+        val exposureInstance = exposureInstanceController.findExposureInstance(exposureInstanceId) ?: return createNotFound(getExposureInstanceNotFoundError(exposureInstanceId))
 
-        if (exposureInstance.creatorId != loggerUserId!!) {
+        if (exposureInstance.creatorId != userId) {
             return createUnauthorized("You are unauthorized to delete this!")
         }
 
@@ -180,14 +200,17 @@ class V1ApiImpl: V1Api, AbstractApi() {
     }
 
     override fun findExposureInstance(exposureInstanceId: UUID): Response {
-        val exposureInstance = exposureInstanceController.findExposureInstance(exposureInstanceId) ?: return createNotFound(EXPOSURE_INSTANCE_NOT_FOUND)
-        if (!exposureInstance.creatorId!!.equals(loggerUserId!!)) {
-            return createNotFound(EXPOSURE_INSTANCE_NOT_FOUND)
+        val userId = loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
+        val exposureInstance = exposureInstanceController.findExposureInstance(exposureInstanceId) ?: return createNotFound(getExposureInstanceNotFoundError(exposureInstanceId))
+        if (exposureInstance.creatorId!! != userId) {
+            return createNotFound(getExposureInstanceNotFoundError(exposureInstanceId))
         }
+
         return createOk(exposureInstanceTranslator.translate(exposureInstance))
     }
 
     override fun listExposureInstances(createdBefore: String?, createdAfter: String?): Response {
+        val userId = loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
         var createdBeforeDate: OffsetDateTime? = null
         var createdAfterDate: OffsetDateTime? = null
 
@@ -198,26 +221,30 @@ class V1ApiImpl: V1Api, AbstractApi() {
         if (createdAfter != null) {
             createdAfterDate = OffsetDateTime.parse(createdAfter)
         }
-        return createOk(exposureInstanceTranslator.translate(exposureInstanceController.listExposureInstances(loggerUserId!!, createdBeforeDate, createdAfterDate)))
+
+        return createOk(exposureInstanceTranslator.translate(exposureInstanceController.listExposureInstances(userId, createdBeforeDate, createdAfterDate)))
     }
 
     /* Favourites */
 
     override fun createUserFavouriteLocation(favouries: FavouriteLocation): Response {
-        return createOk(favouritesTranslator.translate(favouritesController.createFavourite(favouries.name, favouries.latitude, favouries.longitude, loggerUserId!!)))
+        val userId = loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
+        return createOk(favouritesTranslator.translate(favouritesController.createFavourite(favouries.name, favouries.latitude, favouries.longitude, userId)))
     }
 
     override fun deleteUserFavouriteLocation(favouriteId: UUID): Response {
+        val userId = loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
         val favourite = favouritesController.findFavourite(favouriteId) ?: return createBadRequest(ROUTE_NOT_FOUND)
-        if (!favourite.creatorId!!.equals(loggerUserId!!)) {
+        if (favourite.creatorId!! != userId) {
             return createNotFound(ROUTE_NOT_FOUND)
         }
-        favouritesController.deleteFavourite(favourite, loggerUserId!!)
+
+        favouritesController.deleteFavourite(favourite, userId)
         return createNoContent()
     }
 
     override fun updateUserFavouriteLocation(favouriteId: UUID, favouriteLocation: FavouriteLocation): Response {
-        val userId = loggerUserId!!
+        val userId = loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
         val updatedFavouriteLocation = favouritesController.updateFavourite(
             favouriteId,
             favouriteLocation.name,
@@ -230,34 +257,41 @@ class V1ApiImpl: V1Api, AbstractApi() {
     }
 
     override fun listUserFavouriteLocations(): Response {
-        return createOk(favouritesTranslator.translate(favouritesController.listFavourites(loggerUserId!!)))
+        val userId = loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
+        return createOk(favouritesTranslator.translate(favouritesController.listFavourites(userId)))
     }
 
     /* Routes */
 
     override fun createRoute(route: fi.metatavu.megasense.dataportal.api.spec.model.Route): Response {
-        return createOk(routeTranslator.translate(routeController.createRoute(route.name, route.routePoints, route.locationFromName, route.locationToName, loggerUserId!!)))
+        val userId = loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
+        return createOk(routeTranslator.translate(routeController.createRoute(route.name, route.routePoints, route.locationFromName, route.locationToName, userId)))
     }
 
     override fun deleteRoute(routeId: UUID): Response {
+        val userId = loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
         val route = routeController.findRoute(routeId) ?: return createBadRequest(ROUTE_NOT_FOUND)
-        if (!route.creatorId!!.equals(loggerUserId!!)) {
+        if (route.creatorId!! != userId) {
             return createNotFound(ROUTE_NOT_FOUND)
         }
-        routeController.deleteRoute(route, loggerUserId!!)
+
+        routeController.deleteRoute(route, userId)
         return createNoContent()
     }
 
     override fun findRoute(routeId: UUID): Response {
-        val route = routeController.findRoute(routeId) ?: return createNotFound(ROUTE_NOT_FOUND)
-        if (!route.creatorId!!.equals(loggerUserId!!)) {
-            return createNotFound("Route not found")
+        val userId = loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
+        val route = routeController.findRoute(routeId) ?: return createNotFound(getRouteNotFound(routeId))
+        if (route.creatorId!! != userId) {
+            return createNotFound(getRouteNotFound(routeId))
         }
+
         return createOk(routeTranslator.translate(route))
     }
 
     override fun listRoutes(): Response {
-        return createOk(routeTranslator.translate(routeController.listRoutes(loggerUserId!!)))
+        val userId = loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
+        return createOk(routeTranslator.translate(routeController.listRoutes(userId)))
     }
 
     /* System */
@@ -267,8 +301,38 @@ class V1ApiImpl: V1Api, AbstractApi() {
     }
 
     companion object {
-        private const val EXPOSURE_INSTANCE_NOT_FOUND = "Exposure instance not found"
+
         private const val ROUTE_NOT_FOUND = "Route not found!"
+
+        /**
+         * Gets exposure instance not found error string
+         *
+         * @param uuid exposure instance uuid
+         * @return error string with exposureInstance uuid included
+         */
+        fun getUserNotFoundError(uuid: UUID): String {
+            return String.format("User %s not found", uuid)
+        }
+
+        /**
+         * Gets exposure instance not found error string
+         *
+         * @param uuid exposure instance uuid
+         * @return error string with exposureInstance uuid included
+         */
+        fun getExposureInstanceNotFoundError(uuid: UUID): String {
+            return String.format("Exposure instance %s not found", uuid)
+        }
+
+        /**
+         * Get route not found error string
+         *
+         * @param uuid route uuid
+         * @return error string with route uuid included
+         */
+        fun getRouteNotFound(uuid: UUID): String {
+            return String.format("Route %s not found", uuid)
+        }
     }
 
 }
