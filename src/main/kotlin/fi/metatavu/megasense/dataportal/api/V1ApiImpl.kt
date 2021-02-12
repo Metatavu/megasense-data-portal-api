@@ -234,9 +234,9 @@ class V1ApiImpl: V1Api, AbstractApi() {
 
     override fun deleteUserFavouriteLocation(favouriteId: UUID): Response {
         val userId = loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
-        val favourite = favouritesController.findFavourite(favouriteId) ?: return createBadRequest(ROUTE_NOT_FOUND)
+        val favourite = favouritesController.findFavourite(favouriteId) ?: return createBadRequest(getFavouriteLocationNotFoundError(favouriteId))
         if (favourite.creatorId!! != userId) {
-            return createNotFound(ROUTE_NOT_FOUND)
+            return createNotFound(getFavouriteLocationNotFoundError(favouriteId))
         }
 
         favouritesController.deleteFavourite(favourite, userId)
@@ -270,9 +270,9 @@ class V1ApiImpl: V1Api, AbstractApi() {
 
     override fun deleteRoute(routeId: UUID): Response {
         val userId = loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
-        val route = routeController.findRoute(routeId) ?: return createBadRequest(ROUTE_NOT_FOUND)
+        val route = routeController.findRoute(routeId) ?: return createBadRequest(getRouteNotFoundError(routeId))
         if (route.creatorId!! != userId) {
-            return createNotFound(ROUTE_NOT_FOUND)
+            return createNotFound(getRouteNotFoundError(routeId))
         }
 
         routeController.deleteRoute(route, userId)
@@ -302,7 +302,25 @@ class V1ApiImpl: V1Api, AbstractApi() {
 
     companion object {
 
-        private const val ROUTE_NOT_FOUND = "Route not found!"
+        /**
+         * Gets favourite location not found error string
+         *
+         * @param uuid favourite location uuid
+         * @return error string with favourite location uuid included
+         */
+        fun getFavouriteLocationNotFoundError(uuid: UUID): String {
+            return String.format("Favourite location %s not found", uuid)
+        }
+
+        /**
+         * Gets route not found error string
+         *
+         * @param uuid route uuid
+         * @return error string with route uuid included
+         */
+        fun getRouteNotFoundError(uuid: UUID): String {
+            return String.format("Route %s not found", uuid)
+        }
 
         /**
          * Gets exposure instance not found error string
