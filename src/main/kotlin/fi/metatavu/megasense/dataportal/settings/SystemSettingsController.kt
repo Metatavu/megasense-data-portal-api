@@ -4,7 +4,7 @@ import org.eclipse.microprofile.config.ConfigProvider
 import javax.enterprise.context.ApplicationScoped
 
 /**
- * System settings controller class used to read System settings
+ * System settings controller class used to config properties
  */
 @ApplicationScoped
 class SystemSettingsController {
@@ -15,8 +15,8 @@ class SystemSettingsController {
      * @param key key
      * @return setting value
      */
-    private fun getEnvPropertySetting(key: String): String? {
-        return ConfigProvider.getConfig().getValue(key, String::class.java)
+    private fun getKeycloakConfigProperty(key: String): String? {
+        return ConfigProvider.getConfig().getValue("megasense.keycloak.$key", String::class.java)
     }
 
     /**
@@ -25,7 +25,7 @@ class SystemSettingsController {
      * @return Keycloak realm
      */
     fun getKeycloakRealm(): String? {
-        return getEnvPropertySetting("KEYCLOAK_REALM")
+        return getKeycloakConfigProperty("realm")
     }
 
     /**
@@ -34,7 +34,7 @@ class SystemSettingsController {
      * @return Keycloak URL
      */
     fun getKeycloakUrl(): String? {
-        return getEnvPropertySetting("megasense.keycloak.host")
+        return getKeycloakConfigProperty("host")
     }
 
     /**
@@ -43,7 +43,7 @@ class SystemSettingsController {
      * @return Keycloak admin user
      */
     fun getKeycloakAdminUser(): String? {
-        return getEnvPropertySetting("KEYCLOAK_USER")
+        return getKeycloakConfigProperty("user")
     }
 
     /**
@@ -52,7 +52,7 @@ class SystemSettingsController {
      * @return Keycloak admin pass
      */
     fun getKeycloakAdminPassword(): String? {
-        return getEnvPropertySetting("KEYCLOAK_PASSWORD")
+        return getKeycloakConfigProperty("password")
     }
 
     /**
@@ -61,6 +61,6 @@ class SystemSettingsController {
      * @return Keycloak admin client id
      */
     fun getKeycloakAdminClientId(): String? {
-        return getEnvPropertySetting("KEYCLOAK_ADMIN_CLIENT_ID")
+        return getKeycloakConfigProperty("admin_client_id")
     }
 }
