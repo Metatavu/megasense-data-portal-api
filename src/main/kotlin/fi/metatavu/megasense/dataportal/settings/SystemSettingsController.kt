@@ -1,6 +1,6 @@
 package fi.metatavu.megasense.dataportal.settings
 
-import org.apache.commons.lang3.StringUtils
+import org.eclipse.microprofile.config.ConfigProvider
 import javax.enterprise.context.ApplicationScoped
 
 /**
@@ -10,13 +10,13 @@ import javax.enterprise.context.ApplicationScoped
 class SystemSettingsController {
 
     /**
-     * Returns environment variable
+     * Returns keycloak property by name
      *
      * @param key key
      * @return setting value
      */
     private fun getEnvPropertySetting(key: String): String? {
-        return System.getenv(key)
+        return ConfigProvider.getConfig().getValue(key, String::class.java)
     }
 
     /**
@@ -34,7 +34,7 @@ class SystemSettingsController {
      * @return Keycloak URL
      */
     fun getKeycloakUrl(): String? {
-        return getEnvPropertySetting("KEYCLOAK_URL")
+        return getEnvPropertySetting("megasense.keycloak.host")
     }
 
     /**

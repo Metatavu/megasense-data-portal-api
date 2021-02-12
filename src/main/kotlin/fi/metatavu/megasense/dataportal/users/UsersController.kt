@@ -87,7 +87,7 @@ class UsersController {
                 .grantType(null)
                 .username(systemSettingsController.getKeycloakAdminUser())
                 .password(systemSettingsController.getKeycloakAdminPassword())
-                .realm(ConfigProvider.getConfig().getValue("keycloak.realm", String::class.java))
+                .realm(systemSettingsController.getKeycloakRealm())
                 .clientId(systemSettingsController.getKeycloakAdminClientId())
                 .serverUrl(systemSettingsController.getKeycloakUrl())
                 .build()

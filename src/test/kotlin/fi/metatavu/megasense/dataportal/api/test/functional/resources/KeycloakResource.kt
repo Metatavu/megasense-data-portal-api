@@ -15,6 +15,10 @@ class KeycloakResource : QuarkusTestResourceLifecycleManager {
         config["quarkus.oidc.auth-server-url"] = String.format("%s/realms/megasense-data-portal", keycloak.authServerUrl)
         config["quarkus.oidc.client-id"] = "api"
         config["megasense.keycloak.host"] = keycloak.authServerUrl
+        config["KEYCLOAK_REALM"] = "megasense-data-portal"
+        config["KEYCLOAK_USER"] = "admin"
+        config["KEYCLOAK_PASSWORD"] = "test"
+        config["KEYCLOAK_ADMIN_CLIENT_ID"] = "test"
 
         return config
     }
