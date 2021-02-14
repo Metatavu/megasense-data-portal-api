@@ -17,7 +17,7 @@ steps:
     args:
       - '-c'
       - |
-        if [ -n "${_TEST}" ]; then
+        if [ -n "${_NATIVE}" ]; then
           apt update && apt install -y wget &&
           wget -c https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-${_GRAAL_VM_VERSION}/graalvm-ce-java11-linux-amd64-${_GRAAL_VM_VERSION}.tar.gz -O - | tar -xz &&
           mv graalvm-ce-java11-${_GRAAL_VM_VERSION} /tmp/graalvm &&
