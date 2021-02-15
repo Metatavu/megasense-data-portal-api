@@ -114,11 +114,6 @@ class V1ApiImpl: V1Api, AbstractApi() {
         return createOk(userSettingsTranslator.translate(updatedUserSettings))
     }
 
-    override fun deleteUser(): Response {
-        usersController.deleteUser(loggerUserId!!)
-        return createNoContent()
-    }
-
     override fun deleteUserSettings(): Response {
         usersController.deleteUserSettings(loggerUserId!!)
         return createNoContent()
