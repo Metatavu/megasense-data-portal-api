@@ -158,12 +158,7 @@ class AirQualityController {
      * @return Netcdf-file
      */
     private fun loadNetcdfFile(): NetcdfFile {
-        javaClass.classLoader.getResource("fi/metatavu/megasense/dataportal/airquality.nc")!!.openStream().use {
-            val tempFile = File.createTempFile("airquality", ".nc")
-            FileUtils.copyInputStreamToFile(it, tempFile);
-            tempFile.deleteOnExit();
-            return NetcdfFile.open(tempFile.path)
-        }
+        return NetcdfFile.open(ConfigProvider.getConfig().getValue("megasense.airquality.path", String::class.java))
     }
 
     /**
