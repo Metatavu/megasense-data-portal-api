@@ -134,30 +134,9 @@ class V1ApiImpl: V1Api, AbstractApi() {
 
     /* TotalExposure */
 
-    override fun totalExposure(exposedBefore: String?, exposedAfter: String?): Response {
+    override fun totalExposure(exposedBefore: OffsetDateTime?, exposedAfter: OffsetDateTime?): Response {
         val userId = loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
-        var exposedBeforeDate: OffsetDateTime? = null
-        var exposedAfterDate: OffsetDateTime? = null
-
-        try {
-            if (exposedBefore != null) {
-                exposedBeforeDate = OffsetDateTime.parse(exposedBefore)
-            }
-        }
-        catch (ex: DateTimeParseException){
-            return createBadRequest("Could not parse exposedBefore")
-        }
-
-        try {
-            if (exposedAfter != null) {
-                exposedAfterDate = OffsetDateTime.parse(exposedAfter)
-            }
-        }
-        catch (ex: DateTimeParseException){
-            return createBadRequest("Could not parse exposedAfter")
-        }
-
-        return createOk(exposureInstanceTranslator.translate(exposureInstanceController.getTotalExposure(userId, exposedBeforeDate, exposedAfterDate)))
+        return createOk(exposureInstanceTranslator.translate(exposureInstanceController.getTotalExposure(userId, exposedBefore, exposedAfter)))
     }
 
     /* ExposureInstances */
@@ -209,20 +188,9 @@ class V1ApiImpl: V1Api, AbstractApi() {
         return createOk(exposureInstanceTranslator.translate(exposureInstance))
     }
 
-    override fun listExposureInstances(createdBefore: String?, createdAfter: String?): Response {
+    override fun listExposureInstances(createdBefore: OffsetDateTime?, createdAfter: OffsetDateTime?): Response {
         val userId = loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
-        var createdBeforeDate: OffsetDateTime? = null
-        var createdAfterDate: OffsetDateTime? = null
-
-        if (createdBefore != null) {
-            createdBeforeDate = OffsetDateTime.parse(createdBefore)
-        }
-
-        if (createdAfter != null) {
-            createdAfterDate = OffsetDateTime.parse(createdAfter)
-        }
-
-        return createOk(exposureInstanceTranslator.translate(exposureInstanceController.listExposureInstances(userId, createdBeforeDate, createdAfterDate)))
+        return createOk(exposureInstanceTranslator.translate(exposureInstanceController.listExposureInstances(userId, createdBefore, createdAfter)))
     }
 
     /* Favourites */
@@ -252,7 +220,6 @@ class V1ApiImpl: V1Api, AbstractApi() {
             favouriteLocation.longitude,
             userId
         )
-
         return createOk(favouritesTranslator.translate(updatedFavouriteLocation))
     }
 
