@@ -25,7 +25,7 @@ steps:
           export JAVA_HOME=/tmp/graalvm &&
           java -version &&
           gu install native-image &&
-          ./gradlew build -Dquarkus.package.type=native -x test
+          ./gradlew build -Dquarkus.package.type=native -Dquarkus.native.container-build=true -x test
         fi
   - name: 'openjdk:11.0.10-jdk'
     entrypoint: 'bash'
