@@ -59,6 +59,7 @@ sourceSets.main.java.srcDirs += ['build/generated/api-spec/src/gen/java']
 sourceSets.test.java.srcDirs += ['build/generated/api-client/src/main/kotlin']
 
 allOpen {
+    annotation("javax.persistence.Entity")
     annotation("javax.ws.rs.Path")
     annotation("javax.enterprise.context.ApplicationScoped")
     annotation("io.quarkus.test.junit.QuarkusTest")
