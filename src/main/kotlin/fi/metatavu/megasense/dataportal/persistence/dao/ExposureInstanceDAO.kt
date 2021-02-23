@@ -101,12 +101,14 @@ class ExposureInstanceDAO: AbstractDAO<ExposureInstance>() {
     }
 
     /**
-     * Clears the route field of an exposure instance
+     * Updates route field
      *
-     * @param exposureInstance instance to remove route from
+     * @param exposureInstance exposure instance to update
+     * @param route new route value
+     * @return updated exposure instance
      */
-    fun clearRouteField (exposureInstance: ExposureInstance) {
-        exposureInstance.route = null
-        persist(exposureInstance)
+    fun updateRoute(exposureInstance: ExposureInstance, route: Route?): ExposureInstance {
+        exposureInstance.route = route
+        return persist(exposureInstance)
     }
 }
