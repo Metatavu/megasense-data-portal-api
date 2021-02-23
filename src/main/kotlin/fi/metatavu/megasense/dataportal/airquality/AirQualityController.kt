@@ -306,10 +306,10 @@ class AirQualityController {
      * @return list of RouteAirQuality entries
      */
     fun getAirQualityList(coordinates: MutableList<String>): List<RouteAirQuality> {
-        val airQualities = mutableListOf<RouteAirQuality>()
         val netcdfFile = loadNetcdfFile()
 
         try {
+            val airQualities = mutableListOf<RouteAirQuality>()
             val timeArray = netcdfFile.findVariable(getAirQualityParameter("AIR_QUALITY_TIME")).read()
             val latitudeArray = netcdfFile.findVariable(getAirQualityParameter("AIR_QUALITY_LAT")).read()
             val longitudeArray = netcdfFile.findVariable(getAirQualityParameter("AIR_QUALITY_LON")).read()
@@ -334,11 +334,11 @@ class AirQualityController {
                 
                 airQualities.add(routeAirQuality)
             }
+            return airQualities
         }
         finally {
             netcdfFile.close()
         }
-        return airQualities
     }
 
     /**
