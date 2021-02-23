@@ -21,6 +21,8 @@ class AirQualityTestProfile: QuarkusTestProfile {
         config["megasense.airquality.parameters.NITROGEN_DIOXIDE"] = "daymax_cnc_NO2"
         config["megasense.airquality.parameters.OZONE"] = "daymax_cnc_O3"
         config["megasense.airquality.parameters.SULFUR_DIOXIDE"] = "daymax_cnc_SO2"
+
+        config["megasense.airquality.path"] = "data/airquality.nc"
         return config
     }
 
