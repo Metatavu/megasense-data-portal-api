@@ -157,7 +157,7 @@ class AirQualityController {
      * @return Netcdf-file
      */
     private fun loadNetcdfFile(): NetcdfFile {
-        return NetcdfFile.open(ConfigProvider.getConfig().getValue("megasense.airquality.path", String::class.java))
+        return NetcdfFile.open("data/airquality.nc")
     }
 
     /**
