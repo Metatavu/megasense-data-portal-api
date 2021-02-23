@@ -8,6 +8,7 @@ import fi.metatavu.megasense.dataportal.api.test.functional.resources.MysqlResou
 import io.quarkus.test.common.QuarkusTestResource
 import io.quarkus.test.junit.QuarkusTest
 import io.quarkus.test.junit.TestProfile
+import org.junit.Assert.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.Assert.assertNotNull
 
@@ -71,6 +72,19 @@ class AirQualityTestsIT: AbstractFunctionalTest() {
 
             val microParticles = testBuilder.admin().airQuality().getAirQualityForCoordinates(coordinates, "MICRO_PARTICLES")
             assertNotNull(microParticles)
+        }
+    }
+
+    @Test
+    fun testGetAirQualityForRoute() {
+        TestBuilder().use { testBuilder ->
+            val coordinateList = mutableListOf("60.20383377832825,25.03689765930176", "64.20383377832825,27.03689765930176")
+
+            val airQualityForRouteCoordinates =
+                testBuilder.admin().airQuality().getAirQualityForRouteCoordinates(coordinateList)
+
+            assertNotNull(airQualityForRouteCoordinates)
+            assertEquals(2, airQualityForRouteCoordinates.size)
         }
     }
 }

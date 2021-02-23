@@ -5,9 +5,8 @@ import fi.metatavu.jaxrs.test.functional.builder.auth.AccessTokenProvider
 import fi.metatavu.megasense.dataportal.api.client.apis.AirQualityApi
 import fi.metatavu.megasense.dataportal.api.client.infrastructure.ApiClient
 import fi.metatavu.megasense.dataportal.api.client.models.AirQuality
+import fi.metatavu.megasense.dataportal.api.client.models.RouteAirQuality
 import fi.metatavu.megasense.dataportal.api.test.functional.settings.TestSettings
-import org.junit.Assert.assertTrue
-import java.lang.Exception
 
 /**
  * Test builder resource for handling air quality
@@ -38,6 +37,16 @@ class AirQualityTestBuilderResource (testBuilder: AbstractTestBuilder<ApiClient?
      */
     fun getAirQualityForCoordinates (coordinates: String, pollutantType: String): AirQuality {
         return api.getAirQualityForCoordinates(coordinates, pollutantType)
+    }
+
+    /**
+     * Returns air quality data for list of coordinates
+     *
+     * @param coordinates coordinates list
+     * @return air quality for coordinates list
+     */
+    fun getAirQualityForRouteCoordinates (coordinates: List<String>): List<RouteAirQuality> {
+        return api.getRouteAirQuality(coordinates).toList()
     }
 
     override fun getApi(): AirQualityApi {

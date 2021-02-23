@@ -65,6 +65,10 @@ class V1ApiImpl: V1Api, AbstractApi() {
         return createOk(airQualityController.getAirQualityForCoordinates(pollutant, coordinates))
     }
 
+    override fun getRouteAirQuality(coordinates: MutableList<String>): Response {
+        return createOk(airQualityController.getAirQualityList(coordinates))
+    }
+
     /* Users */
 
     override fun createUserSettings(userSettings: UserSettings): Response {
