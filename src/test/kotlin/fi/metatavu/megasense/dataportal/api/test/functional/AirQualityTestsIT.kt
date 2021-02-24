@@ -29,22 +29,22 @@ class AirQualityTestsIT: AbstractFunctionalTest() {
             val corner1 = "60,21"
             val corner2 = "65,26"
 
-            val carbonMonoxide = testBuilder.admin().airQuality().getAirQuality("CARBON_MONOXIDE", corner1, corner2)
+            val carbonMonoxide = testBuilder.admin().airQuality().getAirQuality("CARBON_MONOXIDE", corner1, corner2, null)
             assertNotNull(carbonMonoxide)
 
-            val nitrogenMonoxide = testBuilder.admin().airQuality().getAirQuality("NITROGEN_MONOXIDE", corner1, corner2)
+            val nitrogenMonoxide = testBuilder.admin().airQuality().getAirQuality("NITROGEN_MONOXIDE", corner1, corner2, null)
             assertNotNull(nitrogenMonoxide)
 
-            val nitrogenDioxide = testBuilder.admin().airQuality().getAirQuality("NITROGEN_DIOXIDE", corner1, corner2)
+            val nitrogenDioxide = testBuilder.admin().airQuality().getAirQuality("NITROGEN_DIOXIDE", corner1, corner2, null)
             assertNotNull(nitrogenDioxide)
 
-            val sulfurDioxide = testBuilder.admin().airQuality().getAirQuality("SULFUR_DIOXIDE", corner1, corner2)
+            val sulfurDioxide = testBuilder.admin().airQuality().getAirQuality("SULFUR_DIOXIDE", corner1, corner2, null)
             assertNotNull(sulfurDioxide)
 
-            val ozone = testBuilder.admin().airQuality().getAirQuality("OZONE", corner1, corner2)
+            val ozone = testBuilder.admin().airQuality().getAirQuality("OZONE", corner1, corner2, null)
             assertNotNull(ozone)
 
-            val microParticles = testBuilder.admin().airQuality().getAirQuality("MICRO_PARTICLES", corner1, corner2)
+            val microParticles = testBuilder.admin().airQuality().getAirQuality("MICRO_PARTICLES", corner1, corner2, null)
             assertNotNull(microParticles)
 
         }
@@ -81,7 +81,7 @@ class AirQualityTestsIT: AbstractFunctionalTest() {
             val coordinateList = mutableListOf("60.20383377832825,25.03689765930176", "64.20383377832825,27.03689765930176")
 
             val airQualityForRouteCoordinates =
-                testBuilder.admin().airQuality().getAirQualityForRouteCoordinates(coordinateList)
+                testBuilder.admin().airQuality().getAirQuality(null, null, null, coordinateList)
 
             assertNotNull(airQualityForRouteCoordinates)
             assertEquals(2, airQualityForRouteCoordinates.size)

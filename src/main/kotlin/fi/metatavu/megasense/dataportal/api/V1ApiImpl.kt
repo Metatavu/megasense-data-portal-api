@@ -57,16 +57,21 @@ class V1ApiImpl: V1Api, AbstractApi() {
 
     /* AirQuality */
 
-    override fun getAirQuality(pollutant: String, boundingBoxCorner1: String, boundingBoxCorner2: String): Response {
-        return createOk(airQualityController.getAirQuality(pollutant, boundingBoxCorner1, boundingBoxCorner2))
-    }
-
     override fun getAirQualityForCoordinates(coordinates: String, pollutant: String): Response {
         return createOk(airQualityController.getAirQualityForCoordinates(pollutant, coordinates))
     }
 
-    override fun getRouteAirQuality(coordinates: MutableList<String>): Response {
-        return createOk(airQualityController.getAirQualityList(coordinates))
+    override fun getAirQuality(
+        pollutant: String?,
+        boundingBoxCorner1: String?,
+        boundingBoxCorner2: String?,
+        coordinatesArray: MutableList<String>?
+    ): Response {
+        return if (boundingBoxCorner1 != null && boundingBoxCorner2 != null && pollutant != null) {
+            createOk(airQualityController.getAirQuality(pollutant, boundingBoxCorner1, boundingBoxCorner2))
+        } else if (coordinatesArray != null) {
+            createOk(airQualityController.getAirQualityList(pollutant, coordinatesArray))
+        } else createBadRequest("Invalid parameters")
     }
 
     /* Users */

@@ -22,10 +22,11 @@ class AirQualityTestBuilderResource (testBuilder: AbstractTestBuilder<ApiClient?
      * @param pollutantType return only values for this pollutant
      * @param boundingBoxCorner1 lower left of the bounding box
      * @param boundingBoxCorner2 upper right of the bounding box
+     * @param coordinates list of coordinates
      * @return air quality values
      */
-    fun getAirQuality (pollutantType: String, boundingBoxCorner1: String, boundingBoxCorner2: String): List<AirQuality> {
-        return api.getAirQuality(pollutantType, boundingBoxCorner1, boundingBoxCorner2).toList()
+    fun getAirQuality (pollutantType: String?, boundingBoxCorner1: String?, boundingBoxCorner2: String?, coordinates: List<String>?): List<AirQuality> {
+        return api.getAirQuality(pollutantType, boundingBoxCorner1, boundingBoxCorner2, coordinates).toList()
     }
 
     /**
@@ -37,16 +38,6 @@ class AirQualityTestBuilderResource (testBuilder: AbstractTestBuilder<ApiClient?
      */
     fun getAirQualityForCoordinates (coordinates: String, pollutantType: String): AirQuality {
         return api.getAirQualityForCoordinates(coordinates, pollutantType)
-    }
-
-    /**
-     * Returns air quality data for list of coordinates
-     *
-     * @param coordinates coordinates list
-     * @return air quality for coordinates list
-     */
-    fun getAirQualityForRouteCoordinates (coordinates: List<String>): List<RouteAirQuality> {
-        return api.getRouteAirQuality(coordinates).toList()
     }
 
     override fun getApi(): AirQualityApi {
