@@ -21,18 +21,8 @@ class UserSettingsTranslator: AbstractTranslator<fi.metatavu.megasense.dataporta
      */
     override fun translate(entity: UserSettings): fi.metatavu.megasense.dataportal.api.spec.model.UserSettings {
         val userSettings = fi.metatavu.megasense.dataportal.api.spec.model.UserSettings()
-
-        val city = entity.city
-        val country = entity.country
-        val postalCode = entity.postalCode
-        val streetAddress = entity.streetAddress
-
-        if (city != null && country != null && postalCode != null && streetAddress != null) {
-            val homeAddress = HomeAddress()
-            homeAddress.city = city
-            homeAddress.country = country
-            homeAddress.postalCode = postalCode
-            homeAddress.streetAddress = streetAddress
+        val homeAddress: HomeAddress? = translateHomeAddress(entity)
+        if (homeAddress != null) {
             userSettings.homeAddress = homeAddress
         }
 
@@ -75,5 +65,23 @@ class UserSettingsTranslator: AbstractTranslator<fi.metatavu.megasense.dataporta
         pollutantThresholds.sulfurDioxideThreshold = entity.sulfurDioxideThreshold
         pollutantThresholds.harmfulMicroparticlesThreshold = entity.harmfulMicroparticlesThreshold
         return pollutantThresholds;
+    }
+
+    /**
+     * Translate home address from UserSettings entity
+     *
+     * @param entity
+     * @return
+     */
+    private fun translateHomeAddress(entity: UserSettings): HomeAddress? {
+        if (entity.city != null && entity.country != null && entity.postalCode != null && entity.streetAddress != null) {
+            val homeAddress = HomeAddress()
+            homeAddress.city = entity.city
+            homeAddress.country = entity.country
+            homeAddress.postalCode = entity.postalCode
+            homeAddress.streetAddress = entity.streetAddress
+            return homeAddress;
+        }
+        return null;
     }
 }

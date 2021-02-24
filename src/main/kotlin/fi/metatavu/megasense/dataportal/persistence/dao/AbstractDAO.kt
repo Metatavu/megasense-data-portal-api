@@ -56,7 +56,6 @@ abstract class AbstractDAO<T> {
      *
      * @return all entities from database
      */
-    @Suppress("UNCHECKED_CAST")
     open fun listAll(): List<T> {
         val genericTypeClass: Class<*>? = genericTypeClass
         val query: Query = entityManager.createQuery("select o from " + genericTypeClass!!.name + " o")

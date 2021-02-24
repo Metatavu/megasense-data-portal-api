@@ -38,60 +38,7 @@ class UsersController {
     private lateinit var exposureInstanceController: ExposureInstanceController
 
     @Inject
-    private lateinit var systemSettingsController: SystemSettingsController
-
-    @Inject
     private lateinit var userSettingsDAO: UserSettingsDAO
-
-    /**
-     * Deletes an user
-     *
-     * @param userId id of the user to delete
-     */
-    fun deleteUser(userId: UUID) {
-        val userRoutes = routeController.listRoutes(userId)
-
-        for (route in userRoutes) {
-            routeController.deleteRoute(route, userId)
-        }
-
-        val userExposureInstances = exposureInstanceController.listExposureInstances(
-            userId = userId,
-            createdBefore = null,
-            createdAfter = null
-        )
-
-        for (instance in userExposureInstances) {
-            exposureInstanceController.deleteExposureInstance(instance)
-        }
-
-        deleteUserSettings(userId)
-
-        val keycloak = getKeycloakClient()
-        val usersResource = keycloak.realm(systemSettingsController.getKeycloakRealm()).users()
-        val deleteResponse = usersResource.delete(userId.toString())
-
-        if (deleteResponse.status < 200 || deleteResponse.status > 299) {
-            throw IllegalStateException("Keycloak returned an error when deleting an user!")
-        }
-    }
-
-    /**
-     * Returns an authenticated Keycloak client
-     *
-     * @return authenticated Keycloak client
-     */
-    private fun getKeycloakClient(): Keycloak {
-        return KeycloakBuilder
-                .builder()
-                .grantType(null)
-                .username(systemSettingsController.getKeycloakAdminUser())
-                .password(systemSettingsController.getKeycloakAdminPassword())
-                .realm(ConfigProvider.getConfig().getValue("keycloak.realm", String::class.java))
-                .clientId(systemSettingsController.getKeycloakAdminClientId())
-                .serverUrl(systemSettingsController.getKeycloakUrl())
-                .build()
-    }
 
     /**
      * Creates user settings
