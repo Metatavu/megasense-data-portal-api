@@ -116,9 +116,9 @@ class AirQualityController {
                 )
 
                 // Combining two different lists of particle observations into a single list
-                val combined = data1 + data2
+                val combinedAirQualityData = data1 + data2
                 val airQualityForLocation = mutableMapOf<String, AirQuality>()
-                for (airQuality in combined) {
+                for (airQuality in combinedAirQualityData) {
                     val latitude = airQuality.location.latitude
                     val longitude = airQuality.location.longitude
                     val locationString = "$latitude,$longitude"
