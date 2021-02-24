@@ -115,12 +115,6 @@ class V1ApiImpl: V1Api, AbstractApi() {
         return createOk(userSettingsTranslator.translate(updatedUserSettings))
     }
 
-    override fun deleteUser(): Response {
-        val userId = loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
-        usersController.deleteUser(userId)
-        return createNoContent()
-    }
-
     override fun deleteUserSettings(): Response {
         val userId = loggerUserId ?: return createUnauthorized(UNAUTHORIZED)
         usersController.deleteUserSettings(userId)
