@@ -5,7 +5,6 @@ import fi.metatavu.jaxrs.test.functional.builder.auth.AccessTokenProvider
 import fi.metatavu.megasense.dataportal.api.client.apis.AirQualityApi
 import fi.metatavu.megasense.dataportal.api.client.infrastructure.ApiClient
 import fi.metatavu.megasense.dataportal.api.client.models.AirQuality
-import fi.metatavu.megasense.dataportal.api.client.models.RouteAirQuality
 import fi.metatavu.megasense.dataportal.api.test.functional.settings.TestSettings
 
 /**
