@@ -6,8 +6,6 @@ import fi.metatavu.megasense.dataportal.api.client.apis.AirQualityApi
 import fi.metatavu.megasense.dataportal.api.client.infrastructure.ApiClient
 import fi.metatavu.megasense.dataportal.api.client.models.AirQuality
 import fi.metatavu.megasense.dataportal.api.test.functional.settings.TestSettings
-import org.junit.Assert.assertTrue
-import java.lang.Exception
 
 /**
  * Test builder resource for handling air quality
@@ -23,10 +21,11 @@ class AirQualityTestBuilderResource (testBuilder: AbstractTestBuilder<ApiClient?
      * @param pollutantType return only values for this pollutant
      * @param boundingBoxCorner1 lower left of the bounding box
      * @param boundingBoxCorner2 upper right of the bounding box
+     * @param coordinates list of coordinates
      * @return air quality values
      */
-    fun getAirQuality (pollutantType: String, boundingBoxCorner1: String, boundingBoxCorner2: String): List<AirQuality> {
-        return api.getAirQuality(pollutantType, boundingBoxCorner1, boundingBoxCorner2).toList()
+    fun getAirQuality (pollutantType: String?, boundingBoxCorner1: String?, boundingBoxCorner2: String?, coordinates: List<String>?): List<AirQuality> {
+        return api.getAirQuality(pollutantType, boundingBoxCorner1, boundingBoxCorner2, coordinates).toList()
     }
 
     /**
