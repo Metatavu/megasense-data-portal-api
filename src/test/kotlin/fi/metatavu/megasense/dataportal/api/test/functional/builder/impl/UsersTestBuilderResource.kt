@@ -34,9 +34,7 @@ class UsersTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, pr
      * @param pollutantPenalties pollutant penalties
      * @param pollutantThresholds pollutant thresholds
      * @param showMobileWelcomeScreen a boolean setting for showing the mobile welcome screen
-     * @param asthma asthma
-     * @param ihd ihd
-     * @param copd copd
+     * @param medicalConditions medical conditions
      * @return created user settings
      */
     fun createUserSettings(
@@ -47,12 +45,9 @@ class UsersTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, pr
             pollutantPenalties: PollutantPenalties,
             pollutantThresholds: PollutantThresholds,
             showMobileWelcomeScreen: Boolean,
-            asthma: Boolean,
-            ihd: Boolean,
-            copd: Boolean
+            medicalConditions: MedicalConditions
     ): UserSettings {
         val homeAddress = HomeAddress(streetAddress, postalCode, city, country)
-        val medicalConditions = MedicalConditions(asthma, ihd, copd)
         val userSettings = UserSettings(showMobileWelcomeScreen, pollutantPenalties, pollutantThresholds, medicalConditions, homeAddress)
         return addClosable(api.createUserSettings(userSettings))
     }
@@ -67,9 +62,7 @@ class UsersTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, pr
      * @param pollutantPenalties pollutant penalties
      * @param pollutantThresholds pollutant thresholds
      * @param showMobileWelcomeScreen a boolean setting for showing the mobile welcome screen
-     * @param asthma boolean to show asthma condition
-     * @param ihd boolean to show ihd condition
-     * @param copd boolean to show copd condition     *
+     * @param medicalConditions medical conditions
      * @return updated user settings
      */
     fun updateUserSettings(
@@ -80,12 +73,9 @@ class UsersTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, pr
             pollutantPenalties: PollutantPenalties,
             pollutantThresholds: PollutantThresholds,
             showMobileWelcomeScreen: Boolean,
-            asthma: Boolean,
-            ihd: Boolean,
-            copd: Boolean
+            medicalConditions: MedicalConditions
     ): UserSettings {
         val homeAddress = HomeAddress(streetAddress, postalCode, city, country)
-        val medicalConditions = MedicalConditions(asthma, ihd, copd)
         val userSettings = UserSettings(showMobileWelcomeScreen, pollutantPenalties, pollutantThresholds, medicalConditions, homeAddress)
         return api.updateUserSettings(userSettings)
     }
