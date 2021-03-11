@@ -27,6 +27,10 @@ class UserTestsIT: AbstractFunctionalTest() {
     @Test
     fun userSettingsTest() {
         TestBuilder().use { testBuilder ->
+            val streetAddress = "Mutatie 9"
+            val postalCode = "50708"
+            val city = "Mutala"
+            val country = "Suomi"
 
             val pollutantPenalties = PollutantPenalties(
                     carbonMonoxidePenalty = 1f,
@@ -47,10 +51,10 @@ class UserTestsIT: AbstractFunctionalTest() {
             )
 
             val createdSettings = testBuilder.admin().users().createUserSettings(
-                streetAddress = "Mutatie 9",
-                postalCode = "50708",
-                city = "Mutala",
-                country = "Suomi",
+                streetAddress = streetAddress,
+                postalCode = postalCode,
+                city = city,
+                country = country,
                 pollutantPenalties = pollutantPenalties,
                 pollutantThresholds = pollutantThresholds,
                 showMobileWelcomeScreen = false,
@@ -59,10 +63,10 @@ class UserTestsIT: AbstractFunctionalTest() {
                 copd = false)
 
             assertNotNull(createdSettings)
-            assertEquals("Mutatie 9", createdSettings.homeAddress?.streetAddress)
-            assertEquals("50708", createdSettings.homeAddress?.postalCode)
-            assertEquals("Mutala", createdSettings.homeAddress?.city)
-            assertEquals("Suomi", createdSettings.homeAddress?.country)
+            assertEquals(streetAddress, createdSettings.homeAddress?.streetAddress)
+            assertEquals(postalCode, createdSettings.homeAddress?.postalCode)
+            assertEquals(city, createdSettings.homeAddress?.city)
+            assertEquals(country, createdSettings.homeAddress?.country)
             assertEquals(false, createdSettings.showMobileWelcomeScreen)
             assertPollutantPenaltiesEqual(pollutantPenalties, createdSettings.pollutantPenalties)
             assertPollutantThresholdsEqual(pollutantThresholds, createdSettings.pollutantThresholds)
@@ -73,10 +77,10 @@ class UserTestsIT: AbstractFunctionalTest() {
             val foundSettings = testBuilder.admin().users().getUserSettings()
 
             assertNotNull(foundSettings)
-            assertEquals("Mutatie 9", foundSettings.homeAddress?.streetAddress)
-            assertEquals("50708", foundSettings.homeAddress?.postalCode)
-            assertEquals("Mutala", foundSettings.homeAddress?.city)
-            assertEquals("Suomi", foundSettings.homeAddress?.country)
+            assertEquals(streetAddress, foundSettings.homeAddress?.streetAddress)
+            assertEquals(postalCode, foundSettings.homeAddress?.postalCode)
+            assertEquals(city, foundSettings.homeAddress?.city)
+            assertEquals(country, foundSettings.homeAddress?.country)
             assertEquals(false, foundSettings.showMobileWelcomeScreen)
             assertPollutantPenaltiesEqual(pollutantPenalties, foundSettings.pollutantPenalties)
             assertPollutantThresholdsEqual(pollutantThresholds, foundSettings.pollutantThresholds)
@@ -137,7 +141,7 @@ class UserTestsIT: AbstractFunctionalTest() {
             val startedAt2 = OffsetDateTime.now().minusHours(9).toString().replace("+02:00", "Z").replace("+03:00", "Z")
             val endedAt2 = OffsetDateTime.now().minusHours(6).toString().replace("+02:00", "Z").replace("+03:00", "Z")
 
-           val exposureInstance = testBuilder.admin().exposureInstances().create(
+            val exposureInstance = testBuilder.admin().exposureInstances().create(
                     routeId = route.id!!,
                     startedAt = startedAt,
                     endedAt = endedAt,

@@ -94,9 +94,7 @@ class V1ApiImpl: V1Api, AbstractApi() {
             userSettings.showMobileWelcomeScreen,
             userSettings.pollutantPenalties,
             userSettings.pollutantThresholds,
-            medicalConditions.asthma,
-            medicalConditions.ihd,
-            medicalConditions.copd,
+            medicalConditions,
             userId
         )
         return createOk(userSettingsTranslator.translate(createdUserSettings))

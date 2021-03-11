@@ -46,9 +46,7 @@ class UsersController {
      * @param showMobileWelcomeScreen a boolean setting for showing the mobile welcome screen
      * @param pollutantPenalties pollutant penalties
      * @param pollutantThresholds pollutant thresholds
-     * @param asthma asthma
-     * @param ihd ihd
-     * @param copd copd
+     * @param medicalConditions medical conditions
      * @param creatorId id of the user to whom these setting belong
      *
      * @return created user settings
@@ -61,9 +59,7 @@ class UsersController {
             showMobileWelcomeScreen: Boolean,
             pollutantPenalties: PollutantPenalties,
             pollutantThresholds: PollutantThresholds,
-            asthma: Boolean,
-            ihd: Boolean,
-            copd: Boolean,
+            medicalConditions: MedicalConditions,
             creatorId: UUID): UserSettings {
         return userSettingsDAO.create(
             id = UUID.randomUUID(),
@@ -75,9 +71,7 @@ class UsersController {
             pollutantPenalties = pollutantPenalties,
             pollutantThresholds = pollutantThresholds,
             creatorId = creatorId,
-            asthma = asthma,
-            ihd = ihd,
-            copd = copd,
+            medicalConditions = medicalConditions,
             lastModifierId = creatorId
         )
     }

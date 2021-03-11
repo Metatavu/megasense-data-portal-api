@@ -1,5 +1,6 @@
 package fi.metatavu.megasense.dataportal.persistence.dao
 
+import fi.metatavu.megasense.dataportal.api.spec.model.MedicalConditions
 import fi.metatavu.megasense.dataportal.api.spec.model.PollutantPenalties
 import fi.metatavu.megasense.dataportal.api.spec.model.PollutantThresholds
 import fi.metatavu.megasense.dataportal.persistence.model.UserSettings_
@@ -25,9 +26,7 @@ class UserSettingsDAO: AbstractDAO<UserSettings>() {
      * @param showMobileWelcomeScreen a boolean setting for showing the mobile welcome screen
      * @param pollutantPenalties pollutant penalties
      * @param pollutantThresholds pollutant thresholds
-     * @param asthma asthma
-     * @param ihd ihd
-     * @param copd copd
+     * @param medicalConditions medical conditions
      * @param creatorId id of the user to whom these setting belong
      * @param lastModifierId id of the user who was the last to modify the settings
      * @return created user settings
@@ -41,9 +40,7 @@ class UserSettingsDAO: AbstractDAO<UserSettings>() {
             showMobileWelcomeScreen: Boolean,
             pollutantPenalties: PollutantPenalties,
             pollutantThresholds: PollutantThresholds,
-            asthma: Boolean,
-            ihd: Boolean,
-            copd: Boolean,
+            medicalConditions: MedicalConditions,
             creatorId: UUID,
             lastModifierId: UUID
     ): UserSettings {
@@ -70,9 +67,9 @@ class UserSettingsDAO: AbstractDAO<UserSettings>() {
         userSettings.sulfurDioxideThreshold = pollutantThresholds.sulfurDioxideThreshold
         userSettings.harmfulMicroparticlesThreshold = pollutantThresholds.harmfulMicroparticlesThreshold
 
-        userSettings.asthma = asthma
-        userSettings.ihd = ihd
-        userSettings.copd = copd
+        userSettings.asthma = medicalConditions.asthma
+        userSettings.ihd = medicalConditions.ihd
+        userSettings.copd = medicalConditions.copd
 
         userSettings.lastModifierId = lastModifierId
 
