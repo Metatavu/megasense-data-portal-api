@@ -80,6 +80,17 @@ class UserSettings {
     @Column(nullable = false)
     var creatorId: UUID? = null
 
+    /** Medical conditions */
+
+    @Column
+    var asthma: Boolean? = null
+
+    @Column
+    var ihd: Boolean? = null
+
+    @Column
+    var copd: Boolean? = null
+
     @Column(nullable = false)
     var lastModifierId: UUID? = null
 

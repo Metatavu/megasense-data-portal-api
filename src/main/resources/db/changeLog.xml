@@ -165,4 +165,12 @@
             </column>
         </createTable>
     </changeSet>
+
+    <changeSet id="medicalconditions" author="Katja Danilova">
+        <addColumn tableName="usersettings">
+            <column name="asthma" type="boolean"/>
+            <column name="ihd" type="boolean"/>
+            <column name="copd" type="boolean"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

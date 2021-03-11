@@ -46,7 +46,17 @@ class UserTestsIT: AbstractFunctionalTest() {
                     harmfulMicroparticlesThreshold = 2f
             )
 
-            val createdSettings = testBuilder.admin().users().createUserSettings("Mutatie 9", "50708", "Mutala", "Suomi", pollutantPenalties, pollutantThresholds,false)
+            val createdSettings = testBuilder.admin().users().createUserSettings(
+                streetAddress = "Mutatie 9",
+                postalCode = "50708",
+                city = "Mutala",
+                country = "Suomi",
+                pollutantPenalties = pollutantPenalties,
+                pollutantThresholds = pollutantThresholds,
+                showMobileWelcomeScreen = false,
+                asthma = true,
+                ihd = false,
+                copd = false)
 
             assertNotNull(createdSettings)
             assertEquals("Mutatie 9", createdSettings.homeAddress?.streetAddress)
@@ -56,6 +66,9 @@ class UserTestsIT: AbstractFunctionalTest() {
             assertEquals(false, createdSettings.showMobileWelcomeScreen)
             assertPollutantPenaltiesEqual(pollutantPenalties, createdSettings.pollutantPenalties)
             assertPollutantThresholdsEqual(pollutantThresholds, createdSettings.pollutantThresholds)
+            assertTrue(createdSettings.medicalConditions.asthma)
+            assertFalse(createdSettings.medicalConditions.ihd)
+            assertFalse(createdSettings.medicalConditions.copd)
 
             val foundSettings = testBuilder.admin().users().getUserSettings()
 
@@ -86,7 +99,18 @@ class UserTestsIT: AbstractFunctionalTest() {
                     harmfulMicroparticlesThreshold = 4f
             )
 
-            val updatedSettings = testBuilder.admin().users().updateUserSettings("Kuratie 19", "70898", "Kurala", "Suomaa", updatedPollutantPenalties, updatedPollutantThresholds, true)
+            val updatedSettings = testBuilder.admin().users().updateUserSettings(
+                streetAddress = "Kuratie 19",
+                postalCode = "70898",
+                city = "Kurala",
+                country = "Suomaa",
+                pollutantPenalties = updatedPollutantPenalties,
+                pollutantThresholds = updatedPollutantThresholds,
+                showMobileWelcomeScreen = true,
+                asthma = true,
+                ihd = true,
+                copd = false)
+
             assertNotNull(updatedSettings)
             assertEquals("Kuratie 19", updatedSettings.homeAddress?.streetAddress)
             assertEquals("70898", updatedSettings.homeAddress?.postalCode)
@@ -95,6 +119,9 @@ class UserTestsIT: AbstractFunctionalTest() {
             assertEquals(true, updatedSettings.showMobileWelcomeScreen)
             assertPollutantPenaltiesEqual(updatedPollutantPenalties, updatedSettings.pollutantPenalties)
             assertPollutantThresholdsEqual(updatedPollutantThresholds, updatedSettings.pollutantThresholds)
+            assertTrue(updatedSettings.medicalConditions.asthma)
+            assertTrue(updatedSettings.medicalConditions.ihd)
+            assertFalse(updatedSettings.medicalConditions.copd)
         }
     }
 

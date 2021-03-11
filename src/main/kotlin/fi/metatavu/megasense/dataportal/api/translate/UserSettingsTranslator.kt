@@ -1,6 +1,7 @@
 package fi.metatavu.megasense.dataportal.api.translate
 
 import fi.metatavu.megasense.dataportal.api.spec.model.HomeAddress
+import fi.metatavu.megasense.dataportal.api.spec.model.MedicalConditions
 import fi.metatavu.megasense.dataportal.api.spec.model.PollutantPenalties
 import fi.metatavu.megasense.dataportal.api.spec.model.PollutantThresholds
 import fi.metatavu.megasense.dataportal.persistence.model.UserSettings
@@ -26,11 +27,28 @@ class UserSettingsTranslator: AbstractTranslator<fi.metatavu.megasense.dataporta
             userSettings.homeAddress = homeAddress
         }
 
+        val medicalConditions: MedicalConditions = translateMedicalConditions(entity)
+
+        userSettings.medicalConditions = medicalConditions
         userSettings.showMobileWelcomeScreen = entity.showMobileWelcomeScreen
         userSettings.pollutantPenalties = translatePollutantPenalties(entity)
         userSettings.pollutantThresholds = translatePollutantThresholds(entity)
 
         return userSettings
+    }
+
+    /**
+     * Translates user settings entity into medical conditions
+     *
+     * @param entity user settings
+     * @return medical conditions
+     */
+    private fun translateMedicalConditions(entity: UserSettings): MedicalConditions {
+        val medicalConditions = MedicalConditions()
+        medicalConditions.asthma = entity.asthma
+        medicalConditions.ihd = entity.ihd
+        medicalConditions.copd = entity.copd
+        return medicalConditions
     }
 
     /**

@@ -85,6 +85,7 @@ class V1ApiImpl: V1Api, AbstractApi() {
         }
 
         val homeAddress = userSettings.homeAddress
+        val medicalConditions = userSettings.medicalConditions
         val createdUserSettings = usersController.createUserSettings(
             homeAddress?.streetAddress,
             homeAddress?.postalCode,
@@ -93,6 +94,9 @@ class V1ApiImpl: V1Api, AbstractApi() {
             userSettings.showMobileWelcomeScreen,
             userSettings.pollutantPenalties,
             userSettings.pollutantThresholds,
+            medicalConditions.asthma,
+            medicalConditions.ihd,
+            medicalConditions.copd,
             userId
         )
         return createOk(userSettingsTranslator.translate(createdUserSettings))
@@ -118,6 +122,7 @@ class V1ApiImpl: V1Api, AbstractApi() {
             userSettings.showMobileWelcomeScreen,
             userSettings.pollutantPenalties,
             userSettings.pollutantThresholds,
+            userSettings.medicalConditions,
             userId
         )
 

@@ -4,10 +4,7 @@ import fi.metatavu.jaxrs.test.functional.builder.AbstractTestBuilder
 import fi.metatavu.jaxrs.test.functional.builder.auth.AccessTokenProvider
 import fi.metatavu.megasense.dataportal.api.client.apis.UsersApi
 import fi.metatavu.megasense.dataportal.api.client.infrastructure.ApiClient
-import fi.metatavu.megasense.dataportal.api.client.models.HomeAddress
-import fi.metatavu.megasense.dataportal.api.client.models.PollutantPenalties
-import fi.metatavu.megasense.dataportal.api.client.models.PollutantThresholds
-import fi.metatavu.megasense.dataportal.api.client.models.UserSettings
+import fi.metatavu.megasense.dataportal.api.client.models.*
 import fi.metatavu.megasense.dataportal.api.test.functional.settings.TestSettings
 import org.apache.commons.httpclient.HttpClient
 import org.apache.commons.httpclient.methods.GetMethod
@@ -37,7 +34,9 @@ class UsersTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, pr
      * @param pollutantPenalties pollutant penalties
      * @param pollutantThresholds pollutant thresholds
      * @param showMobileWelcomeScreen a boolean setting for showing the mobile welcome screen
-     *
+     * @param asthma asthma
+     * @param ihd ihd
+     * @param copd copd
      * @return created user settings
      */
     fun createUserSettings(
@@ -47,9 +46,14 @@ class UsersTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, pr
             country: String,
             pollutantPenalties: PollutantPenalties,
             pollutantThresholds: PollutantThresholds,
-            showMobileWelcomeScreen: Boolean): UserSettings {
+            showMobileWelcomeScreen: Boolean,
+            asthma: Boolean,
+            ihd: Boolean,
+            copd: Boolean
+    ): UserSettings {
         val homeAddress = HomeAddress(streetAddress, postalCode, city, country)
-        val userSettings = UserSettings(showMobileWelcomeScreen, pollutantPenalties, pollutantThresholds, homeAddress)
+        val medicalConditions = MedicalConditions(asthma, ihd, copd)
+        val userSettings = UserSettings(showMobileWelcomeScreen, pollutantPenalties, pollutantThresholds, medicalConditions, homeAddress)
         return addClosable(api.createUserSettings(userSettings))
     }
 
@@ -63,7 +67,9 @@ class UsersTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, pr
      * @param pollutantPenalties pollutant penalties
      * @param pollutantThresholds pollutant thresholds
      * @param showMobileWelcomeScreen a boolean setting for showing the mobile welcome screen
-     *
+     * @param asthma boolean to show asthma condition
+     * @param ihd boolean to show ihd condition
+     * @param copd boolean to show copd condition     *
      * @return updated user settings
      */
     fun updateUserSettings(
@@ -73,10 +79,14 @@ class UsersTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, pr
             country: String,
             pollutantPenalties: PollutantPenalties,
             pollutantThresholds: PollutantThresholds,
-            showMobileWelcomeScreen: Boolean
+            showMobileWelcomeScreen: Boolean,
+            asthma: Boolean,
+            ihd: Boolean,
+            copd: Boolean
     ): UserSettings {
         val homeAddress = HomeAddress(streetAddress, postalCode, city, country)
-        val userSettings = UserSettings(showMobileWelcomeScreen, pollutantPenalties, pollutantThresholds, homeAddress)
+        val medicalConditions = MedicalConditions(asthma, ihd, copd)
+        val userSettings = UserSettings(showMobileWelcomeScreen, pollutantPenalties, pollutantThresholds, medicalConditions, homeAddress)
         return api.updateUserSettings(userSettings)
     }
 

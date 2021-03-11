@@ -25,6 +25,9 @@ class UserSettingsDAO: AbstractDAO<UserSettings>() {
      * @param showMobileWelcomeScreen a boolean setting for showing the mobile welcome screen
      * @param pollutantPenalties pollutant penalties
      * @param pollutantThresholds pollutant thresholds
+     * @param asthma asthma
+     * @param ihd ihd
+     * @param copd copd
      * @param creatorId id of the user to whom these setting belong
      * @param lastModifierId id of the user who was the last to modify the settings
      * @return created user settings
@@ -38,6 +41,9 @@ class UserSettingsDAO: AbstractDAO<UserSettings>() {
             showMobileWelcomeScreen: Boolean,
             pollutantPenalties: PollutantPenalties,
             pollutantThresholds: PollutantThresholds,
+            asthma: Boolean,
+            ihd: Boolean,
+            copd: Boolean,
             creatorId: UUID,
             lastModifierId: UUID
     ): UserSettings {
@@ -63,6 +69,10 @@ class UserSettingsDAO: AbstractDAO<UserSettings>() {
         userSettings.ozoneThreshold = pollutantThresholds.ozoneThreshold
         userSettings.sulfurDioxideThreshold = pollutantThresholds.sulfurDioxideThreshold
         userSettings.harmfulMicroparticlesThreshold = pollutantThresholds.harmfulMicroparticlesThreshold
+
+        userSettings.asthma = asthma
+        userSettings.ihd = ihd
+        userSettings.copd = copd
 
         userSettings.lastModifierId = lastModifierId
 
@@ -325,6 +335,48 @@ class UserSettingsDAO: AbstractDAO<UserSettings>() {
      */
     fun updateCountry (userSettings: UserSettings, country: String?, modifierId: UUID): UserSettings {
         userSettings.country = country
+        userSettings.lastModifierId = modifierId
+        return persist(userSettings)
+    }
+
+    /**
+     * Updates asthma status
+     *
+     * @param userSettings user settings to update
+     * @param asthma asthma
+     * @param modifierId id of user who changes the property
+     * @return updated user settings
+     */
+    fun updateAsthma(userSettings: UserSettings, asthma: Boolean, modifierId: UUID): UserSettings {
+        userSettings.asthma = asthma
+        userSettings.lastModifierId = modifierId
+        return persist(userSettings)
+    }
+
+    /**
+     * Updates ihd status
+     *
+     * @param userSettings user settings to update
+     * @param ihd Ischemic Heart Disease
+     * @param modifierId id of user who changes the property
+     * @return updated user settings
+     */
+    fun updateIhd(userSettings: UserSettings, ihd: Boolean, modifierId: UUID): UserSettings {
+        userSettings.ihd = ihd
+        userSettings.lastModifierId = modifierId
+        return persist(userSettings)
+    }
+
+    /**
+     * Updates copd status
+     *
+     * @param userSettings user settings to update
+     * @param copd Chronic obstructive pulmonary disease
+     * @param modifierId id of user who changes the property
+     * @return updated user settings
+     */
+    fun updateCopd(userSettings: UserSettings, copd: Boolean, modifierId: UUID): UserSettings {
+        userSettings.copd = copd
         userSettings.lastModifierId = modifierId
         return persist(userSettings)
     }
