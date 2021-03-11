@@ -27,10 +27,7 @@ class UsersTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, pr
     /**
      * Sends a request to create new user settings
      *
-     * @param streetAddress street address
-     * @param postalCode postal code
-     * @param city city
-     * @param country country
+     * @param homeAddress home address
      * @param pollutantPenalties pollutant penalties
      * @param pollutantThresholds pollutant thresholds
      * @param showMobileWelcomeScreen a boolean setting for showing the mobile welcome screen
@@ -38,16 +35,12 @@ class UsersTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, pr
      * @return created user settings
      */
     fun createUserSettings(
-            streetAddress: String,
-            postalCode: String,
-            city: String,
-            country: String,
+            homeAddress: HomeAddress,
             pollutantPenalties: PollutantPenalties,
             pollutantThresholds: PollutantThresholds,
             showMobileWelcomeScreen: Boolean,
             medicalConditions: MedicalConditions
     ): UserSettings {
-        val homeAddress = HomeAddress(streetAddress, postalCode, city, country)
         val userSettings = UserSettings(showMobileWelcomeScreen, pollutantPenalties, pollutantThresholds, medicalConditions, homeAddress)
         return addClosable(api.createUserSettings(userSettings))
     }
@@ -55,10 +48,7 @@ class UsersTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, pr
     /**
      * Sends a request to update user settings
      *
-     * @param streetAddress new street address
-     * @param postalCode new postal code
-     * @param city new city
-     * @param country new country
+     * @param homeAddress home address
      * @param pollutantPenalties pollutant penalties
      * @param pollutantThresholds pollutant thresholds
      * @param showMobileWelcomeScreen a boolean setting for showing the mobile welcome screen
@@ -66,16 +56,12 @@ class UsersTestBuilderResource(testBuilder: AbstractTestBuilder<ApiClient?>?, pr
      * @return updated user settings
      */
     fun updateUserSettings(
-            streetAddress: String,
-            postalCode: String,
-            city: String,
-            country: String,
+            homeAddress: HomeAddress,
             pollutantPenalties: PollutantPenalties,
             pollutantThresholds: PollutantThresholds,
             showMobileWelcomeScreen: Boolean,
             medicalConditions: MedicalConditions
     ): UserSettings {
-        val homeAddress = HomeAddress(streetAddress, postalCode, city, country)
         val userSettings = UserSettings(showMobileWelcomeScreen, pollutantPenalties, pollutantThresholds, medicalConditions, homeAddress)
         return api.updateUserSettings(userSettings)
     }

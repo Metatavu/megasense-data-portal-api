@@ -53,11 +53,10 @@ class UserTestsIT: AbstractFunctionalTest() {
                 copd = false
             )
 
+            val homeAddress = HomeAddress(streetAddress, postalCode, city, country)
+
             val createdSettings = testBuilder.admin().users().createUserSettings(
-                streetAddress = streetAddress,
-                postalCode = postalCode,
-                city = city,
-                country = country,
+                homeAddress = homeAddress,
                 pollutantPenalties = pollutantPenalties,
                 pollutantThresholds = pollutantThresholds,
                 showMobileWelcomeScreen = false,
@@ -114,11 +113,10 @@ class UserTestsIT: AbstractFunctionalTest() {
                 copd = false
             )
 
+            val newHomeAddress = HomeAddress( "Kuratie 19", "70898", "Kurala", "Suomaa")
+
             val updatedSettings = testBuilder.admin().users().updateUserSettings(
-                streetAddress = "Kuratie 19",
-                postalCode = "70898",
-                city = "Kurala",
-                country = "Suomaa",
+                homeAddress = newHomeAddress,
                 pollutantPenalties = updatedPollutantPenalties,
                 pollutantThresholds = updatedPollutantThresholds,
                 showMobileWelcomeScreen = true,
@@ -126,10 +124,10 @@ class UserTestsIT: AbstractFunctionalTest() {
             )
 
             assertNotNull(updatedSettings)
-            assertEquals("Kuratie 19", updatedSettings.homeAddress?.streetAddress)
-            assertEquals("70898", updatedSettings.homeAddress?.postalCode)
-            assertEquals("Kurala", updatedSettings.homeAddress?.city)
-            assertEquals("Suomaa", updatedSettings.homeAddress?.country)
+            assertEquals(newHomeAddress.streetAddress, updatedSettings.homeAddress?.streetAddress)
+            assertEquals(newHomeAddress.postalCode, updatedSettings.homeAddress?.postalCode)
+            assertEquals(newHomeAddress.city, updatedSettings.homeAddress?.city)
+            assertEquals(newHomeAddress.country, updatedSettings.homeAddress?.country)
             assertEquals(true, updatedSettings.showMobileWelcomeScreen)
             assertPollutantPenaltiesEqual(updatedPollutantPenalties, updatedSettings.pollutantPenalties)
             assertPollutantThresholdsEqual(updatedPollutantThresholds, updatedSettings.pollutantThresholds)
