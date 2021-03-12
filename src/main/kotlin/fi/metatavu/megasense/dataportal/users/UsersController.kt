@@ -1,5 +1,6 @@
 package fi.metatavu.megasense.dataportal.users
 
+import fi.metatavu.megasense.dataportal.api.spec.model.MedicalConditions
 import fi.metatavu.megasense.dataportal.api.spec.model.PollutantPenalties
 import fi.metatavu.megasense.dataportal.api.spec.model.PollutantThresholds
 import fi.metatavu.megasense.dataportal.exposure.ExposureInstanceController
@@ -8,12 +9,8 @@ import fi.metatavu.megasense.dataportal.persistence.model.ExposureInstance
 import fi.metatavu.megasense.dataportal.persistence.model.Route
 import fi.metatavu.megasense.dataportal.persistence.model.UserSettings
 import fi.metatavu.megasense.dataportal.route.RouteController
-import fi.metatavu.megasense.dataportal.settings.SystemSettingsController
-import org.keycloak.admin.client.Keycloak
-import org.keycloak.admin.client.KeycloakBuilder
 import java.io.File
 import java.io.FileOutputStream
-import java.lang.IllegalStateException
 
 import java.util.*
 import java.util.zip.ZipEntry
@@ -22,7 +19,6 @@ import javax.enterprise.context.ApplicationScoped
 import javax.inject.Inject
 import org.apache.commons.csv.CSVFormat
 import org.apache.commons.csv.CSVPrinter
-import org.eclipse.microprofile.config.ConfigProvider
 import java.io.StringWriter
 
 /**
@@ -50,6 +46,7 @@ class UsersController {
      * @param showMobileWelcomeScreen a boolean setting for showing the mobile welcome screen
      * @param pollutantPenalties pollutant penalties
      * @param pollutantThresholds pollutant thresholds
+     * @param medicalConditions medical conditions
      * @param creatorId id of the user to whom these setting belong
      *
      * @return created user settings
@@ -62,6 +59,7 @@ class UsersController {
             showMobileWelcomeScreen: Boolean,
             pollutantPenalties: PollutantPenalties,
             pollutantThresholds: PollutantThresholds,
+            medicalConditions: MedicalConditions,
             creatorId: UUID): UserSettings {
         return userSettingsDAO.create(
             id = UUID.randomUUID(),
@@ -73,6 +71,7 @@ class UsersController {
             pollutantPenalties = pollutantPenalties,
             pollutantThresholds = pollutantThresholds,
             creatorId = creatorId,
+            medicalConditions = medicalConditions,
             lastModifierId = creatorId
         )
     }
@@ -99,6 +98,7 @@ class UsersController {
      * @param showMobileWelcomeScreen a boolean setting for showing the mobile welcome screen
      * @param pollutantPenalties pollutant penalties
      * @param pollutantThresholds pollutant thresholds
+     * @param medicalConditions medical conditions
      * @param modifierId id of the user who is modifying these settings
      *
      * @return updated user settings
@@ -112,6 +112,7 @@ class UsersController {
             showMobileWelcomeScreen: Boolean,
             pollutantPenalties: PollutantPenalties,
             pollutantThresholds: PollutantThresholds,
+            medicalConditions: MedicalConditions,
             modifierId: UUID): UserSettings {
         var result = userSettingsDAO.updateStreetAddress(userSettings, streetAddress, modifierId)
         result = userSettingsDAO.updatePostalCode(result, postalCode, modifierId)
@@ -120,6 +121,26 @@ class UsersController {
         result = userSettingsDAO.updateShowMobileWelcomeScreen(result, showMobileWelcomeScreen, modifierId)
         result = updatePollutantPenalties(result, pollutantPenalties, modifierId)
         result = updatePollutantThresholds(result, pollutantThresholds, modifierId)
+        result = updateMedicalConditions(result, medicalConditions, modifierId)
+        return result
+    }
+
+    /**
+     * Updates medical conditions
+     *
+     * @param userSertings userSettings to update
+     * @param medicalConditions new medical conditions
+     * @param modifierId modifier id
+     * @return updated user settings
+     */
+    private fun updateMedicalConditions(
+        userSertings: UserSettings,
+        medicalConditions: MedicalConditions,
+        modifierId: UUID
+    ): UserSettings {
+        var result = userSettingsDAO.updateAsthma(userSertings, medicalConditions.asthma, modifierId)
+        result = userSettingsDAO.updateIhd(result, medicalConditions.ihd, modifierId)
+        result = userSettingsDAO.updateCopd(result, medicalConditions.copd, modifierId)
         return result
     }
 

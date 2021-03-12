@@ -1,9 +1,6 @@
 package fi.metatavu.megasense.dataportal.api.test.functional
 
-import fi.metatavu.megasense.dataportal.api.client.models.ExposureInstance
-import fi.metatavu.megasense.dataportal.api.client.models.PollutantPenalties
-import fi.metatavu.megasense.dataportal.api.client.models.PollutantThresholds
-import fi.metatavu.megasense.dataportal.api.client.models.Route
+import fi.metatavu.megasense.dataportal.api.client.models.*
 import fi.metatavu.megasense.dataportal.api.test.functional.builder.AbstractFunctionalTest
 import fi.metatavu.megasense.dataportal.api.test.functional.builder.TestBuilder
 import fi.metatavu.megasense.dataportal.api.test.functional.resources.KeycloakResource
@@ -27,74 +24,116 @@ class UserTestsIT: AbstractFunctionalTest() {
     @Test
     fun userSettingsTest() {
         TestBuilder().use { testBuilder ->
+            val streetAddress = "Mutatie 9"
+            val postalCode = "50708"
+            val city = "Mutala"
+            val country = "Suomi"
 
             val pollutantPenalties = PollutantPenalties(
-                    carbonMonoxidePenalty = 1f,
-                    nitrogenMonoxidePenalty = 1f,
-                    nitrogenDioxidePenalty = 1f,
-                    ozonePenalty = 1f,
-                    sulfurDioxidePenalty = 1f,
-                    harmfulMicroparticlesPenalty = 1f
+                carbonMonoxidePenalty = 1f,
+                nitrogenMonoxidePenalty = 1f,
+                nitrogenDioxidePenalty = 1f,
+                ozonePenalty = 1f,
+                sulfurDioxidePenalty = 1f,
+                harmfulMicroparticlesPenalty = 1f
             )
 
             val pollutantThresholds = PollutantThresholds(
-                    carbonMonoxideThreshold = 2f,
-                    nitrogenMonoxideThreshold = 2f,
-                    nitrogenDioxideThreshold = 2f,
-                    ozoneThreshold = 2f,
-                    sulfurDioxideThreshold = 2f,
-                    harmfulMicroparticlesThreshold = 2f
+                carbonMonoxideThreshold = 2f,
+                nitrogenMonoxideThreshold = 2f,
+                nitrogenDioxideThreshold = 2f,
+                ozoneThreshold = 2f,
+                sulfurDioxideThreshold = 2f,
+                harmfulMicroparticlesThreshold = 2f
             )
 
-            val createdSettings = testBuilder.admin().users().createUserSettings("Mutatie 9", "50708", "Mutala", "Suomi", pollutantPenalties, pollutantThresholds,false)
+            val medicalConditions = MedicalConditions(
+                asthma = true,
+                ihd = false,
+                copd = false
+            )
+
+            val homeAddress = HomeAddress(streetAddress, postalCode, city, country)
+
+            val createdSettings = testBuilder.admin().users().createUserSettings(
+                homeAddress = homeAddress,
+                pollutantPenalties = pollutantPenalties,
+                pollutantThresholds = pollutantThresholds,
+                showMobileWelcomeScreen = false,
+                medicalConditions = medicalConditions
+            )
 
             assertNotNull(createdSettings)
-            assertEquals("Mutatie 9", createdSettings.homeAddress?.streetAddress)
-            assertEquals("50708", createdSettings.homeAddress?.postalCode)
-            assertEquals("Mutala", createdSettings.homeAddress?.city)
-            assertEquals("Suomi", createdSettings.homeAddress?.country)
+            assertEquals(streetAddress, createdSettings.homeAddress?.streetAddress)
+            assertEquals(postalCode, createdSettings.homeAddress?.postalCode)
+            assertEquals(city, createdSettings.homeAddress?.city)
+            assertEquals(country, createdSettings.homeAddress?.country)
             assertEquals(false, createdSettings.showMobileWelcomeScreen)
             assertPollutantPenaltiesEqual(pollutantPenalties, createdSettings.pollutantPenalties)
             assertPollutantThresholdsEqual(pollutantThresholds, createdSettings.pollutantThresholds)
+            assertTrue(createdSettings.medicalConditions.asthma)
+            assertFalse(createdSettings.medicalConditions.ihd)
+            assertFalse(createdSettings.medicalConditions.copd)
 
             val foundSettings = testBuilder.admin().users().getUserSettings()
 
             assertNotNull(foundSettings)
-            assertEquals("Mutatie 9", foundSettings.homeAddress?.streetAddress)
-            assertEquals("50708", foundSettings.homeAddress?.postalCode)
-            assertEquals("Mutala", foundSettings.homeAddress?.city)
-            assertEquals("Suomi", foundSettings.homeAddress?.country)
+            assertEquals(streetAddress, foundSettings.homeAddress?.streetAddress)
+            assertEquals(postalCode, foundSettings.homeAddress?.postalCode)
+            assertEquals(city, foundSettings.homeAddress?.city)
+            assertEquals(country, foundSettings.homeAddress?.country)
             assertEquals(false, foundSettings.showMobileWelcomeScreen)
             assertPollutantPenaltiesEqual(pollutantPenalties, foundSettings.pollutantPenalties)
             assertPollutantThresholdsEqual(pollutantThresholds, foundSettings.pollutantThresholds)
+            assertTrue(foundSettings.medicalConditions.asthma)
+            assertFalse(foundSettings.medicalConditions.ihd)
+            assertFalse(foundSettings.medicalConditions.copd)
 
             val updatedPollutantPenalties = PollutantPenalties(
-                    carbonMonoxidePenalty = 3f,
-                    nitrogenMonoxidePenalty = 3f,
-                    nitrogenDioxidePenalty = 3f,
-                    ozonePenalty = 3f,
-                    sulfurDioxidePenalty = 3f,
-                    harmfulMicroparticlesPenalty = 3f
+                carbonMonoxidePenalty = 3f,
+                nitrogenMonoxidePenalty = 3f,
+                nitrogenDioxidePenalty = 3f,
+                ozonePenalty = 3f,
+                sulfurDioxidePenalty = 3f,
+                harmfulMicroparticlesPenalty = 3f
             )
 
             val updatedPollutantThresholds = PollutantThresholds(
-                    carbonMonoxideThreshold = 4f,
-                    nitrogenMonoxideThreshold = 4f,
-                    nitrogenDioxideThreshold = 4f,
-                    ozoneThreshold = 4f,
-                    sulfurDioxideThreshold = 4f,
+                carbonMonoxideThreshold = 4f,
+                nitrogenMonoxideThreshold = 4f,
+                nitrogenDioxideThreshold = 4f,
+                ozoneThreshold = 4f,
+                sulfurDioxideThreshold = 4f,
                     harmfulMicroparticlesThreshold = 4f
             )
 
-            val updatedSettings = testBuilder.admin().users().updateUserSettings("Kuratie 19", "70898", "Kurala", "Suomaa", updatedPollutantPenalties, updatedPollutantThresholds, true)
+            val updatedMedicalConditions = MedicalConditions(
+                asthma = true,
+                ihd = true,
+                copd = false
+            )
+
+            val newHomeAddress = HomeAddress( "Kuratie 19", "70898", "Kurala", "Suomaa")
+
+            val updatedSettings = testBuilder.admin().users().updateUserSettings(
+                homeAddress = newHomeAddress,
+                pollutantPenalties = updatedPollutantPenalties,
+                pollutantThresholds = updatedPollutantThresholds,
+                showMobileWelcomeScreen = true,
+                medicalConditions = updatedMedicalConditions
+            )
+
             assertNotNull(updatedSettings)
-            assertEquals("Kuratie 19", updatedSettings.homeAddress?.streetAddress)
-            assertEquals("70898", updatedSettings.homeAddress?.postalCode)
-            assertEquals("Kurala", updatedSettings.homeAddress?.city)
-            assertEquals("Suomaa", updatedSettings.homeAddress?.country)
+            assertEquals(newHomeAddress.streetAddress, updatedSettings.homeAddress?.streetAddress)
+            assertEquals(newHomeAddress.postalCode, updatedSettings.homeAddress?.postalCode)
+            assertEquals(newHomeAddress.city, updatedSettings.homeAddress?.city)
+            assertEquals(newHomeAddress.country, updatedSettings.homeAddress?.country)
             assertEquals(true, updatedSettings.showMobileWelcomeScreen)
             assertPollutantPenaltiesEqual(updatedPollutantPenalties, updatedSettings.pollutantPenalties)
             assertPollutantThresholdsEqual(updatedPollutantThresholds, updatedSettings.pollutantThresholds)
+            assertTrue(updatedSettings.medicalConditions.asthma)
+            assertTrue(updatedSettings.medicalConditions.ihd)
+            assertFalse(updatedSettings.medicalConditions.copd)
         }
     }
 
@@ -110,7 +149,7 @@ class UserTestsIT: AbstractFunctionalTest() {
             val startedAt2 = OffsetDateTime.now().minusHours(9).toString().replace("+02:00", "Z").replace("+03:00", "Z")
             val endedAt2 = OffsetDateTime.now().minusHours(6).toString().replace("+02:00", "Z").replace("+03:00", "Z")
 
-           val exposureInstance = testBuilder.admin().exposureInstances().create(
+            val exposureInstance = testBuilder.admin().exposureInstances().create(
                     routeId = route.id!!,
                     startedAt = startedAt,
                     endedAt = endedAt,
